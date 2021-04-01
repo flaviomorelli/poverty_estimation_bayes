@@ -1,0 +1,70 @@
+\documentclass[12pt,oneside,paper=a4,headings=small]{scrbook}
+\pagestyle{plain} % Do I want headers?
+
+%
+% PACKAGES
+% -----------------------------------
+\input{./packages/packages}
+
+%
+% COMMANDS
+% -----------------------------------
+\def\code#1{\texttt{#1}}
+
+% DOCUMENT
+% -----------------------------------
+\begin{document}
+
+    \frontmatter
+    \include{./Title/title}
+    %\input{./Chapter/abstract_deu} 	% Abstract auf Deutsch
+    %\newpage
+    %\clearpage{\pagestyle{empty}\cleardoublepage}
+    %\include{./Kapitel/abstract_eng}
+    %\newpage
+    %\clearpage{\pagestyle{empty}\cleardoublepage}
+    \onehalfspacing                  	% Zeilenabstand ab hier 1.5 zeilig
+    %\tableofcontents 					% Inhaltsverzeichnis
+    %\clearpage{\pagestyle{empty}\cleardoublepage}
+
+    % Include tables
+
+    %\listoffigures
+    %\clearpage{\pagestyle{empty}\cleardoublepage}
+
+    %\listoftables
+    %\clearpage{\pagestyle{empty}\cleardoublepage}
+    % -----------------------------------
+    \mainmatter
+    \input{./chapter/introduction}
+    %\clearpage{\pagestyle{empty}\cleardoublepage}		% löscht Kopfzeilen und Seitennummerierung von der letzten Seite eines Kapitels, sofern dort kein Text mehr steht
+    % Economic Problem
+
+    %\input{./chapter/Model}
+    %\vspace{-1cm}
+
+    %\input{./chapter/Data}
+    %\vspace{-1cm}
+
+    %\input{./chapter/Results}
+    %\vspace{-1cm}
+
+    %\input{./chapter/Discussion}
+    %\vspace{-1cm}
+
+    %\input{./chapter/Conclusion}
+    %\vspace{-1 cm}
+
+    %\bibliographystyle{apacite}
+    %\bibliography{./Literature/references}
+
+    %\appendix
+    %\input{./Chapter/hb_non_informative}
+    %\input{./Chapter/bayesian_coeff}
+
+
+    % -----------------------------------
+    \backmatter
+
+
+\end{document}

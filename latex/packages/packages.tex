@@ -1,0 +1,100 @@
+%
+% PACKAGES
+% -----------------------------------
+
+% Margins and paper type
+\usepackage[
+paper=a4paper,
+left=12.5mm,
+right=25mm,
+top=25mm,
+bottom=50mm,
+bindingoffset=10mm]{geometry}
+
+% Typesetting for certain languages
+\usepackage[english]{babel}
+
+% References style (APA)
+\usepackage{apacite}
+% Reference utilities for BibTex
+\usepackage{natbib}
+
+% Change counters for footnotes, figures and tables
+\usepackage{chngcntr}
+% Remove chapter reference in counter
+\counterwithout*{footnote}{chapter}
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
+
+\usepackage[utf8]{inputenc} 		% Set up text encoding
+\usepackage[T1]{fontenc}
+% latin modern font family
+\usepackage{lmodern}
+% better typography and justification
+\usepackage{microtype}
+% Rotate pages
+\usepackage{lscape}
+
+% Mathematical formulas
+\usepackage{amsmath}
+% Package for graph drawing
+\usepackage{tikz}
+\usetikzlibrary{arrows, shapes, positioning}
+
+% URL formatting
+\usepackage{url}
+% Hyperlink formatting in PDF
+\usepackage[colorlinks,
+linkcolor=black,
+citecolor=black,
+urlcolor=black]{hyperref}
+
+% Include graphics (pdf,png - avoid jpeg)
+\usepackage{graphicx}
+\usepackage{subfig}
+\graphicspath{{./Graphics/}}          % Pfad zu den Bildern ??
+% Packages for table formatting
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+% Algorithm listings
+\usepackage{listings}
+% Package for captions
+\usepackage{caption}
+\captionsetup{font = small}
+% Footnotes
+\usepackage{footnote}
+% Footnotes in tables
+\usepackage{tablefootnote}
+% Command utilities for lists
+\usepackage{mdwlist}
+
+\usepackage{setspace} 				% Zeileneinstellung
+\newtheorem{mydef}{Merksatz}  		% Falls Beispiele, Merksätze m. fortl. Nr. gebr. werden
+\newtheorem{bsp}{Beispiel}
+
+% Create and manage to-dos and missing figures
+\usepackage{todonotes}
+
+% Package for counters
+\usepackage{calc}
+% Set depth of table of contents
+\setcounter{tocdepth}{1}
+% Set counters for tables and figures
+\setcounter{table}{0}
+\renewcommand{\thetable}{\arabic{table}}
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{\arabic{figure}}
+
+% Jump from DVI files to .tex file
+\usepackage[active]{srcltx}
+
+% Change how chapter command works (needed?)
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}
+\makeatother
