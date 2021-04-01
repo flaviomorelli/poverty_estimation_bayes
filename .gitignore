@@ -2,7 +2,20 @@
 *.Rproj
 *.code-workspace
 *.Rhistory
+*.pdf
+
+*.aux
+*.bbl
+*.blg
+*.lof
+*.lot
+*.out
+*.toc
+*.gz
+*.log
+
 
 code/data/
 code/.Rproj.user/
 
+.Rproj.user
