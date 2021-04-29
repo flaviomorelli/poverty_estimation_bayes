@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.12.21
+# v0.14.1
 
 using Markdown
 using InteractiveUtils
@@ -14,7 +14,7 @@ macro bind(def, element)
 end
 
 # ╔═╡ 4a802352-90ba-11eb-1386-41d87c0fa5f7
-using StatsBase, Distributions, Optim, Plots, StatsPlots, PlutoUI
+using StatsBase, Distributions, Optim, Plots, StatsPlots, PlutoUI, Turing, LinearAlgebra
 
 # ╔═╡ 827fb218-90ba-11eb-00e9-c3b3cd5859d8
 logshift(x, s) = log(x + s)
@@ -28,10 +28,13 @@ N = 10^3
 # ╔═╡ 939c014e-90ba-11eb-1533-f725455dcc04
 begin 
 	pareto = (0.5 * rand(GeneralizedPareto(600, 200, 0.4), N) + 
-		0.5 * rand(Normal(3000, 300), N)) ./ 1000
-	lognormal = rand(LogNormal(8, 0.7), N) ./ 1000
-	gamma = rand(Gamma(1.5, 2000), N) ./ 1000
+		0.5 * rand(Normal(3000, 300), N)) 
+	lognormal = rand(LogNormal(8, 0.7), N) 
+	gamma = rand(Gamma(1.5, 2000), N) 
 end
+
+# ╔═╡ ec98e4e2-9701-11eb-324f-bddf41433c5b
+
 
 # ╔═╡ 9e9d5784-90ba-11eb-27bb-f5d947425c61
 begin
@@ -84,12 +87,19 @@ logshift.(target, minimizer) |> kurtosis
 # ╔═╡ a4dcd604-90c6-11eb-247c-21fa2d7b1bd2
 logshift.(target, minimizer) |> histogram
 
+# ╔═╡ dc227a8a-9709-11eb-2e72-756fb62bf3a7
+
+
+# ╔═╡ df397fac-9709-11eb-186e-c3599123a62b
+
+
 # ╔═╡ Cell order:
 # ╠═4a802352-90ba-11eb-1386-41d87c0fa5f7
 # ╠═827fb218-90ba-11eb-00e9-c3b3cd5859d8
 # ╠═05b0b4c8-90bd-11eb-0bda-1d1493c075d6
 # ╠═8d0e2566-90ba-11eb-30c2-cfbd54765252
 # ╠═939c014e-90ba-11eb-1533-f725455dcc04
+# ╟─ec98e4e2-9701-11eb-324f-bddf41433c5b
 # ╠═9e9d5784-90ba-11eb-27bb-f5d947425c61
 # ╠═b5e3487c-90ba-11eb-1dcc-eda5e8882a59
 # ╠═ded1afa4-90be-11eb-1cd0-59b1a308f7e5
@@ -102,3 +112,5 @@ logshift.(target, minimizer) |> histogram
 # ╠═5d36b060-90c4-11eb-2704-97d34f5bccad
 # ╠═22ad5aa0-90c6-11eb-049d-81e2eb5628b7
 # ╠═a4dcd604-90c6-11eb-247c-21fa2d7b1bd2
+# ╟─dc227a8a-9709-11eb-2e72-756fb62bf3a7
+# ╟─df397fac-9709-11eb-186e-c3599123a62b

@@ -3,6 +3,8 @@
 *.code-workspace
 *.Rhistory
 *.pdf
+*.rds
+*.csv
 
 *.aux
 *.bbl
