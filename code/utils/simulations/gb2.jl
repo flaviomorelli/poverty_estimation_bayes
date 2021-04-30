@@ -11,7 +11,7 @@ struct GB2{T <: Real} <: ContinuousUnivariateDistribution
     p::T # Shape 3
     q::T # Scale
     
-    function GB2(α::T, β::T, p::T, q::T; check_args=true) where {T <: Real}
+    function GB2{T}(α::T, β::T, p::T, q::T; check_args=true) where {T <: Real}
         check_args && Distributions.@check_args(GB2, 
                                                 all([α > zero(α), 
                                                     β > zero(β), 
@@ -26,10 +26,8 @@ Distributions.params(d::GB2) = (d.α, d.β, d.p, d.q)
 
 GB2(α::Float64, β::Float64, p::Float64, q::Float64) = GB2{Float64}(α, β, p, q)
 GB2(α::Real, β::Real, p::Real, q::Real) = GB2(promote(α, β, p, q)...)
-GB2(α::Integer, β::Integer, p::Integer, q::Integer) = GB2(float(α), 
-                                                            float(β),
-                                                            float(p),
-                                                            float(q))
+GB2(α::Integer, β::Integer, p::Integer, q::Integer) = GB2(float(α), float(β),
+                                                          float(p), float(q))
 
 Distributions.@distr_support GB2 0.0 Inf
 

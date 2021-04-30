@@ -1,75 +1,14 @@
-using Distributions, Turing, DataFrames, Random
+using DataFrames, Random
 using Plots, StatsPlots
+import StatsBase
 
-include("./utils/simulations/gb2.jl")
+include("./utils/simulations/sim_models.jl")
 
-domains = 10
-pop_domain = 20
+domains = 50
+pop_domain = 200
 group = repeat(1:domains, inner=pop_domain)
 pop_size = length(group)
-
-function initialize(N, D)
-    y = Vector{Float32}(undef, N)
-    x = Vector{Float32}(undef, N)
-    z = Vector{Float32}(undef, N)
-    ε = Vector{Float32}(undef, N)
-
-    μ = Vector{Float32}(undef, D) 
-    u = Vector{Float32}(undef, D) 
-    return y, x, z, ε, μ, u 
-end
-
-@model function logscale(N, D, group)
-    y, x, z, ε, μ, u = initialize(N, D)
-    
-    for d in 1:D
-        μ[d] ~ Uniform(2, 3)
-        u[d] ~ Normal(0, 0.4)
-    end
-    
-    for n in 1:N
-        z[n] ~ Normal(0, 1)
-        ε[n] ~ Normal(0, sqrt(0.8))
-        x[n] ~ Normal(μ[group[n]], 0.5)
-        y[n] = exp(10 - x[n] + 0.5 * z[n] + u[group[n]] + ε[n])
-    end 
-
-    return (y = y, x = x, z = z, ε = ε, μ = μ, u = u)
-end
-
-@model function pareto(N, D, group)
-    y, x, z, ε, μ, u = initialize(N, D)
-    
-    for d in 1:D
-        μ[d] ~ Uniform(-3, 3)
-        u[d] ~ Normal(0, 500)
-    end
-    
-    for n in 1:N
-        ε[n] ~ Pareto(3, 2000) * √2
-        x[n] ~ Normal(μ[group[n]], 7.5)
-        y[n] = 12_000 - 400 * x[n] + u[group[n]] + (ε[n] - mean(ε))
-    end 
-
-    return (y = y, x = x, ε = ε .- mean(ε), μ = μ, u = u)
-end
-
-@model function gb2(N, D, group)
-    y, x, z, ε, μ, u = initialize(N, D)
-    
-    for d in 1:D
-        μ[d] ~ Uniform(-1, 1)
-        u[d] ~ Normal(0, 500)
-    end
-    
-    for n in 1:N
-        ε[n] ~ GB2(2.5, 18, 1.46, 1700) 
-        x[n] ~ Normal(μ[group[n]], 5)
-        y[n] = 8_000 - 400 * x[n] + u[group[n]] + (ε[n] - mean(ε))
-    end 
-
-    return (y = y, x = x, ε = ε .- mean(ε), μ = μ, u = u)
-end
+sample_size = [12, 23, 28, 14, 10, 23, 19, 25, 29, 10, 14, 18, 15, 20, 13, 12, 16, 27, 20, 26, 27, 23, 12, 12, 11, 18, 17, 29, 11, 29, 17, 9, 14, 8, 8, 18, 21, 21, 16, 16, 25, 13, 26, 19, 28, 20, 24, 9, 25, 21]
 
 function create_df(sample, pop_domain; contains_z=false)
     df = DataFrame(y=sample[:y],
@@ -85,6 +24,24 @@ function create_df(sample, pop_domain; contains_z=false)
     return df
 end
 
+function sample_df(df, sample_size, domains)
+    sample = Matrix{Float64}(undef, sum(sample_size), size(df)[2]) |>
+                x -> DataFrame(x, names(df))
+    border = [0; cumsum(sample_size)]
+
+    for d in 1:domains
+        domain_df = filter(df -> df.id == d, df)
+        nrow_df = size(domain_df)[1]
+        sample_idx = StatsBase.sample(1:nrow_df, 
+                                    sample_size[d]; 
+                                    replace=false)
+        sample[(border[d] + 1):border[d + 1], :] = domain_df[sample_idx, :]
+    end
+    sample.id = Int.(sample.id)
+
+    return sample
+end
+
 logscale_model = logscale(pop_size, domains, group)
 logscale_sample = logscale_model()
 logscale_df = create_df(logscale_sample, pop_domain, contains_z=true)
@@ -96,3 +53,5 @@ pareto_df = create_df(pareto_sample, pop_domain)
 gb2_model = gb2(pop_size, domains, group)
 gb2_sample = gb2_model()
 gb2_df = create_df(gb2_sample, pop_domain)
+
+pareto_sample = sample_df(pareto_df, sample_size, domains)
