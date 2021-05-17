@@ -20,5 +20,6 @@
 code/data/
 code/.Rproj.user/
 code/utils/simulations/simulations_rojas_perilla/
+.vscode/
 
 .Rproj.user
