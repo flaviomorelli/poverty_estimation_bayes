@@ -1,8 +1,7 @@
-
 data {
   int<lower=0> N;
   vector[N] x;
-  real y[N];
+  vector<lower = 0>[N] y;
 }
 
 // The parameters accepted by the model. Our model
@@ -10,24 +9,33 @@ data {
 parameters {
   real alpha;
   real beta;
-  real lambda;
   real<lower=0> sigma;
+  real lambda;
+  //real<lower=0> nu_raw;
+  //real<lower=0> lambda_raw;
 }
 
-// transformed parameters{
-//   real y_log[N];
-//   for(n in 1:N)
-//     y_log[n] = log(y[n] + lambda);
-// }
+transformed parameters{
+  //real nu = 2 + nu_raw;
+  //real lambda = lambda_raw - min(y);
+}
 
 
 model {
-  alpha ~ student_t(3, 0, 2.5);
-  beta ~ student_t(3, 0, 2.5);
-  sigma ~ gamma(2, 0.1);
-  lambda ~ normal(0, 0.05);
-  y ~ student_t(3, alpha + beta * x,sigma);
-  // for(n in 1:N)
-  //   target += log(fabs(y[n] + lambda));
+  // define transformed outcome
+  vector[N] y_log = log(y + lambda);
+  
+  // Regression parameters
+  alpha ~ student_t(3, 0, 80);
+  beta ~ student_t(3, 0, 10);
+  sigma ~ gamma(2, 0.5);
+  
+  // Raw parameters with a zero lower bound
+  lambda ~ normal(0, min(y)/2);
+ // nu_raw ~ gamma(2, 0.2);
+  
+  // Trnasformed Regression 
+  target += student_t_lpdf(y_log |3, alpha + beta * x, sigma) 
+                - log(y - lambda);
 }
 
