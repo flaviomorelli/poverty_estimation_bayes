@@ -2,6 +2,22 @@
 
 # Abstract household data cleaning
 
+
+sector_lookup <- function(sector){
+  if(is.na(sector))
+    return(NA)
+  if(str_detect(sector, "terciario"))
+      return("Terciario")
+  if(str_detect(sector, "secundario"))
+      return("Secundario")
+  if(str_detect(sector, "primario"))
+      return("Primario")
+  if(str_detect(sector, "PNEA|desocupado|menor")) 
+      return("Desempleado")
+  else stop(str_c("No match for sector: ", sector, ".\n"))
+}
+
+
 clean_hog <- function(data){
   data %>% 
     dplyr::select(
@@ -50,6 +66,8 @@ clean_hog <- function(data){
            actcom_pc = actcom / tam_hog * 100, 
            bienes_pc = bienes/ tam_hog * 100
     ) %>% 
+    # Recode sector variable
+    dplyr::mutate(jsector = map_chr(jsector, sector_lookup)) %>% 
     dplyr::select(-trabinf, 
            -trabadulmay, 
            -remesas, 
@@ -120,7 +138,7 @@ rm(mcs_hog_raw, mcs_hog,
    mcs_per_raw, mcs_per,
    census_hog_raw, census_hog,
    census_per_raw, census_per,
-   clean_hog)
+   clean_hog, sector_lookup)
 
 message("Mexico data loaded!")
 

@@ -1,0 +1,24 @@
+\section{Variable selection with the horseshoe prior}
+
+A key step in specifying the model is deciding which variables to use.
+However, this is at the same time one of the more challenging steps.
+A simple such as forward or backward regression might be problematic (why? reference).
+The ideal solution would be to estimate models with all possible variable combinations and then compare the predictive quality of the models – e.g., through cross-validaton.
+However, this solution is not feasible computationally due to the very large number of possible models.
+Another approach is to use shrinkage methods to check which variables can be left out without significantly compromising the predictive power of the model.
+If a coefficient is very close to zero, it is a sign that the respective variable might be removed.
+In this section, the regularized horseshoe prior \citep{piironen_sparsity_2017} is presented and then used to select relevant variables. The selection is done by comparing the PSIS-LOO of models with the less impactful (CHANGE WORD) variables removed.
+
+\subsection{Horseshoe prior: theory}
+
+In the Bayesian framework, shrinkage can be best understood in the context of the prior.
+The main idea is to have a narrow region of high density around zero that shrink coefficients,
+while at the same time including fat tails to allow some coefficients to deviate from zero over a wider range.
+In its most extreme formulation, it corresponds to the spike-and-slab prior introduced originally by (CITATION).
+While this prior has a hight theoretical relevance, it leads to computational problems (WHICH?).
+The horseshoe prior, originally introduced by \cite{carvalho_horseshoe_2010}, aims to solve these problems.
+The horseshoe prior can be formulated as follows:
+
+In practice, the original horseshoe prior leads to computational problems in the form of HMC divergences.
+ \cite{piironen_sparsity_2017} address this problem by introducing a regularized horseshoe prior.
+
