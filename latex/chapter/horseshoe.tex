@@ -1,24 +1,70 @@
-\section{Variable selection with the horseshoe prior}
+\section{Variable selection}
 
 A key step in specifying the model is deciding which variables to use.
 However, this is at the same time one of the more challenging steps.
 A simple such as forward or backward regression might be problematic (why? reference).
 The ideal solution would be to estimate models with all possible variable combinations and then compare the predictive quality of the models – e.g., through cross-validaton.
 However, this solution is not feasible computationally due to the very large number of possible models.
-Another approach is to use shrinkage methods to check which variables can be left out without significantly compromising the predictive power of the model.
+Another approach is to use shrinkage methods like the Lasso \citep{tibshirani_regression_1996} to determine which variables can be left out without significantly compromising the predictive power of the model.
 If a coefficient is very close to zero, it is a sign that the respective variable might be removed.
 In this section, the regularized horseshoe prior \citep{piironen_sparsity_2017} is presented and then used to select relevant variables. The selection is done by comparing the PSIS-LOO of models with the less impactful (CHANGE WORD) variables removed.
 
-\subsection{Horseshoe prior: theory}
+\subsection{Regularized horseshoe prior}
 
 In the Bayesian framework, shrinkage can be best understood in the context of the prior.
-The main idea is to have a narrow region of high density around zero that shrink coefficients,
+The general idea is to have a narrow region of high density around zero that shrink coefficients,
 while at the same time including fat tails to allow some coefficients to deviate from zero over a wider range.
-In its most extreme formulation, it corresponds to the spike-and-slab prior introduced originally by (CITATION).
-While this prior has a hight theoretical relevance, it leads to computational problems (WHICH?).
-The horseshoe prior, originally introduced by \cite{carvalho_horseshoe_2010}, aims to solve these problems.
-The horseshoe prior can be formulated as follows:
+In its most extreme formulation, it corresponds to the spike-and-slab prior introduced originally by \cite{mitchell_bayesian_1988}.
+While this prior has a hight theoretical relevance, it can be computationally demanding for a large number of variables and is sensitive to specification details such as slab width \citep{piironen_sparsity_2017}.
+On the other hand, continuous shrinkage priors \cite{} provide similar results while also being easier to compute \citep{piironen_sparsity_2017}.
+The horseshoe prior \cite{carvalho_horseshoe_2010} is a continuous shrinkage prior with a similar performance to the spike-and-slab prior and can be formulated as follows
+\begin{equation}
+    \begin{split}
+        \theta_j | \lambda_j, \tau & \sim \mathcal N (0, \tau^2\lambda^2_j), \\
+        \lambda_j & \sim \mathcal C^+ (0, 1), ~~ j = 1,..., D,
+    \end{split}
+    \label{eq_hs}
+\end{equation}
+where $\theta_j$ are the parameters to be shrunk and $\mathcal C^+$ is the half-Cauchy distribution. In a regression setting, $\theta_j$ corresponds to the coefficients $\beta_j$.
+This prior is characterized by a global parameter $\tau$ that shrinks all parameters towards zero as $\tau \rightarrow 0$ and a local parameter $\lambda_j$ for each $\theta_j$ that push against the global shrinkage.
+Due to the extremely heavy tails of $\mathcal C^+(0, 1)$, some $\lambda_j$ will be large enough to counteract even small values of $\tau$.
 
-In practice, the original horseshoe prior leads to computational problems in the form of HMC divergences.
- \cite{piironen_sparsity_2017} address this problem by introducing a regularized horseshoe prior.
+Nevertheless, there is no consensus on how to do inference for $\tau$ and the parameters far from zero are not shrunk at all.
+\cite{piironen_sparsity_2017} address this issues by introducing the regularized horseshoe prior, which is given by
+\begin{equation}
+    \begin{split}
+        \theta_j | \lambda_j, \tau & \sim \mathcal N (0, \tau^2 \tilde \lambda^2_j),
+        ~~ \tilde \lambda_j^2 = \displaystyle \frac{c^2 \lambda^2_j}{c^2 + \tau^2 \lambda_j^2}\\
+        \lambda_j & \sim \mathcal C^+ (0, 1), ~~ j = 1,..., D,
+    \end{split}
+\end{equation}
+where $c > 0$ is a constant.
+If $\tau^2\lambda^2_j \ll c^2$, then $\theta_j$ is shrunk strongly towards zero and $\tilde \lambda^2_j \rightarrow \lambda^2_j$, which approximates the original horseshoe in expression \ref{eq_hs}.
+For the case $\tau^2\lambda^2_j \gg c^2$, then $\tilde \lambda^2_j \rightarrow c^2/\tau^2$ and the prior reduces to $\mathcal N(0, c^2)$, which corresponds to a Gaussian slab with variance $c^2$ that regularizes $\theta_j$.
+When $c \rightarrow \infty$ the regularizing effect of the prior disappears, just as in the original horseshoe.
+Although $c$ can be chosen as a constant, \cite{piironen_sparsity_2017} recommend doing inference with the prior
+\begin{equation*}
+    c^2 \sim \text{Inv-Gamma}(\alpha, \beta), ~~ \alpha = \nu/2, ~~ \beta = \nu s^2/2,
+\end{equation*}
+which leads to a Student$(\nu, 0, s^2)$ slab for $\theta_j$ far away from zero.
+This is desirable as the heavier tails of the Student's $t$ distribution prevent too much probability mass accumulating near zero.
 
+The last parameter in the specification of the regularized horseshoe is $\tau$.
+For a linear model of the form (KOMISCH! BETA?)
+\begin{equation*}
+    y_i \sim \beta_i + \varepsilon_i, ~~
+    \varepsilon_i \sim \mathcal N(0, \sigma^2), ~~
+    i = 1,...,n,
+\end{equation*}
+\cite{piironen_sparsity_2017} explore different specifications for $\tau$.
+Defining $p_0$ as the prior guess number of nonzero variables, the prior for $\tau$ should have most of its mass near
+\begin{equation}
+    \displaystyle \tau_0 = \frac{p_0}{D-p_0}\frac{\sigma}{\sqrt n}.
+    \label{eq_tau0}
+\end{equation}
+However, there is no best choice for the prior of $\tau$. The three main options are setting $\tau = \tau_0$, or assuming either $\tau \sim \mathcal C^+(0, \tau_0^2)$ or $\tau \sim \mathcal N^+(0, \tau_0^2)$, where $\mathcal{N^+}$ is the half-normal distribution.
+In practice, it is common to set the ratio of nonzero parameters and irrelevant parameters, $p_0/(D - p_0)$, and use $\tau = \tau_0$.
+In this paper, models with different ratios (0.1, 0.2, 0.3) are estimated and compared.
+Note that the definition of $\tau_0$ (\ref{eq_tau0}) is derived under the assumption of a Gaussian model.
+Therefore, its meaning is only an approximation when using the Student's $t$-distribution.
+To ensure that the results are not fundamentally different, models with both Gaussian and Student's $t$ likelihoods are estimated and compared.

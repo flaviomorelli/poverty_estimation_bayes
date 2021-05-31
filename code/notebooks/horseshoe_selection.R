@@ -32,7 +32,7 @@ student_model <- update(base_model,
 student_model_compact <- update(base_model,
                         formula. = ~ . -scale(jedad) -
                           scale(pcmuj) - scale(pcalfab) - 
-                          jsexo - id_men - pob_ind,
+                          jsexo - id_men - pob_ind - discap_hog,
                         family = student(),
                         cores = 2
                         )
@@ -66,31 +66,32 @@ gamma_model <- update(skew_normal_model,
 
 
 horseshoe_model <- update(base_model, 
-                          prior = set_prior(horseshoe(df = 3, 
-                                                      par_ratio = 0.4)),
-                          cores = 2
+                          prior = set_prior(horseshoe(df = 1, 
+                                                      par_ratio = 0.2)),
+                          cores = 2,
+                          control =  list(adapt_delta = 0.991)
                           )
 
 horseshoe_student_50 <- update(student_model, 
-                            prior = set_prior(horseshoe(df = 3, 
+                            prior = set_prior(horseshoe(df = 1, 
                                                         par_ratio = 0.5)),
                             cores = 2
                             )
 
 horseshoe_student_30 <- update(student_model, 
-                               prior = set_prior(horseshoe(df = 3, 
+                               prior = set_prior(horseshoe(df = 1, 
                                                            par_ratio = 0.3)),
                                cores = 2
                               )
 
 horseshoe_student_10 <- update(student_model, 
-                               prior = set_prior(horseshoe(df = 3, 
+                               prior = set_prior(horseshoe(df = 1, 
                                                            par_ratio = 0.1)),
                                cores = 2
                                 )
 
 horseshoe_student_05 <- update(student_model, 
-                               prior = set_prior(horseshoe(df = 3, 
+                               prior = set_prior(horseshoe(df = 1, 
                                                            par_ratio = 0.05)),
                                cores = 2
                               )
@@ -115,9 +116,10 @@ loo_compare(loo_base, loo_student,
 
 # Visual checks
 mcmc_plot(horseshoe_student)
-mcmc_plot(horseshoe_student, type = "hist")
+mcmc_plot(horseshoe_model, type = "dens")
 mcmc_plot(horseshoe_student, type = "nuts_acceptance")
 mcmc_plot(horseshoe_student, type = "nuts_divergence")
+mcmc_plot()
 
 pp_check(gamma_model, nsamples = 30)
 pp_average(base_model, student_model)
