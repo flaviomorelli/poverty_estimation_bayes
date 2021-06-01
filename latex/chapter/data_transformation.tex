@@ -1,1 +1,40 @@
-\sectio{Data transformation}
+\section{Data transformation}
+
+At the unit level, income is usually a right-skewed distribution.
+As measures of poverty and inequality are usually based on income, this characteristic shape poses challenges to model specification.
+A classical linear regression with Gaussian errors will not be able to capture key aspects of the dependent variable due to its skewness.
+A possible solution would be to use a regression with a skewed likelihood like a gamma, lognormal or skew-normal distribution.
+In practice, those distributions have strong limitations: the logarithm of the lognormal has to be a normal distribution and the skewness of the skew-normal distribution is limited to the range $(-1, 1)$.
+The inadequacy of these distribution to model income is shown in appendix ??? through posterior predictive checks.
+
+A common transformation for income in economic applications is the natural logarithm. However, there might still be some skewness left, which is exacerbated by very low incomes.
+If there are a lot of units with incomes between zero, there will likely be a long tail to the in the left side of the transformed distribution.
+Moreover, log-income is usually heavy-tailed.
+This is not surprising, as a variable has to be distributed according to a log-normal distribution for its logarithm to be normally distributed.
+As already mentioned, the log-normal distribution is usually not a good fit for income data.
+
+To bring the dependent variable closer to a normal distribution, \cite{rojas_perilla_data_2020} explore different types of data-driven transformations such as Box-Cox or Yeo-Johnson.
+While effective, these transformations are piecewise function, which adds an additional layer of complexity when backtransforming to the original scale.
+Another more simple data-driven transformation is the log-shift defined as $y^* = \log(y + s)$, where $y$ is the original variable and $s$ is the shift term.
+By adding $s$ to the original variable $y$ before taking the logarithm, it is possible to make the transformed variable more symmetric.
+Moreover, the backtransformation is straighforward: $y = e^{y^*} - s$.
+However, the transformed variable might still have considerable excess kurtosis, even though it might still be almost symmetric.
+Note that the logarithm is a monotonic transform.
+Therefore, this approach only works when the mode of the distribution in not at one extreme of the distribution support.
+Specifically, this means that distributions like the exponential or Pareto will not become more symmetric after taking the logarithm.
+
+A key question is how to estimate the shift term $s$.
+There are two options: estimate it from the data in an empirical Bayes way or do full Bayesian inference.
+Both approaches have their advantages and disadvantages.
+When estimating $s$ from the data, the aim is to reduce skewness as much as possible.
+This can be done by minimizing the absolute empirical skewness of $y^*$, or at least bringing it below a predetermined threshold.
+This approach has the advantage that it is straightforward to control the skewness of $y^*$.
+However, the uncertainty of estimating the shift parameter is not taken into account by not including the shift parameter into the model.
+In addition, there are different ways of measuring empirical skewness, none of which are unbiased (SOURCE?) and just minimizing empirical skewness might lead to overfitting the training data.
+On the other hand, integrating the shift parameter into the model might lead to estimation problems. In practice, the Markov chains might get stuck and not mix well.
+Moreover, it is not clear how to define the prior on $s$.
+In some cases, a good $s$ is negative while in other cases it would have to be positive to avoid taking the logarithm of negative values.
+Nevertheless, including $s$ into the model accounts for the uncertainty of estimating the shift parameters and also avoid the overfitting problem of the empirical estimation.
+
+It is is desirable that  $s$ is Sufficiently small? As to distort the transformation as little as possible
+
