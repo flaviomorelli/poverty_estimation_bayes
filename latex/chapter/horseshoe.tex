@@ -64,7 +64,14 @@ Defining $p_0$ as the prior guess number of nonzero variables, the prior for $\t
 \end{equation}
 However, there is no best choice for the prior of $\tau$. The three main options are setting $\tau = \tau_0$, or assuming either $\tau \sim \mathcal C^+(0, \tau_0^2)$ or $\tau \sim \mathcal N^+(0, \tau_0^2)$, where $\mathcal{N^+}$ is the half-normal distribution.
 In practice, it is common to set the ratio of nonzero parameters and irrelevant parameters, $p_0/(D - p_0)$, and use $\tau = \tau_0$.
-In this paper, models with different ratios (0.1, 0.2, 0.3) are estimated and compared.
+In this paper, a ratio of 0.3 is chosen, which assumes that for every 10 irrelevant regressors, there are 3 relevant variables.
 Note that the definition of $\tau_0$ (\ref{eq_tau0}) is derived under the assumption of a Gaussian model.
 Therefore, its meaning is only an approximation when using the Student's $t$-distribution.
 To ensure that the results are not fundamentally different, models with both Gaussian and Student's $t$ likelihoods are estimated and compared.
+
+Certain shrinkage methods like Lasso force certain coefficients to be zero, which provides for an easy selection criterion. However, a disadvantage of the horseshoe is that it does not have an integrated criterion to select variables. There are two possible workarounds for this problem. First, one could leave out variables whose mean coefficient is below a certain threshold (PIITONEN VEHTARI?). Second, one can leave out variables if a significant portion of the coefficient distribution is in both a positive and a negative area. To check that the predictive power of the model does not deteriorate by removing variables, PSIS-LOO can be used to compare the full model with the smaller model. An alternative is to this problem is to use projective prediction approach developed by \cite{piironen_projective_2020}. Unfortunately, this only works with distributions from the exponential family, which does not include the Student's $t$-distribution used in this paper.
+
+The effectiveness of the horseshoe prior depends crucially on the number of variables included in the full model.
+The shrinkage will be most noticeable with a large number of variables. Otherwise, the shrinkage from the horseshoe is very similar to placing a prior centered around zero for the coefficients. In this project, ca. 20 variables were chosen from the survey and census data. Therefore, the shrinkage of the regularized horseshoe is not essentially different from the shrinkage of a non-structured prior.
+
+
