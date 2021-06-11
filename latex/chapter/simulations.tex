@@ -1,0 +1,57 @@
+\section{Simulation scenarios}
+
+Working with simulated is one key step of Bayesian workflow (WORKFLOW PAPER).
+Testing models against fake data allows the researcher to check understand potential problems with the methods.
+While a model that works well with simulated data is not guaranteed to work well with real-world data,
+a model that does not work with simulated data is certain to fail in a real application.
+
+Income data is characterized by being unimodal, right-skewed and leptokurtic.
+To mimic this characteristics, three simulation scenarios based on \cite{rojas_perilla_data_2020} are proposed.
+The first one – the \textit{log-scale} scenario – is defined so that the logarithm of simulated income is roughly normal.
+The proposed methodology should not have difficulties with this scenario, which is defined as follows:
+\begin{equation}
+    \begin{split}
+        u_d & \sim \mathcal N(0, 0.4), ~~ d = 1,...,D,\\
+        \varepsilon_{di} & \sim \mathcal{N}(0, 0.3), i = 1,...,N,\\
+        \mu_{dk} & \sim \mathcal{U}(2, 3), k = 1,...,K,\\
+        \Sigma_{mn} = &\begin{cases} 1, ~~ m = n \\ \rho,  ~~ \text{otherwise}  \end{cases},
+            m = 1,...,K, n = 1,...,K,\\
+        \boldsymbol x_{di}  &\sim \text{MvNormal} (\boldsymbol \mu_{d}, \Sigma) ,
+            ~~ \boldsymbol \mu_{d} = (\mu_{d1}, ..., \mu_{dK}),\\
+        \boldsymbol\beta & =  \mathbf{1}_k \cdot 0.1,\\
+        y_{di} & = \exp(5 + \boldsymbol x_{di}' \boldsymbol \beta    + u_d + \varepsilon_{di}),\\
+    \end{split}
+    \label{eq:log_scenario}
+\end{equation}
+where $K$ is the number of regressors, $D$ is the number of domains, and $N = N_1 + ... + N_D$ is the total number of observations.
+$\rho$ controls the correlation between independent variables and is set to 0.2.
+In addition, there are two scenarios that are more challenging due to their heavy-tails in the logarithmic scales – the \textit{Pareto} and the \textit{GB2}.
+The higher excess kurtosis after a logarithmic transform mirrors a situation often encountered with empirical data. The Pareto scenario usually has the heaviest tails of all three scenarios. The GB2 scenarios can be formulated as
+\begin{equation}
+    \begin{split}
+        u_d & \sim \mathcal N(0, 500), ~~ d = 1,...,D,\\
+        \varepsilon_{di} & \sim \mathcal{GB}2(2.5, 18, 1.46, 1700), i = 1,...,N,\\
+        \mu_{dk} & \sim \mathcal{U}(-1, 1), k = 1,...,K,\\
+        \boldsymbol x_{di}  &\sim \text{MvNormal} (\boldsymbol \mu_{d}, \Sigma) ,
+        ~~ \boldsymbol \mu_{d} = (\mu_{d1}, ..., \mu_{dK}),\\
+        \boldsymbol\beta & =  \mathbf{1}_k \cdot 250,\\
+        \tilde{\varepsilon}_{di} & = \varepsilon_{di} - \bar \varepsilon,  \\
+        y_{di} & = 9000 - \boldsymbol x_{di}' \boldsymbol \beta + u_d + \tilde \varepsilon_{di}, \\
+    \end{split}
+    \label{eq:gb2_scenario}
+\end{equation}
+where $\mathcal{GB}2$ is the generalized beta distribution of the second kind with four parameters usually referred to as $a, b, p, q$. $\Sigma$ is defined as in scenario \ref{eq:log_scenario} with $\rho = 0.2$. Note that $\varepsilon_{di}$ need to be centered, as they have a non-zero mean. The third and last scenario has a Pareto error term:
+\begin{equation}
+    \begin{split}
+        u_d & \sim \mathcal N(0, 500), ~~ d = 1,...,D,\\
+        \varepsilon_{di} & \sim \text{Pareto}(3, 2000), i = 1,...,N,\\
+        \mu_{dk} & \sim \mathcal{U}(-3, 3), k = 1,...,K,\\
+        \boldsymbol x_{di}  &\sim \text{MvNormal} (\boldsymbol \mu_{d}, \Sigma) ,
+        ~~ \boldsymbol \mu_{d} = (\mu_{d1}, ..., \mu_{dK}),\\
+        \boldsymbol\beta & =  \mathbf{1}_k \cdot 350,\\
+        \tilde{\varepsilon}_{di} & = \varepsilon_{di} - \bar \varepsilon,  \\
+        y_{di} & = 12000 - \boldsymbol x_{di}' \boldsymbol \beta    + u_d + \tilde \varepsilon_{di}.\\
+    \end{split}
+    \label{eq:pareto_scenario}
+\end{equation}
+Here again, $\tilde \varepsilon_{di}$ are the centered unit-level residuals.

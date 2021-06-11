@@ -1,4 +1,4 @@
-using DataFrames, Random
+using DataFrames, Random, CSV
 using Plots, StatsPlots
 import StatsBase
 
@@ -6,55 +6,53 @@ include("./utils/simulations/sim_models.jl")
 
 domains = 50
 pop_domain = 200
-group = repeat(1:domains, inner=pop_domain)
-pop_size = length(group)
+num_vars = 10
+group_id = repeat(1:domains, inner=pop_domain)
+pop_size = length(group_id)
 sample_size = [12, 23, 28, 14, 10, 23, 19, 25, 29, 10, 14, 18, 15, 
                 20, 13, 12, 16, 27, 20, 26, 27, 23, 12, 12, 11, 18, 
                 17, 29, 11, 29, 17, 9, 14, 8, 8, 18, 21, 21, 16, 16, 
                 25, 13, 26, 19, 28, 20, 24, 9, 25, 21]
 
-function create_df(sample, pop_domain; contains_z=false)
-    df = DataFrame(y=sample[:y],
-                    x=sample[:x],
-                    ε=sample[:ε],
-                    μ=repeat(sample[:μ], inner=pop_domain),
-                    u=repeat(sample[:u], inner=pop_domain),
-                    id=group)
-    if contains_z 
-        df.z = sample[:z]
-    end
-    
-    return df
+function create_df(data, pop_domain, group_id)
+    df = DataFrame(data[:X])
+    return hcat(df, 
+                DataFrame(y=data[:y],
+                    ε=data[:ε],
+                    u=repeat(data[:u], inner=pop_domain),
+                    group_id=group_id,
+                    row_id=1:size(df)[1]))
 end
 
-function sample_df(df, sample_size, domains)
-    sample = Matrix{Float64}(undef, sum(sample_size), size(df)[2]) |>
-                x -> DataFrame(x, names(df))
-    border = [0; cumsum(sample_size)]
+function sample_indices(df, sample_size, domains)
+    sample_idx = Vector{Int}[]
 
     for d in 1:domains
-        domain_df = filter(df -> df.id == d, df)
-        nrow_df = size(domain_df)[1]
-        sample_idx = StatsBase.sample(1:nrow_df, 
+        domain_df = filter(df -> df.group_id == d, df)
+        domain_samples = StatsBase.sample(domain_df.row_id, 
                                     sample_size[d]; 
                                     replace=false)
-        sample[(border[d] + 1):border[d + 1], :] = domain_df[sample_idx, :]
+        sample_idx = [sample_idx; domain_samples]
     end
-    sample.id = Int.(sample.id)
 
-    return sample
+    return [row_id ∈ sample_idx for row_id in df.row_id]
 end
 
-logscale_model = logscale(pop_size, domains, group)
-logscale_sample = logscale_model()
-logscale_df = create_df(logscale_sample, pop_domain, contains_z=true)
+logscale_model = logscale(pop_size, domains, num_vars, group_id)
+logscale_data = logscale_model()
+logscale_df = create_df(logscale_data, pop_domain, group_id)
+logscale_df.sample = sample_indices(logscale_df, sample_size, domains)
 
-pareto_model = pareto(pop_size, domains, group)
-pareto_sample = pareto_model()
-pareto_df = create_df(pareto_sample, pop_domain)
+pareto_model = pareto(pop_size, domains, num_vars, group_id)
+pareto_data = pareto_model()
+pareto_df = create_df(pareto_data, pop_domain, group_id)
+pareto_df.sample = sample_indices(pareto_df, sample_size, domains) 
 
-gb2_model = gb2(pop_size, domains, group)
-gb2_sample = gb2_model()
-gb2_df = create_df(gb2_sample, pop_domain)
+gb2_model = gb2(pop_size, domains, num_vars, group_id)
+gb2_data = gb2_model()
+gb2_df = create_df(gb2_data, pop_domain, group_id)
+gb2_df.sample = sample_indices(gb2_df, sample_size, domains)
 
-pareto_sample = sample_df(pareto_df, sample_size, domains)
+CSV.write("data/simulations/logscale.csv", logscale_df)
+CSV.write("data/simulations/pareto.csv", pareto_df)
+CSV.write("data/simulations/gb2.csv", gb2_df)

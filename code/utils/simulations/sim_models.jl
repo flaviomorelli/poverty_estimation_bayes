@@ -1,4 +1,4 @@
-using Distributions, Turing
+using Distributions, Turing, LinearAlgebra  
 
 include("gb2.jl")
 
@@ -92,6 +92,7 @@ end
     return (y = y, X = X, ε = ε, μ = μ, u = u)
 end
 
+# Simple models
 
 @model function logscale_simple(N, D, group)
     y, x, z, ε = initialize(4, N)
