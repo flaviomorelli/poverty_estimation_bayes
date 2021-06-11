@@ -1,0 +1,70 @@
+\chapter{Data: Mexican state of Guerrero}
+
+This paper uses the 2010 Household Income and Expenditure Survey (\textit{Encuesta Nacional de Ingresos y Gastos de los Hogares – ENIGH}) and the 2010 National Population and Housing Census from Mexico provided by the National Institute of Statistics and Geography (INEGI) as a basis for the analysis.
+Based on these two data sets, the objective is to estimate the head count ratio and poverty gap described in section 3.1 for the state of Guerrero.
+This state is divided into 81 municipalities of which 40 are in-sample and 41 out-of-sample in the income survey.
+Income data is provided at the household level and there are 1801 households in the income survey.
+The median sample size at the municipality level is 26.5.
+The Acapulco municipality contains 511 households which is almost a third of the whole sample.
+The smallest sample for a municipality is 13 households.
+Figure \ref{fig:guerrero} gives an overview of which municipalities are in-sample.
+The census contains 152000 observations after cleaning the data.
+Guerrero's economy is based mainly on the primary sector and two-fifths of the population lives in rural areas.
+While most of the state's population consists of impoverished Indians and mestizos, there are important tourist destinations in the municipalities of Acapulco and Zihuatanejo on the pacific coast and also in Taxco de Alarcón in the highlands \citep{encyclopaedia_britannica_guerrero_2019}.
+
+\section{Variables}
+
+In an applied setting, the variables that can actually be chosen is limited by a number of factors.
+For SAE methods, it is necessary to have auxiliary data to borrow strength and improve the estimations.
+However, this is only possible if both the main and auxiliary data sources contain the same variables.
+Moreover, the amount of missings in a variable can severly undermine its usefulness for prediction.
+A large number of missings (20\% or more) in one or multiple variables can lead to a high number of observations being discarded.
+While imputation is possible in principle, it might be challenging to take the clustered and stratified structure of survey data into account in the imputation process.
+Finally, some variables include missing values by necessity.
+For example, if the head of household is single then there will be missing values in variables that concern the partner.
+Imputation in such cases seems unrealistic.
+Therefore, variables with a low amount of missings (<5 \%) both in the survey and in the census are chosen as candidates for the final model.
+
+The income variable $y_{di}$ for a given municipality and individual corresponds to \code{icptc} in the survey and it is not available in the census.
+\code{icptc} measures total household per capita income in Mexican pesos and is used to approximate the standard of living.
+As the predictive power of the model depends on the selected regressors, it is necessary to do careful variable selection.
+
+% In the Bayesian context, variable selection can be done with PSIS-LOO which measures predictive power like information criteria such as the AIC.
+% Moreover, current research in development and poverty economics can indicate which variables are reasonable to include in the model.
+% However, the focus of this paper is not variable selection.
+
+The variables are a combination of socio-economic factors: (1) indicator of whether the head of household is employed, (2) type of household occupation of head of household, (3) number of employees older than 14 years in a household, (4) percentage of employees older than 14 years in a household, (5) indicator of household receiving remittances, (6) availability of communication assets in a household, (7) number of goods in the household, (8) average standardized years of schooling (by age and sex) within the household relative to the population.
+
+%\begin{myenumerate}
+%	\item the percentage of employees who are older than 14 years in the household
+%	\item the highest degree of education completed by the head of household
+%	\item the social class of the household
+%	\item the percentage of income earners and employees in the household
+%	\item the total number of communication assets in the household
+%	\item the total number of goods in the household
+% \end{myenumerate}
+
+\section{Survey Design}
+
+Before presenting the methodology used in this paper, it is crucial to have a rough understanding of the survey design of the data.
+The following will be a very high-level summary of this topic.
+The MCS module of the ENIGH has a stratified, two-stage, clustered survey designed (source).
+The main unit in the survey design is called the primary survey unit or UPM, which is a cluster of households.
+The exact definition of the context varies depending on the context.
+While in an urban setting the UPM is defined as a grouping of street blocks, in a rural context this definition is not feasible.
+In general, each UPM can contain between 80 and 300 households.
+
+The stratification is done in multiple stages.
+The first stage consists of four strata of all UPMs in the country based on socio-economic indicators based on the census.
+A complete list of the indicators can be found in the appendix of MCS (Source).
+The second stage corresponds to a geographic stratification.
+In each federal state, UPMs are stratified according to whether they are in a rural, urban or highly urabn area (\textit{ámbito}) with even finer groups inside each one of these categories (\textit{zona}).
+Note that the stratification \textit{does not} consider municipal divisions. This will be further discussed in chapter XY.
+
+Two-stage sampling refers to the fact that inside each stratum a number of UPMs is sampled first and then, in a second stage, a fixed number of households inside the selected UPMs is sampled.
+There might be deviations from the sampling scheme presented in order to guarantee that certain global properties of the whole sample still hold – e.g., a balanced ratio between the number of women and man –, or that there is enough differentiation in a given area.
+The effect of nonresponse is taken into account in the survey weights. Further details on the survey design can be found in the documentation (SOURCE, Spanish only).
+
+
+
+\vspace{-0.4 cm}

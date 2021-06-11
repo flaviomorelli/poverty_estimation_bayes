@@ -58,7 +58,7 @@ In the Bayesian context, this can be done by including a very tight prior around
 \end{equation*}
 Here, $\delta > 0$ is a small positive constant and $S$ is skewness defined as
 \begin{equation*}
-    \displaystyle S =  \frac{\frac 1 N \sum^{N}_{i = 0} (y_i^* - \bar y^* )^3}
+    \displaystyle S(y^*) =  \frac{\frac 1 N \sum^{N}_{i = 0} (y_i^* - \bar y^* )^3}
     {\left[ \frac{1}{N - 1} \sum^{N}_{i = 0} (y_i^* - \bar y^* )^2 \right]^{3/2}},
 \end{equation*}
 where $y^* = \log(y + \lambda)$ is the transformed dependent variable. Thus, the prior on $S$ indirectly defines a prior on $\lambda$.
@@ -66,7 +66,7 @@ While it is not necessary to formulate a prior directly $\lambda$, it still reco
 In practice, the Markov chain steers clear of regions too close to the minimum for $\lambda$ after warmup iterations.
 
 The hyperparameter $\delta$ controls the deviation from the zero skewness constraint.
-Values around $10^{-4}$ worked well in simulation experiments and the posterior values for $S$ are usually very close to zero, but far beyond the implied 95\% prior region of $S \pm 2 10^{-4}$.
+Values around $10^{-4}$ worked well in simulation experiments and the posterior values for $S$ are usually very close to zero, but far beyond the implied 95\% prior region of $S \pm 2 \cdot 10^{-4}$.
 Nevertheless, there are two potential problems to be aware of.
 If $\delta$ is too small, then skewness might be reduced too much.
 This would be equivalent to overfitting the skewness of the training data, which by no means reflects the skewness for out-of-sample data.
@@ -93,8 +93,22 @@ Assuming that $y$ represents the dependent variable in the original scale, then 
     \cdot\mathbb{I}(y \ge \lambda), ~~ y \in \mathbb{R}.
 \end{equation}
 
-\subsection{Redifining the linear mixed model}
+\subsection{Redefining the linear mixed model}
 
-The Jacobian adjustment in the likelihood due to the log-shift transformation leads to a reformulation of model XY as follows:
+The Jacobian adjustment in the likelihood due to the log-shift transformation and the prior over the transformed dependent variable leads to a reformulation of model \ref{eq:mod_hb} as follows:
+
+\begin{equation}
+    \begin{split}
+        p(\log(y_{di} + \lambda) |\boldsymbol \beta, u_d, \sigma_e, \nu)   =        \text{Student}&(\log(y + \lambda)| \boldsymbol{x'}_{di} \boldsymbol \beta + u_d,\ \sigma_e\ , \nu)\cdot (y_{di} + \lambda)^{-1}, \\
+        u_d | \sigma_u & \sim \mathcal N(0, \sigma_u),\ d = 1, ..., D \\
+        \beta_k & \sim \mathcal N(\mu_k, \sigma_k),\ k = 1, ..., K\\
+        \sigma_u & \sim Ga(2, 0.75), \\
+        \sigma_e & \sim Ga(2, 0.75), \\
+        \nu & \sim Ga(2, 0.1), \\
+        S(\log(y_{di} + \lambda)) & \sim \mathcal N(0, \delta),\\
+    \end{split}
+    \label{eq:trafo_hb}
+\end{equation}
+where $\ d = 1, ..., D,\ i = 1, ..., N_d$. Unless otherwise specified, this model will be the basis for the analysis in the rest of this paper.
 
 
