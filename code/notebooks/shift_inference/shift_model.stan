@@ -1,5 +1,4 @@
 functions{
-  
   real skewness(vector y){
     int N = size(y);
     vector[N] yc = y - mean(y);
