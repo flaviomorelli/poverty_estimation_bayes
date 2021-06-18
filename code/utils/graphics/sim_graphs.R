@@ -1,0 +1,77 @@
+library(bayesplot)
+
+# Load paths
+source(file.path("config", "sim_config.R"))
+
+# Global theme setup
+bayesplot_theme_set(theme_minimal())
+
+save_graph <- purrr::partial(ggplot2::ggsave, 
+                             device = "png", 
+                             width = 30, 
+                             height = 5, 
+                             units = "cm")
+
+graph_list <- function(data, 
+                       y_pred, 
+                       n_pred = 100, 
+                       alpha = 0.3){
+  result <- list()
+  result$dens <- ppc_dens_overlay(data$pop$y, 
+                                  y_pred[1:n_pred, ])
+  
+  result$median_2d <- ppc_stat_2d(data$pop$y, 
+                                  y_pred, 
+                                  stat = c("median", "IQR"), 
+                                  alpha = alpha)
+  
+  result$mean_2d <- ppc_stat_2d(data$pop$y, 
+              y_pred, 
+              stat = c("mean", "sd"), alpha = alpha)
+  
+  return(result)
+} 
+
+create_graphs <- function(data, y_pred, scenarios){
+  for(scenario in scenarios){
+    message(stringr::str_c("Creating graphs for ", scenario, " scenario."))
+    smp_list <- graph_list(data[[scenario]], 
+                           y_pred[[scenario]][["smp"]])
+    smp_miss_list <- graph_list(data[[scenario]], 
+                                y_pred[[scenario]][["smp_miss"]])
+    
+    path <- file.path(graph_path, scenario)
+    
+    smp_plot <- bayesplot_grid(plots = smp_list, 
+                               grid_args = list(ncol = length(smp_list)))
+    smp_miss_plot <- bayesplot_grid(plots = smp_miss_list, 
+                                    grid_args = list(ncol = length(smp_list)))
+    
+    message("Saving graphs.")
+    save_graph(filename = file.path(path, stringr::str_c(scenario, "_smp.png")), 
+               plot = smp_plot)
+    save_graph(filename = file.path(path, stringr::str_c(scenario, "_smp_miss.png")), 
+               plot = smp_miss_plot)
+  }
+}
+
+skewness_graphs <- function(fit, scenarios){
+  for(scenario in scenarios){
+    message(stringr::str_c("Creating graphs for ", scenario, " scenario."))
+    
+    smp_plot <- mcmc_dens_chains(fit[[scenario]][["smp"]]$draws("s"))
+    smp_miss_plot <- mcmc_dens_chains(fit[[scenario]][["smp_miss"]]$draws("s"))
+    
+    path <- file.path(graph_path, scenario)
+    
+    message("Saving graphs.")
+    save_graph(filename = file.path(path, stringr::str_c(scenario, "_skew.png")), 
+               plot = bayesplot_grid(smp_plot, 
+                                     smp_miss_plot, grid_args = list(ncol = 2)))
+  }
+}
+
+
+
+  
+  

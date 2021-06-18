@@ -1,3 +1,7 @@
+# Load seed
+source(file.path("config", "sim_config.R"))
+
+# Load functions for imputation
 source(file.path("ops", "imputation.R"))
 
 # Function to combine data when there are out-of-sample observations
@@ -7,6 +11,7 @@ pop_data_miss <- function(pop_data, smp_data){
   return(pop_data)
 }
 
+
 stan_fit <- function(model, data, chains = 2){ 
   model$sample(
     data = data,
@@ -15,12 +20,52 @@ stan_fit <- function(model, data, chains = 2){
   )
 }
 
-scenario_fit <- function(data, model, scenario) lapply(
-  list(
-    smp = data[[scenario]][["smp_stan"]],
-    smp_miss = data[[scenario]][["smp_miss_stan"]]),
-  stan_fit, model = model
-)
+
+scenario_fit <- function(data, model, scenario){
+  lapply(
+    list(
+      smp = data[[scenario]][["smp_stan"]],
+      smp_miss = data[[scenario]][["smp_miss_stan"]]),
+    stan_fit, model = model
+  )
+}
+
+
+scenario_pred <- function(data, gq_model, model_fit, scenario, type = "std"){
+  pop <-  data[[scenario]][["pop_stan"]] 
+  if(type == "std")
+    smp <-  data[[scenario]][["smp_stan"]]
+  else if(type == "missing")
+    smp <-  data[[scenario]][["smp_miss_stan"]]
+  else
+    stop(stringr::str_c("Type ", type, " not recognized. Choose `std` or `missing`"))
+  
+  get_pred(gq_model, 
+           model_fit, 
+           pop = pop,
+           smp = smp, 
+           type = type) 
+}
+
+
+scenario_pred_list <- function(data, gq_model, gq_miss_model, fit_list, scenarios){
+  result <- list()
+  for(scenario in scenarios){
+    result[[scenario]][["smp"]] <- scenario_pred(data, 
+                                                 gq_model, 
+                                                 fit_list[[scenario]][["smp"]], 
+                                                 scenario, 
+                                                 type = "std")
+    
+    result[[scenario]][["smp_miss"]] <- scenario_pred(data, 
+                                                 gq_miss_model, 
+                                                 fit_list[[scenario]][["smp_miss"]], 
+                                                 scenario, 
+                                                 type = "missing")
+  }
+  return(result)
+}
+
 
 get_pred <- function(model, fit, pop, smp, type = "std", impute = TRUE){
   if(type == "std")
@@ -42,6 +87,7 @@ get_pred <- function(model, fit, pop, smp, type = "std", impute = TRUE){
   return(y_pred)
 }
 
+
 get_pred_std <- function(model, fit, pop, smp){
   posterior::as_draws_matrix(
     model$generate_quantities(
@@ -52,6 +98,7 @@ get_pred_std <- function(model, fit, pop, smp){
     )$draws() 
   )
 }
+
 
 get_pred_miss <- function(model, fit, pop, smp){
   posterior::as_draws_matrix(
