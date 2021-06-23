@@ -4,7 +4,7 @@ library(bayesplot)
 source(file.path("config", "sim_config.R"))
 
 # Global theme setup
-bayesplot_theme_set(theme_minimal())
+bayesplot_theme_set(theme_minimal(base_size = 14) + theme(legend.position = "none"))
 
 save_graph <- purrr::partial(ggplot2::ggsave, 
                              device = "png", 
@@ -12,32 +12,39 @@ save_graph <- purrr::partial(ggplot2::ggsave,
                              height = 5, 
                              units = "cm")
 
-graph_list <- function(data, 
+graph_list <- function(y, 
                        y_pred, 
                        n_pred = 100, 
                        alpha = 0.3){
   result <- list()
-  result$dens <- ppc_dens_overlay(data$pop$y, 
+
+  result$dens <- ppc_dens_overlay(y, 
                                   y_pred[1:n_pred, ])
   
-  result$median_2d <- ppc_stat_2d(data$pop$y, 
+  result$median_2d <- ppc_stat_2d(y, 
                                   y_pred, 
                                   stat = c("median", "IQR"), 
                                   alpha = alpha)
   
-  result$mean_2d <- ppc_stat_2d(data$pop$y, 
+  result$mean_2d <- ppc_stat_2d(y, 
               y_pred, 
               stat = c("mean", "sd"), alpha = alpha)
   
   return(result)
 } 
 
-create_graphs <- function(data, y_pred, scenarios){
+create_graphs <- function(data, y_pred, scenarios, name = ""){
   for(scenario in scenarios){
     message(stringr::str_c("Creating graphs for ", scenario, " scenario."))
-    smp_list <- graph_list(data[[scenario]], 
+    
+    y <- data[[scenario]][["pop"]]
+    
+    # Check if we are working with all the data or just the FGT indicator
+    if(!is.atomic(y)) y <- y$y
+    
+    smp_list <- graph_list(y, 
                            y_pred[[scenario]][["smp"]])
-    smp_miss_list <- graph_list(data[[scenario]], 
+    smp_miss_list <- graph_list(y, 
                                 y_pred[[scenario]][["smp_miss"]])
     
     path <- file.path(graph_path, scenario)
@@ -48,9 +55,9 @@ create_graphs <- function(data, y_pred, scenarios){
                                     grid_args = list(ncol = length(smp_list)))
     
     message("Saving graphs.")
-    save_graph(filename = file.path(path, stringr::str_c(scenario, "_smp.png")), 
+    save_graph(filename = file.path(path, stringr::str_c(scenario, "_smp_", name, ".png")), 
                plot = smp_plot)
-    save_graph(filename = file.path(path, stringr::str_c(scenario, "_smp_miss.png")), 
+    save_graph(filename = file.path(path, stringr::str_c(scenario, "_smp_miss_", name, ".png")), 
                plot = smp_miss_plot)
   }
 }
@@ -71,7 +78,25 @@ skewness_graphs <- function(fit, scenarios){
   }
 }
 
+indicator_kde_graph <- function(pop, ebp, hb){
+  ggplot() +
+    geom_density(data = data.frame(y = pop), 
+                 mapping = aes(y), 
+                 color = "black", 
+                 size = 1) +
+    geom_density(data = data.frame(y = hb), 
+                 mapping = aes(y), 
+                 color = "blue", 
+                 size = 1) + 
+    geom_density(data = data.frame(y = ebp), 
+                 mapping = aes(y), 
+                 color = "#888888", 
+                 linetype = "dashed", 
+                 size = 1) + 
+    theme_minimal()
+}
 
+# diagnostic_graphs <- 
 
   
   
