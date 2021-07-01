@@ -1,0 +1,38 @@
+\section{Bayesian workflow}
+
+The idea of statistical workflow is not new – especially at a time when statistics is increasingly dependent on computational systems. One early example of a statistical workflow can be found in (Box).
+In the Bayesian context, (Gabry 2019) and (Betancourt 2020a) have referred to the idea of a Bayesian workflow.
+A full list of additional references can be found in (Gelman 2020).
+This section summarizes the ideas behind Bayesian workflow as presented by (Gelman et al. 2020).
+While Bayesian \textit{inference} deals with the formulation and computation of probability theory, Bayesian \textit{workflow} consists of three main steps: model building, inference, and model checking or improvement.
+The last step is not limited to choosing the best model, but allows to better understand the models used, specifically why the fail or lead to different results under certain conditions.
+Moreover, it is possible to gain valuable insights by comparing a good model to a simpler or a more complex model.
+In the Bayesian workflow proposed by Gelman, it is inevitable to fit a series of models iteratively.
+Flawed models are a necessary step towards improving the model and finding models that are useful in practice.
+There are several reasons for considering a workflow and not just plain inference.
+Bayesian computation is challenging and it is often necessary to iterate through simpler and alternative models, sometimes using faster but less precise approximation algorithms.
+Moreover, it might not be clear ahead of time which model adequate and how it can be modified or extended.
+The relation between fitted models and data can be best understood by comparing inferences from different models.
+Finally, there is uncertainty associated with model choice, as different models might display different characteristics.
+
+
+The main steps of the workflow in (Gelman 2020) are:
+\begin{enumerate}
+    \setlength\itemsep{0.1em}
+    \item Pick an initial model
+    \item Fit the model
+    \item Validate computation
+    \item Address computational issues
+    \item Evaluate and use the model
+    \item Modify the model
+    \item Compare models
+\end{enumerate}
+The graphical representation of the workflow is included in Figure X.
+Note that this workflow is mostly focused on data modeling.
+Other steps such as data collection are not taken into account.
+An exhaustive discussion of the whole workflow is beyond the scope of the present paper.
+The focus here is on how the ideas in (Gelman 2020) can be applied to the estimation of poverty indicators in the small area estimation context.
+In the following, the ideas in Gelman 2020 are applied to the data of the Mexican state of Guerrero.
+Due to the non-linear nature of the workflow, the sections and subsections are not named after single steps of the workflow.
+However, throughout the rest of the paper there are explicit references to the corresponding step and an explanation of why it is necessary at a given stage.
+

@@ -39,7 +39,7 @@ transformed parameters{
 
 
 model {
-  real mu[N];
+  vector[N] mu;
   
   // Regression parameters
   intercept ~ student_t(3, 0, 10);
@@ -56,19 +56,21 @@ model {
   
   // Transformed Regression 
   for(n in 1:N){
-    mu = intercept + X[n] * beta + u[domain[n]];
+    mu[n] = intercept + X[n] * beta + u[domain[n]];
     target += student_t_lpdf(log_y[n] |nu, mu[n], sigma_e) 
                 - log(y[n] + lambda);
   }
-  mean(mu) ~ normal(0, 1);
+  mean(exp(mu) - lambda) ~ normal(y_direct, 20);
 }
 
 generated quantities{
   vector[N] log_lik;
+  vector[N] mu_back;
   for (n in 1:N) {
     log_lik[n] = student_t_lpdf(log_y[n] |nu, 
                         intercept + X[n] * beta + u[domain[n]], sigma_e) 
                         - log(y[n] + lambda);
+    mu_back[n] = exp(intercept + X[n] * beta + u[domain[n]]) - lambda;
   }
 }
 

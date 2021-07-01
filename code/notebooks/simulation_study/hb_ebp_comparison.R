@@ -66,6 +66,23 @@ indicator_kde_graph(hcr_pop$pareto$pop,
                     ebp_indicators$pareto$smp$ind$Head_Count,
                     hcr_hb$pareto$smp) 
 
+bench <- cmdstan_model("model/stan/simulations/log_shift_model_bench.stan")
+data_temp <- sim_data$gb2$smp_stan
+data_temp[["y_direct"]] <- mean(data_temp$y)
+
+bench$variational(data_temp)
+
+fit_bench <- bench$sample(data_temp, chains = 2, parallel_chains = 2)
+bench_gq <- gq_model$generate_quantities(fit_bench, data_temp)
+
+ppc_stat(data_temp$y, 
+         as_draws_matrix(bench_gq$draws("y_pred"))[1:100, ],
+         "mean") 
+
+ppc_stat(sim_data$gb2$smp_stan$y, 
+         as_draws_matrix(bench_gq$draws("y_pred"))[1:100, ],
+)
+
 fit_exga <- brm(y ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10 + (1 | group_id), 
                data = sim_data$logscale$smp,
                family = brmsfamily(family = "gamma", link = "inverse"), 
