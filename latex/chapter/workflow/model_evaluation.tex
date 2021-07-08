@@ -35,6 +35,15 @@ Note that a utility function that quantifies predictive power takes into account
 In contrast, loss function approaches such as the root mean squared error (RMSE) or the mean absolute error (MAE) measure the distance between the predicted values and the true values, but are distribution-agnostic.
 
 Beyond PSIS-LOO, prior and posterior predictive checks are useful to asses model quality.
-The main idea is to generate multiple sample from the prior predictive distribution $\int p(\theta) p(y|\theta)d\theta$ or from the posterior predictive distribution $\int p(y | \theta) p(\theta|y) d\theta$.
-With the sample it is possible to compute new statistics.
+The main idea is to generate multiple samples from the prior predictive distribution $\int p(\theta) p(y|\theta)d\theta$ or from the posterior predictive distribution $\int p(y | \theta) p(\theta|y) d\theta$.
+With these samples, it is possible to check how similar the simulated distribution is to the original distribution and also whether the simulations are within a reasonable range.
+This similarity check can be done for example with histograms or KDE plots when using the full distribution.
+As Bayesian models produce a full distribution, it is also possible to check how certain summary statistics (median, IQR, variance, quantiles etc.) vary between the simulated samples and compare them to the summary statistics in the original distributions. (GELMAN et al 2014)
+However, these statistics should be ancillary in the sense that they should test something different than parameter fit.
+While a linear model fits the mean and the variance quite well, this is not the case for a Poisson regression.
+Therefore, checking the mean and the variance in the Poisson case will reveal potential problems in the model (Stan User guide 27.3).
+A practical application of prior and posterior check will be shown in section X and section Y.
+
+
+
 

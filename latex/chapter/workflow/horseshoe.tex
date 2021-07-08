@@ -69,9 +69,18 @@ Note that the definition of $\tau_0$ (\ref{eq_tau0}) is derived under the assump
 Therefore, its meaning is only an approximation when using the Student's $t$-distribution.
 To ensure that the results are not fundamentally different, models with both Gaussian and Student's $t$ likelihoods are estimated and compared.
 
-Certain shrinkage methods like Lasso force certain coefficients to be zero, which provides for an easy selection criterion. However, a disadvantage of the horseshoe is that it does not have an integrated criterion to select variables. There are two possible workarounds for this problem. First, one could leave out variables whose mean coefficient is below a certain threshold (PIITONEN VEHTARI?). Second, one can leave out variables if a significant portion of the coefficient distribution is in both a positive and a negative area. To check that the predictive power of the model does not deteriorate by removing variables, PSIS-LOO can be used to compare the full model with the smaller model. An alternative is to this problem is to use projective prediction approach developed by \cite{piironen_projective_2020}. Unfortunately, this only works with distributions from the exponential family, which does not include the Student's $t$-distribution used in this paper.
+Certain shrinkage methods like Lasso force certain coefficients to be zero, which provides for an easy selection criterion.
+However, a disadvantage of the horseshoe is that it does not have an integrated criterion to select variables. There are two possible workarounds for this problem.
+First, one could leave out variables whose mean coefficient is below a certain threshold (PIITONEN VEHTARI?).
+Second, one can leave out variables if a significant portion of the coefficient distribution is in both a positive and a negative area.
+To check that the predictive power of the model does not deteriorate by removing variables, PSIS-LOO can be used to compare the full model with the smaller model. An alternative is to this problem is to use projective prediction approach developed by \cite{piironen_projective_2020}.
+Unfortunately, this only works with distributions from the exponential family, which does not include the Student's $t$-distribution used in this paper.
 
 The effectiveness of the horseshoe prior depends crucially on the number of variables included in the full model.
-The shrinkage will be most noticeable with a large number of variables. Otherwise, the shrinkage from the horseshoe is very similar to placing a prior centered around zero for the coefficients. In this project, ca. 20 variables were chosen from the survey and census data. Therefore, the shrinkage of the regularized horseshoe is not essentially different from the shrinkage of a non-structured prior.
+The shrinkage will be most noticeable with a large number of variables.
+Otherwise, the shrinkage from the horseshoe is very similar to placing a prior centered around zero for the coefficients.
+In this project, ca. 20 variables were chosen from the survey and census data.
+Therefore, the shrinkage of the regularized horseshoe is not essentially different from the shrinkage of a non-structured prior.
 
-
+Actually, projective predictive distribution is better, but at the moment of writing only available for the exponential family (Piironen, Vehtari).
+As the $t$-distribution is one of the likelihoods used in this paper, no projective predicitve methods will be used in this paper.
