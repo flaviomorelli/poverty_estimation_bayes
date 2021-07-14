@@ -12,8 +12,6 @@ transformed data{
   int<lower=0> D_out = D_tot - D;
 }
 
-// The parameters accepted by the model. Our model
-// accepts two parameters 'mu' and 'sigma'.
 parameters {
   real<lower=0> sigma_e;
   real<lower=0> sigma_u;
