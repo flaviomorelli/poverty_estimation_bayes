@@ -5,6 +5,7 @@
 *.pdf
 *.rds
 *.csv
+*.png
 
 *.aux
 *.bbl
