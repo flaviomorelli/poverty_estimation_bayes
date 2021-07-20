@@ -76,11 +76,32 @@ Second, one can leave out variables if a significant portion of the coefficient 
 To check that the predictive power of the model does not deteriorate by removing variables, PSIS-LOO can be used to compare the full model with the smaller model. An alternative is to this problem is to use projective prediction approach developed by \cite{piironen_projective_2020}.
 Unfortunately, this only works with distributions from the exponential family, which does not include the Student's $t$-distribution used in this paper.
 
-The effectiveness of the horseshoe prior depends crucially on the number of variables included in the full model.
+\subsection{Results of variable selection and further considerations}
+To avoid implementing the horseshoe prior from scratch, the package \code{brms} was used.
+As the package does not provide data-driven transformations, the model is estimated with a simple logarithmic transformation of income and a Student's $t$-likelihood.
+While this does not correspond exactly to the log-shift model presented in the previous section, it can be seen as an approximation.
+The shift term is unlikely to have a major impact on the predictive power of the regressors.
+This can be clearly seen in the backtransformation ($e^\eta - \lambda$, with $\eta$ the linear predictor), where the shift term is just an additive constant shifting $e^\eta$.
+The original horseshoe prior does not take into account categorical variables.
+In this case, if any of the categories has a clear effect on the dependent variable, the whole variable is considered to be relevant.
+
+Parameters? Coefficient plots?
+
+After estimating the full model with the horseshoe prior, the following variables presented in section XY were found to have very small effects: job experience of head of household, gender of head of household, presence of minors under the age of 16, percentage of working household members, percentage of women in household and percentage of literate members of household.
+A reduced model without these six variables but with the same prior and likelihood specification as the full model was estimated in a second step.
+The estimated elpd$_{\text{loo}}$ for the full model is -1977.7 while for the smaller model with the six variables removed it is -1996.0 with a standard error of around 42 for both models.
+Therefore, there is an overlap between the two measures and the reduced model is not expected to have a substantially different performance to the full model.
+The subset of variables from the reduced model will be used in all models from this point on.
+
+Before moving to the next section, two issues need to be addresses.
+First, the effectiveness of the horseshoe prior depends crucially on the number of variables included in the full model.
 The shrinkage will be most noticeable with a large number of variables.
 Otherwise, the shrinkage from the horseshoe is very similar to placing a prior centered around zero for the coefficients.
 In this project, ca. 20 variables were chosen from the survey and census data.
-Therefore, the shrinkage of the regularized horseshoe is not essentially different from the shrinkage of a non-structured prior.
+Therefore, the shrinkage of the regularized horseshoe is not much different from the shrinkage of a non-structured prior (e.g., a normal distribution on the regression coefficients).
+In any case, this section showed that it is possible to select variables using the horseshoe prior and that its shrinkage properties are particularly useful in high-dimensional data sets.
 
+Finally, finding an adequate subset of variables is a field of active research in the context of Bayesian workflow.
+It is very likely that in the near future there will be new tools to do this step of the workflow, especially concerning the projective predictive method (Piironen, Vehtari) to distributions outside the exponential family.
 Actually, projective predictive distribution is better, but at the moment of writing only available for the exponential family (Piironen, Vehtari).
 As the $t$-distribution is one of the likelihoods used in this paper, no projective predicitve methods will be used in this paper.

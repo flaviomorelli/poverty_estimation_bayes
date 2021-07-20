@@ -63,8 +63,8 @@ clean_hog <- function(data){
     # Percentages instead of absolute values
     dplyr::mutate(pcmuj = muj_hog / tam_hog * 100, 
            pcalfab = nalfab / tam_hog * 100,
-           actcom_pc = actcom / tam_hog * 100, 
-           bienes_pc = bienes/ tam_hog * 100
+           actcom_pc = actcom / tam_hog, 
+           bienes_pc = bienes / tam_hog
     ) %>% 
     # Recode sector variable
     dplyr::mutate(jsector = map_chr(jsector, sector_lookup)) %>% 

@@ -1,5 +1,19 @@
-\chapter{Data: Mexican state of Guerrero}
+\chapter{Income Data}
 
+The estimation of poverty indicators poses two main challenges.
+First, indicators such as the head count ratio and the poverty gap are non-linear transforms of income.
+This makes it hard to model them directly as a dependent variable in a regression, as it is necessary to first model income.
+This leads to the second challenge.
+Empirically, income is characterized by a right-skewed, unimodel and leptokurtic distribution.
+Using a linear regression naively will lead to poor results.
+There are two possible ways to deal with this characteristic shape.
+First, a GLM regression with a skewed distribution (e.g., gamma, skew-normal, lognormal, etc.) can be used to capture the main features of income.
+Second, data-driven transformation can be applied to make income more symmetric or even closer to a normal distribution.
+To explore how income can be modelled in a Bayesian context, data from the Mexican state of Guerrero as well as simulated scenarios are used to develop and showcase the model developed in the next chapter.
+In the next section, the Mexican data set is introduced.
+
+
+\section{Mexican state of Guerrero}
 This paper uses the 2010 Household Income and Expenditure Survey (\textit{Encuesta Nacional de Ingresos y Gastos de los Hogares – ENIGH}) and the 2010 National Population and Housing Census from Mexico provided by the National Institute of Statistics and Geography (INEGI) as a basis for the analysis.
 Based on these two data sets, the objective is to estimate the head count ratio and poverty gap described in section 3.1 for the state of Guerrero.
 This state is divided into 81 municipalities of which 40 are in-sample and 41 out-of-sample in the income survey.
@@ -11,6 +25,21 @@ Figure \ref{fig:guerrero} gives an overview of which municipalities are in-sampl
 The census contains 152000 observations after cleaning the data.
 Guerrero's economy is based mainly on the primary sector and two-fifths of the population lives in rural areas.
 While most of the state's population consists of impoverished Indians and mestizos, there are important tourist destinations in the municipalities of Acapulco and Zihuatanejo on the pacific coast and also in Taxco de Alarcón in the highlands \citep{encyclopaedia_britannica_guerrero_2019}.
+\begin{table}[t]
+    \caption{Variables related to head of household}
+    \centering
+    \begin{tabular}{ l | m{8cm} | l }
+        \textbf{Variable} & \textbf{Description} & \textbf{Source} \\
+        \hline
+        Occupation type & Occupation in the primary,
+        secondary, tertiary sector or not employed
+        & \code{jsector}\\
+        Gender & male or female & \code{jsexo}\\
+        Work experience & Years of work experience & \code{jexp}\\
+        Age & Age of head of household  & \code{jedad}\\
+    \end{tabular}
+    \label{tab:head_household}
+\end{table}
 
 \section{Variables}
 
@@ -33,16 +62,59 @@ As the predictive power of the model depends on the selected regressors, it is n
 % Moreover, current research in development and poverty economics can indicate which variables are reasonable to include in the model.
 % However, the focus of this paper is not variable selection.
 
-The variables are a combination of socio-economic factors: (1) indicator of whether the head of household is employed, (2) type of household occupation of head of household, (3) number of employees older than 14 years in a household, (4) percentage of employees older than 14 years in a household, (5) indicator of household receiving remittances, (6) availability of communication assets in a household, (7) number of goods in the household, (8) average standardized years of schooling (by age and sex) within the household relative to the population.
+The first group of variables relate to the head of household.
+This individual is usually the main breadwinner of the household and socio-economic information about him her are assumed to be predictive of the equalized income per capita:
 
-%\begin{myenumerate}
-%	\item the percentage of employees who are older than 14 years in the household
-%	\item the highest degree of education completed by the head of household
-%	\item the social class of the household
-%	\item the percentage of income earners and employees in the household
-%	\item the total number of communication assets in the household
-%	\item the total number of goods in the household
-% \end{myenumerate}
+Note that the \textit{not employed} category summarizes both the unemployed and individuals out of the labor force.
+The next group of variables concern the demographic composition of the household. Explanation:
+\begin{table}[h]
+    \caption{Variables related to household demographics}
+    \centering
+    \begin{tabular}{ l | m{8cm} | l }
+        \textbf{Variable} & \textbf{Description} & \textbf{Source} \\
+        \hline
+        Minors under 16 & Presence of minors under 16 years old in household
+        & \code{id\_men}\\
+        Percentage of women & Percentage of women in household & \code{muj\_hog / tam\_hog}\\
+        Literacy & Percentage of literate memebers of household & \code{nalfab / tam\_hog}\\
+        Indigenous population & Presence of indigenous population in household  & \code{pob\_ind}\\
+        Geography & Household in urban or rural area  & \code{rururb}\\
+    \end{tabular}
+    \label{tab:demo_household}
+\end{table}
+The third and last group of variables describe the economics situation of the household.
+\begin{table}[h]
+    \caption{Variables related to economic situation}
+    \centering
+    \begin{tabular}{ l | m{7cm} | l }
+        \textbf{Variable} & \textbf{Description} & \textbf{Source} \\
+        \hline
+        Working members & Percentage of working members of household
+        & \code{pcocup}\\
+        Income-receiving members & Percentage of members who receive an income & \code{pcpering}\\
+        Unusual work & Presence of child or senior work in household& \code{trabinf || trabadulmay}\\
+        External income & Household receives remittances or financial help from other households  & \code{remesas || ayuotr}\\
+        Communication goods & Number of communication goods per capita in household & \code{actcom / tam\_hog}\\
+        General goods & Number of goods per capita in household  & \code{actcom / tam\_hog}\\
+    \end{tabular}
+    \label{tab:economic_household}
+\end{table}
+
+In addition, there are additional indicator variables that will be used when considering an alternative specification for the random effect.
+\begin{table}[h]
+    \caption{Variables related to head of household}
+    \centering
+    \begin{tabular}{ l | m{8cm} | l }
+        \textbf{Variable} & \textbf{Description} & \textbf{Source} \\
+        \hline
+        Education & Adequate access to education
+        & \code{ic\_rezedu}\\
+        Health care & Adequate access to health care & \code{ic\_asalud}\\
+        Housing quality & Adequate housing quality & \code{ic\_cv}\\
+        Public utilities & Adequate acces to public utilities (electricity, running water, sewer system)  & \code{ic\_sbv}\\
+    \end{tabular}
+    \label{tab:disadvantages}
+\end{table}
 
 \section{Survey Design}
 

@@ -32,7 +32,8 @@ brm_models <- function(scenario,
                        prior = NULL,
                        chains = 4, 
                        iter = 1500, 
-                       warmup = 1000){
+                       warmup = 1000, 
+                       control = list(adapt_delta = 0.8)){
     brm(reg_formula, 
       data = sim_data[[scenario]][[type]],
       family = family, 
@@ -40,6 +41,7 @@ brm_models <- function(scenario,
       iter = iter, 
       warmup = warmup,
       chains = chains, 
+      control = control,
       cores = 4)
 }
 
@@ -125,6 +127,7 @@ iteration_loop(ppc_2d, skewnormal_fit, "skew_normal")
 exgaussian_fit <- 
     iteration_loop(brm_models, exgaussian(), 
      prior = prior(normal(0, 200), class = b),
+     control = list(adapt_delta = 0.99),
      warmup = 3000, 
      iter = 3500)
 iteration_loop(ppc, exgaussian_fit, "exgaussian")
