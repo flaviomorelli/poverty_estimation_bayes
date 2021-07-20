@@ -1,0 +1,39 @@
+\section{Specification of random effect}
+In applications of small area estimation methods, the random effect is usually defined as the domain for which the indicators should be calculated.
+For example, \cite{rojas_perilla_data_2020} use a random effect at the municipality level in the model, as the poverty indicators of interest have to be calculated for each municipality.
+However, this approach poses two problems.
+First, the information contained in the survey design might not be used.
+There is no guarantee that the random effect is meaningful from the perspective of how the sample was constructed.
+Second, it might lead to very sparse areas with lots of out-of-sample areas.
+In this section, the traditional way of defining the random effect is compared to an approach that approximates the stratification in the survey design.
+
+Section XY included a succint introduction to the survey design of the data from the Mexican state of Guerrero.
+On closer inspection, municipalities play no role whatsoever in the sampling process of the households.
+Instead, the population is stratified by federal state, by geographic region (urban or rural) and also by socio-economic indicators taken from the previous census.
+Changing the definition of the random intercept does not have an adverse impact on the calculation of FGT indicators.
+As the data is a the unit-level and each observation has information on which municipality it belongs to, it is not necessary that the random effect coincides with the municipality.
+Predictions for income at the unit-level can be generated from any model and the FGT indicator can be calculated simply by using the municipality as a grouping variable.
+
+A major challenge is to find a structure that can be found both in the survey and the census.
+While the survey includes a variable that indicates the stratum to which a given observation belongs, this cannot be matched with the stratum in the census.
+Therefore, the stratification variable in the data cannot be used directly.
+However, there are some variables in both the survey and the census that can be used to approximate the stratification procedure.
+Besides the \code{rururb} variable that indicates whether the observation corresponds to a rural or urban area, there are four additional binary variables (Table \ref{tab:disadvantages}), which contain information of disadvantage in areas such as education, health care, housing quality and access to public utilities.
+As all five variables are binary, there are $2^5 = 32$ possible combinations.
+Each one of these 32 combinations is now considered as a domain that is used to define the varying intercept in the model.
+How sparse? Do we still have out-of-sample areas?
+
+Using the priors defined in the previous section, the two definitions of the
+
+How does it fare in terms of predictive power (PSIS-LOO)?
+
+The results from PSIS-LOO tell us that the models are almost indistinguishable and that the alternative definition of the random effect might perform slightly better.
+Even if the models are not substantially different in predictive terms, there is one substantial advantage of using the alternative specification: there are no out-of-sample domains.
+This reduces drastically the uncertainty in the predictions for out-of-sample municipalities.
+
+Note that there are some limitations to this approach.
+First, the stratified structure is only an approximation.
+Second, there are still other dimensions that are not taken into account that might still be problematic, e.g., the clustering that comes with using primary sampling units (besser erklären).
+Third, this is an example that is limited to the data from Mexico.
+Nevertheless, the main insight from this section is that for unit-level data the random effect does not have to follow the level at which indicators are estimated.
+Looking for alternatives specifications for the random effect might lead to better predicitive power and to less out-of-sample domains.
