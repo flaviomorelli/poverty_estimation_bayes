@@ -89,8 +89,8 @@ mcs_hog_raw <- readstata13::read.dta13("data/mexico/guerrero_mcs_hog.dta",
                                        nonint.factors = TRUE) %>% 
   dplyr::as_tibble() %>% 
   dplyr::mutate(id_viv = str_c(folioviv, foliohog)) %>% 
-  dplyr::mutate(mun = as.numeric(str_sub(est_dis, 3, 4)))%>% 
-  dplyr::select(-folioviv, -foliohog, -est_dis)
+  dplyr::mutate(mun = as.numeric(str_sub(ubica_geo, 4, 5))) %>% 
+  dplyr::select(-folioviv, -foliohog, -est_dis, -ubica_geo)
 
 message("Loading census data...")
 
