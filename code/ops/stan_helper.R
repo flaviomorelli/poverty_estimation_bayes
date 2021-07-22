@@ -4,6 +4,21 @@ source(file.path("config", "sim_config.R"))
 # Load functions for imputation
 source(file.path("ops", "imputation.R"))
 
+iteration_loop <- function(FUN, 
+                           scenarios = c("logscale", "gb2", "pareto"),
+                           types = c("smp", "smp_miss"),
+                           ...){
+  
+  result <- list()
+  for(scenario in scenarios){
+    message(str_c("Scenario: ", scenario))
+    for(type in types){
+      result[[scenario]][[type]] <- FUN(scenario, type, ...)
+    }
+  }
+  return(result)
+}
+
 # Function to combine data when there are out-of-sample observations
 pop_data_miss <- function(pop_data, smp_data){
   pop_data$D_tot <- pop_data$D

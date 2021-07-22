@@ -6,6 +6,8 @@ source(file.path("dataloader", "load_simulations.R"))
 
 source(file.path("dataloader", "data_cleaning.R"))
 
+
+
 bayesplot::bayesplot_theme_set(
     theme_minimal(base_size = 23) + 
         theme(legend.position = "none")
