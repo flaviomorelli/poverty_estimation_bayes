@@ -7,6 +7,8 @@
 *.csv
 *.png
 
+*.model
+
 *.aux
 *.bbl
 *.blg
