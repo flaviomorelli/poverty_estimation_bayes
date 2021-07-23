@@ -38,7 +38,7 @@ generated quantities{
   real u[D];
   real y_pred[N];
   for(k in 1:K)
-    beta[k] = normal_rng(0, 0.5);
+    beta[k] = normal_rng(0, 0.2);
   for(d in 1:D)
     u[d] = normal_rng(0, sigma_u);
   for(n in 1:N)

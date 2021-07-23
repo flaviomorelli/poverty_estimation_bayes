@@ -4,9 +4,7 @@ library(bayesplot)
 library(posterior)
 
 # Data loader for MCS and simulations
-source(file.path("dataloader", "data_cleaning.R"))
 source(file.path("dataloader", "load_simulations.R"))
-rm(census)
 
 # Import stan_helper functions
 source(file.path("ops", "stan_helper.R")) # includes iteration_loop
@@ -22,7 +20,7 @@ prior_scatter <- function(scenario, type, data, samples){
   y_pred <- as_draws_matrix(samples[[scenario]][[type]]$draws("y_pred"))
   return(ppc_scatter(log(y), 
               log(y_pred[1:16, ]), 
-              alpha = 0.2, size = 2) +
+              alpha = 0.2, size = 1) +
     theme_minimal()
     )
 }
@@ -34,23 +32,9 @@ prior_scatter_save <- function(scenario, type, graphs, name){
                    "coef_var_priors", 
                    "graphs", 
                    str_c("prior_check_", scenario, "_", name, ".png")),
-         plot = graph, width = 9, height = 8, units = "cm")
+         plot = graph, width = 15, height = 13, units = "cm")
     )
 }
-
-X <- mcs %>% select(jsector, jsexo, jexp, jedad,
-                      id_men, trabinusual, pcocup, pcpering, ingresoext,
-                      pcmuj, pcalfab, actcom_pc, bienes_pc, pob_ind, rururb)
-
-domain <- sapply(mcs$mun, function(x) which(unique(mcs$mun) == x))
-stan_data <- list(N = nrow(mcs),
-                  K = ncol(X), 
-                  D = length(unique(mcs$mun)), 
-                  y = mcs$ictpc, 
-                  X = X, 
-                  domain = domain)
-sim_data$logscale$
-
 
 start_model <- cmdstan_model(
     file.path(

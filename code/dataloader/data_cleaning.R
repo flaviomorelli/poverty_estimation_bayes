@@ -1,7 +1,6 @@
 # start <- proc.time()
 
-# Abstract household data cleaning
-
+# TODO dummies for categorical variables
 
 sector_lookup <- function(sector){
   if(is.na(sector))
@@ -133,12 +132,26 @@ census <- census_hog %>%
   dplyr::select(-id_viv)%>% 
   dplyr::mutate(mun = as.numeric(mun))
 
+message("Creating MCS list for Stan...")
+X <- mcs %>% select(jsector, jsexo, jexp, jedad,
+                    id_men, trabinusual, pcocup, pcpering, ingresoext,
+                    pcmuj, pcalfab, actcom_pc, bienes_pc, pob_ind, rururb)
+
+domain <- sapply(mcs$mun, function(x) which(unique(mcs$mun) == x))
+mcs_stan <- list(N = nrow(mcs),
+                 K = ncol(X), 
+                 D = length(unique(mcs$mun)), 
+                 y = mcs$ictpc, 
+                 X = X, 
+                 domain = domain)
+
 message("Cleaning the workspace...")
 rm(mcs_hog_raw, mcs_hog,
    mcs_per_raw, mcs_per,
    census_hog_raw, census_hog,
    census_per_raw, census_per,
-   clean_hog, sector_lookup)
+   clean_hog, sector_lookup, 
+   X, domain)
 
 message("Mexico data loaded!")
 
