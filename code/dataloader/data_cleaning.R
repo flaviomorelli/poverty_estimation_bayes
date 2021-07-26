@@ -17,6 +17,21 @@ sector_lookup <- function(sector){
 }
 
 
+ic_lookup <- function(ic){
+  if(is.na(ic))
+    return(NA)
+  if(str_detect(ic, "Presenta carencia"))
+    return(1)
+  if(str_detect(ic, "Con carencia"))
+    return(1)
+  if(str_detect(ic, "No presenta carencia"))
+    return(0)
+  if(str_detect(ic, "Sin carencia"))
+    return(0)
+  else stop(str_c("No match for sector: ", ic, ".\n"))
+}
+
+
 clean_hog <- function(data){
   data %>% 
     dplyr::select(
@@ -66,7 +81,7 @@ clean_hog <- function(data){
            bienes_pc = bienes / tam_hog
     ) %>% 
     # Recode sector variable
-    dplyr::mutate(jsector = map_chr(jsector, sector_lookup)) %>% 
+    dplyr::mutate(jsector = purrr::map_chr(jsector, sector_lookup)) %>% 
     dplyr::select(-trabinf, 
            -trabadulmay, 
            -remesas, 
@@ -107,7 +122,8 @@ message("Cleaning the data sets...")
 
 mcs_per <- mcs_per_raw %>% 
   dplyr::filter(numren == "01") %>% # Get only first person in household
-  dplyr::select(id_viv, starts_with("ic"))
+  dplyr::select(id_viv, starts_with("ic")) %>%
+  dplyr::mutate(across(starts_with("ic_"), ~purrr::map_dbl(.x, ic_lookup)))
 
 mcs_hog <- clean_hog(mcs_hog_raw)
 
@@ -118,19 +134,24 @@ mcs <- mcs_hog %>%
          -ic_ali) %>% 
   dplyr::mutate(ictpc_corr = ifelse(ictpc < 1, 
                              ictpc + runif(1, 0.6, 10), 
-                             ictpc))
+                             ictpc)) %>% 
+  dplyr::mutate(strat_idx = str_c(as.numeric(rururb == "Rural"), 
+                                  ic_rezedu, ic_asalud, ic_sbv, ic_cv))
 
 # Census data sets
 census_per <- census_per_raw %>% 
   dplyr::filter(parentesco == "01") %>% # Get only first person in household
-  dplyr::select(id_viv, starts_with("ic"))
+  dplyr::select(id_viv, starts_with("ic")) %>%
+  dplyr::mutate(across(starts_with("ic_"), ~purrr::map_dbl(.x, ic_lookup)))
 
 census_hog <- clean_hog(census_hog_raw)
 
 census <- census_hog %>% 
   dplyr::inner_join(census_per, by = "id_viv") %>% 
   dplyr::select(-id_viv)%>% 
-  dplyr::mutate(mun = as.numeric(mun))
+  dplyr::mutate(mun = as.numeric(mun)) %>% 
+  dplyr::mutate(strat_idx = str_c(as.numeric(rururb == "Rural"), 
+                                  ic_rezedu, ic_asalud, ic_sbv, ic_cv))
 
 message("Creating MCS list for Stan...")
 X <- mcs %>% select(jsector, jsexo, jexp, jedad,
@@ -151,7 +172,7 @@ rm(mcs_hog_raw, mcs_hog,
    census_hog_raw, census_hog,
    census_per_raw, census_per,
    clean_hog, sector_lookup, 
-   X, domain)
+   X, domain, ic_lookup)
 
 message("Mexico data loaded!")
 

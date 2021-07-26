@@ -2,8 +2,9 @@ library(tidyverse)
 library(cmdstanr)
 library(bayesplot)
 library(posterior)
+library(brms)
 
-# Data loader for MCS and simulations
+# Data loader for simulations
 source(file.path("dataloader", "load_simulations.R"))
 
 # Import stan_helper functions
@@ -107,3 +108,16 @@ iteration_loop(FUN = prior_scatter_save,
                types = c("smp"), 
                graphs = wide_prior_check,
                name = "wide")
+
+horseshoe_pred <- brm(log(y) ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10 + (1|group_id), 
+    data = sim_data$pareto$smp, 
+    sample_prior = "only",
+    family = student(), 
+    prior = prior(horseshoe()) +  
+              prior_string("gamma(2, 10)", class = "sd") + 
+              prior_string("gamma(2, 1)", class = "nu"), 
+    chains = 1
+    ) 
+
+
+pp_check(horseshoe_pred, type = "hist", nsamples = 15) + xlim(c(5, 15))
