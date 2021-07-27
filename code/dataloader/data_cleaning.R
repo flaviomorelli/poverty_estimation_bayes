@@ -138,6 +138,17 @@ mcs <- mcs_hog %>%
   dplyr::mutate(strat_idx = str_c(as.numeric(rururb == "Rural"), 
                                   ic_rezedu, ic_asalud, ic_sbv, ic_cv))
 
+mcs_one_hot <- mcs %>% 
+  dplyr::select(jsector, id_men, trabinusual, pcpering, ingresoext,
+         actcom_pc, bienes_pc, pob_ind, rururb, mun,
+         ic_rezedu, ic_asalud, ic_cv, ic_sbv, strat_idx, ictpc) %>% 
+  dplyr::mutate(across(c("id_men", "trabinusual", "ingresoext", "pob_ind"), as.factor)) %>% 
+  recipes::recipe(formula = ~ ., data = .) %>% 
+  recipes::step_dummy(all_of(c("jsector", "id_men", "trabinusual", 
+                      "ingresoext", "pob_ind", "rururb")), 
+                      one_hot = TRUE) %>% 
+  recipes::prep() %>% recipes::juice()
+
 # Census data sets
 census_per <- census_per_raw %>% 
   dplyr::filter(parentesco == "01") %>% # Get only first person in household
@@ -153,7 +164,18 @@ census <- census_hog %>%
   dplyr::mutate(strat_idx = str_c(as.numeric(rururb == "Rural"), 
                                   ic_rezedu, ic_asalud, ic_sbv, ic_cv))
 
-message("Creating MCS list for Stan...")
+census_one_hot <- census %>% 
+  dplyr::select(jsector, id_men, trabinusual, pcpering, ingresoext,
+                actcom_pc, bienes_pc, pob_ind, rururb, mun,
+                ic_rezedu, ic_asalud, ic_cv, ic_sbv, strat_idx) %>% 
+  dplyr::mutate(across(c("id_men", "trabinusual", "ingresoext", "pob_ind"), as.factor)) %>% 
+  recipes::recipe(formula = ~ ., data = .) %>% 
+  recipes::step_dummy(all_of(c("jsector", "id_men", "trabinusual", 
+                               "ingresoext", "pob_ind", "rururb")), 
+                      one_hot = TRUE) %>% 
+  recipes::prep() %>% recipes::juice()
+
+message("Creating MCS lists for Stan...")
 X <- mcs %>% select(jsector, jsexo, jexp, jedad,
                     id_men, trabinusual, pcocup, pcpering, ingresoext,
                     pcmuj, pcalfab, actcom_pc, bienes_pc, pob_ind, rururb)
@@ -162,9 +184,34 @@ domain <- sapply(mcs$mun, function(x) which(unique(mcs$mun) == x))
 mcs_stan <- list(N = nrow(mcs),
                  K = ncol(X), 
                  D = length(unique(mcs$mun)), 
-                 y = mcs$ictpc, 
+                 y = mcs$ictpc + 1, 
                  X = X, 
                  domain = domain)
+rm(X, domain)
+
+X <- mcs_one_hot %>% 
+  select(-c(mun, ic_rezedu, ic_asalud, ic_cv, ic_cv, strat_idx))
+domain <- sapply(mcs_one_hot$mun, function(x) which(unique(mcs_one_hot$mun) == x))
+mcs_one_hot_mun <- list(N = nrow(mcs_one_hot),
+                       K = ncol(X), 
+                       D = length(unique(mcs_one_hot$mun)), 
+                       y = mcs_one_hot$ictpc + 1, 
+                       X = X, 
+                       domain = domain)
+rm(X, domain)
+
+X <- mcs_one_hot %>% 
+  select(-c(mun, ic_rezedu, ic_asalud, ic_cv, ic_cv, strat_idx, rururb_Rural))
+domain <- strtoi(mcs_one_hot$strat_idx, base = 2) + 1
+mcs_one_hot_strat <- list(N = nrow(mcs_one_hot),
+                        K = ncol(X), 
+                        D = max(domain), 
+                        y = mcs_one_hot$ictpc + 1, 
+                        X = X, 
+                        domain = domain)
+rm(X, domain)
+
+
 
 message("Cleaning the workspace...")
 rm(mcs_hog_raw, mcs_hog,
@@ -172,7 +219,7 @@ rm(mcs_hog_raw, mcs_hog,
    census_hog_raw, census_hog,
    census_per_raw, census_per,
    clean_hog, sector_lookup, 
-   X, domain, ic_lookup)
+   ic_lookup)
 
 message("Mexico data loaded!")
 
