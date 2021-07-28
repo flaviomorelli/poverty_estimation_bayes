@@ -145,8 +145,8 @@ mcs_one_hot <- mcs %>%
   dplyr::mutate(across(c("id_men", "trabinusual", "ingresoext", "pob_ind"), as.factor)) %>% 
   recipes::recipe(formula = ~ ., data = .) %>% 
   recipes::step_dummy(all_of(c("jsector", "id_men", "trabinusual", 
-                      "ingresoext", "pob_ind", "rururb")), 
-                      one_hot = TRUE) %>% 
+                      "ingresoext", "pob_ind", "rururb"))) %>% 
+  recipes::step_center(all_of(c("pcpering", "actcom_pc", "bienes_pc"))) %>% 
   recipes::prep() %>% recipes::juice()
 
 # Census data sets
@@ -171,8 +171,8 @@ census_one_hot <- census %>%
   dplyr::mutate(across(c("id_men", "trabinusual", "ingresoext", "pob_ind"), as.factor)) %>% 
   recipes::recipe(formula = ~ ., data = .) %>% 
   recipes::step_dummy(all_of(c("jsector", "id_men", "trabinusual", 
-                               "ingresoext", "pob_ind", "rururb")), 
-                      one_hot = TRUE) %>% 
+                               "ingresoext", "pob_ind", "rururb"))) %>% 
+  recipes::step_center(all_of(c("pcpering", "actcom_pc", "bienes_pc"))) %>% 
   recipes::prep() %>% recipes::juice()
 
 message("Creating MCS lists for Stan...")
@@ -190,7 +190,7 @@ mcs_stan <- list(N = nrow(mcs),
 rm(X, domain)
 
 X <- mcs_one_hot %>% 
-  select(-c(mun, ic_rezedu, ic_asalud, ic_cv, ic_cv, strat_idx))
+  select(-c(mun, ic_rezedu, ic_asalud, ic_sbv, ic_cv, strat_idx, ictpc))
 domain <- sapply(mcs_one_hot$mun, function(x) which(unique(mcs_one_hot$mun) == x))
 mcs_one_hot_mun <- list(N = nrow(mcs_one_hot),
                        K = ncol(X), 
@@ -201,7 +201,7 @@ mcs_one_hot_mun <- list(N = nrow(mcs_one_hot),
 rm(X, domain)
 
 X <- mcs_one_hot %>% 
-  select(-c(mun, ic_rezedu, ic_asalud, ic_cv, ic_cv, strat_idx, rururb_Rural))
+  select(-c(mun, ic_rezedu, ic_asalud, ic_sbv, ic_cv, strat_idx, rururb_Rural, ictpc))
 domain <- strtoi(mcs_one_hot$strat_idx, base = 2) + 1
 mcs_one_hot_strat <- list(N = nrow(mcs_one_hot),
                         K = ncol(X), 

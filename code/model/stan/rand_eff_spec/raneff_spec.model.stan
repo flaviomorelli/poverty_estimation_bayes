@@ -12,20 +12,25 @@ data {
   int<lower=0> N;
   int<lower=0> K;
   int<lower=0> D;
-  vector[N] y;
+  vector<lower=0>[N] y;
   matrix[N, K] X;
   int domain[N];
 }
+transformed data{
+  vector[N] y_dep = log(y);
+}
 
 parameters {
-  real<lower=0> sigma;
-  real<lower=0> sigma_u;
-  real<lower=2> nu;
-  real<lower=-min(y)> lambda;
   
   real intercept;
-  vector[K] beta;
+  real<lower=2> nu;
+  real<lower=-min(y) + 0.1> lambda;
+  
+  real<lower=0> sigma;
+  real<lower=0> sigma_u;
   vector[D] u_tilde;
+  
+  vector[K] beta;
 }
 transformed parameters{
   vector[N] log_y = log(y + lambda);
@@ -38,34 +43,34 @@ model {
   // define transformed outcome
   
   // Regression parameters
-  intercept ~ normal(4, 10);
-  beta ~ normal(0, 0.3);
-  sigma ~ gamma(2, 1);
+  intercept ~ normal(4, 3);
+  beta ~ normal(0, 0.2);
+  sigma ~ gamma(2, 10);
   
   // Group effects
-  sigma_u ~ gamma(2, 1);
-  u_tilde ~ std_normal(); 
+  sigma_u ~ gamma(2, 10);
+  u_tilde ~ std_normal();
   
   // Raw parameters with a zero lower bound
   nu ~ gamma(2, 0.1);
   s ~ normal(0, 1); 
   
   // Transformed Regression 
-  real mu[N]; 
+  vector[N] mu;
   for(n in 1:N)
     mu[n] = intercept + X[n] * beta + u[domain[n]];
-  
-  // Remember: - log_y is also the Jacobian correction
-  target += student_t_lpdf(log(y)|nu, mu, sigma_e) - log(y);
+
+  log_y ~ student_t(nu, mu, sigma_e);
+  target += - log_y; // Jacobian adjustment
 }
 
 generated quantities{
   vector[N] log_lik;
   for (n in 1:N) {
-    log_lik[n] = student_t_lpdf(log_y[n] |nu, 
-                        intercept + X[n] * beta + u[domain[n]], 
-                        sigma_e) 
-                        - log(y[n] + lambda);
+    log_lik[n] = student_t_lpdf(log_y[n] |3,
+                        intercept + X[n] * beta + u[domain[n]],
+                        sigma_e)
+                        - log_y[n];
   }
 }
 
