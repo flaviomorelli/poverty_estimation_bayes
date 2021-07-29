@@ -16,9 +16,6 @@ data {
   matrix[N, K] X;
   int domain[N];
 }
-transformed data{
-  vector[N] y_dep = log(y);
-}
 
 parameters {
   real intercept;
@@ -28,19 +25,19 @@ parameters {
   real<lower=0> sigma;
   real<lower=0> sigma_u;
   vector[D] u_tilde;
+  cholesky_factor_corr[D] L_Omega;
   
   vector[K] beta;
 }
 transformed parameters{
   vector[N] log_y = log(y + lambda);
   real s = skewness(log_y) * 1000;
-  vector[D] u = u_tilde * sigma_u;
   real sigma_e = sigma * sqrt(nu - 2 / nu);
+  matrix[D, D] L_Sigma = diag_pre_multiply(rep_vector(sigma_u, D), L_Omega);
+  vector[D] u = L_Sigma * u_tilde;
 }
 
 model {
-  // define transformed outcome
-  
   // Regression parameters
   intercept ~ normal(4, 3);
   beta ~ normal(0, 0.2);
@@ -49,12 +46,13 @@ model {
   // Group effects
   sigma_u ~ gamma(2, 10);
   u_tilde ~ std_normal();
+  L_Omega ~ lkj_corr_cholesky(2);
   
-  // Raw parameters with a zero lower bound
+  // Shape parameters
   nu ~ gamma(2, 0.1);
   s ~ normal(0, 1); 
   
-  // Transformed Regression 
+  // Likelihood
   vector[N] mu;
   for(n in 1:N)
     mu[n] = intercept + X[n] * beta + u[domain[n]];
@@ -65,11 +63,13 @@ model {
 
 generated quantities{
   vector[N] log_lik;
+  matrix[D, D] Sigma = multiply_lower_tri_self_transpose(L_Sigma);
   for (n in 1:N) {
     log_lik[n] = student_t_lpdf(log_y[n] |3,
                         intercept + X[n] * beta + u[domain[n]],
                         sigma_e)
                         - log_y[n];
   }
+  
 }
 
