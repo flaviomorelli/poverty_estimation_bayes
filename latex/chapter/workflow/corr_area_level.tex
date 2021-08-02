@@ -1,0 +1,54 @@
+\section{Modelling correlations at the area-level}
+
+Until now, the assumption has been that all random effects at the area-level are independent from each other, i.e., $u_d|\sigma_u \sim \mathcal N (0, \sigma_u)$.
+However, this assumption seems unplausible.
+For example, if the areas are defined as municipalities, it is likely that neighbouring regions have similar characteristics and are therefore correlated.
+If on the other hand the areas are the strata considered in the previous section, the 16 strata that correspond to a rural area have more in common with each other than with urban strata.
+Here, the independence assumption does not seem realistic either.
+In the section, a new prior that captures correlations at the area level is introduced to the model.
+The result is then compared to the model that was defined in the previous two sections.
+Thus, the areas are not defined as the municipalities, but as the strata presented in the last section.
+
+There are multiple options to model correlation between areas.
+Approaches such as IAR, CAR and SAR (SOURCE) represent a traditional way of capturing spatial correlation. Moreover, other priors such as the Hidden Markov fields used in (GAO) offer an alternative to modelling dependencies between areas.
+However, the simpler LKJ prior (SOURCE) will be used in this paper.
+The resulting model will be compared with the model that assumes independence from the previous section.
+A comparison between all possible priors that capture area correlation is beyond the scope of this paper and left for future research.
+
+Let $\Sigma$ be a $D \times D$ covariance matrix, so that $u \sim \mathcal{N}(\boldsymbol{0}, \Sigma)$, where $\boldsymbol 0$ and $u$ are $D$-dimensional vectors.
+Therefore, the density of $u$ can be written as:
+\begin{gather*}
+    p(u|\Sigma) = (2\pi)^{-\frac D 2}\det(\Sigma)^{-\frac 1 2} e^{(-\frac 1 2 u'\Sigma^{-1} u)}.
+\end{gather*}
+The covariance matrix $\Sigma$ can be decomposed as $\Sigma = \text{diag}(\tau)\Omega\text{diag}(\tau)$, where $\tau$ is a $D$-dimensional vector of scale factor, $\text{diag}(\tau)$ is a $D \times D$ matrix with $\tau$ as its main diagonal and $\Omega$ is a $D \times D$ correlation matrix.
+Up to this point, the assumption has been that there is only one scale parameter $\sigma_u$ for all area-level effects $u_d$ and this assumption still holds.
+Because $\tau_d = \sqrt{\Sigma_{d, d}}$, the decomposition is simplified to $\Sigma = \sigma_u^2 \Omega$.
+
+The standard deviation for the random effect $\sigma_u^2$, already has the prior $Ga(2, 10)$.
+However, the correlation between the single random effects is captured by defining a LKJ prior over the correlation matrix $\Omega$:
+\begin{gather*}
+    \Omega \sim \text{LKJ}(\eta), ~~ \eta \ge 1.
+\end{gather*}
+The LKJ correlation distribution implies that $p(\Sigma|\eta) \propto \det(\Sigma)^{\eta - 1}$ (STAN USER MANUAL).
+Note that the determinant of $\Sigma$ increases as the correlation between components decreases:
+an identity matrix has a determinant of 1, while a correlation matrix consisting only of ones (perfect correlation between components) has a determinant of 0.
+For $\eta = 1$, the LKJ prior is a uniform distribution over all possible correlation matrices.
+However, due to the fact that the function $k^\eta$ for a fixed $k < 1$ does not converge uniformly towards zeroas $\eta \rightarrow \infty$, a higher $\eta$ puts more probability mass on matrices with a higher determinant, i.e., on matrices with a lower correlation between components.\footnote{In practice, it is common to use the Cholesky decomposition of $\Omega$ to avoid numerical issues when estimating the model.
+For clarity, the traditional matrix specification is kept in the paper, but note that the decomposition is used in the accompanying code.}
+
+The results from the model comparison can be seen in in Table XY.
+The model that allows for correlation between areas has a slightly better performance according to PSIS-LOO than the model with no correlation at all.
+However, it is important to remember that elpd$_{\text{LOO}}$ is just an approximation, because PSIS-LOO quantifies predictive power at the unit-level and not at the area-level, whereas the aim of the model is to generate prediction at the area-level.
+It is likely that the difference between the predictive power of both specifications would be clearer when using leave-one-group-out cross-validation.
+Unfortunately, this is still an area of active research and it is therefore beyond the scope of this paper.
+In any case, the slightly better performance of the model with the LKJ priors is taken as a sign that it captures correlations between strata that improve predictions.
+
+Figure XY shows four posterior draws for Omega as heatmaps. In the plot, it is possible to see a very clear pattern, that is consistent among draws.
+
+
+
+
+
+
+
+

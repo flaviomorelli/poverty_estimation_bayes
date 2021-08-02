@@ -1,9 +1,9 @@
 functions{
   real skewness(vector y){
-    int N = size(y);
+    int N = num_elements(y);
     vector[N] yc = y - mean(y);
     real s_3 = sd(y)^3;
-    real m_3 = mean(yc.^3);
+    real m_3 = mean(yc .^ 3);
     return m_3 / s_3;
   }
 }
@@ -38,15 +38,13 @@ transformed parameters{
 }
 
 model {
-  // Regression parameters
   intercept ~ normal(4, 3);
   to_vector(beta) ~ normal(0, 0.2);
   sigma ~ gamma(2, 10);
   
-  // Group effects
   sigma_u ~ gamma(2, 10);
   u_tilde ~ std_normal();
-  L_Omega ~ lkj_corr_cholesky(2);
+  L_Omega ~ lkj_corr_cholesky(7);
   
   // Shape parameters
   nu ~ gamma(2, 0.1);
@@ -64,6 +62,7 @@ model {
 generated quantities{
   vector[N] log_lik;
   matrix[D, D] Sigma = multiply_lower_tri_self_transpose(L_Sigma);
+  matrix[D, D] Omega = multiply_lower_tri_self_transpose(L_Omega);
   for (n in 1:N) {
     log_lik[n] = student_t_lpdf(log_y[n] |nu,
                         intercept + X[n] * beta[domain[n]]' + u[domain[n]],

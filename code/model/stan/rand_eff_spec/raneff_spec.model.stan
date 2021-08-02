@@ -1,6 +1,6 @@
 functions{
   real skewness(vector y){
-    int N = size(y);
+    int N = num_elements(y);
     vector[N] yc = y - mean(y);
     real s_3 = sd(y)^3;
     real m_3 = mean(yc.^3);
@@ -39,22 +39,18 @@ transformed parameters{
 }
 
 model {
-  // define transformed outcome
-  
-  // Regression parameters
   intercept ~ normal(4, 3);
   beta ~ normal(0, 0.2);
   sigma ~ gamma(2, 10);
   
-  // Group effects
   sigma_u ~ gamma(2, 10);
   u_tilde ~ std_normal();
   
-  // Raw parameters with a zero lower bound
+  // Shape parameters
   nu ~ gamma(2, 0.1);
   s ~ normal(0, 1); 
   
-  // Transformed Regression 
+  // Likelihood
   vector[N] mu;
   for(n in 1:N)
     mu[n] = intercept + X[n] * beta + u[domain[n]];
