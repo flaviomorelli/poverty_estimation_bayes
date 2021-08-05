@@ -62,7 +62,7 @@ model {
 generated quantities{
   vector[N] log_lik;
   for (n in 1:N) {
-    log_lik[n] = student_t_lpdf(log_y[n] |3,
+    log_lik[n] = student_t_lpdf(log_y[n] | nu,
                         intercept + X[n] * beta + u[domain[n]],
                         sigma_e)
                         - log_y[n];

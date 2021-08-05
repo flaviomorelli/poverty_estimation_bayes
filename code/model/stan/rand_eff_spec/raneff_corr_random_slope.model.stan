@@ -44,7 +44,7 @@ model {
   
   sigma_u ~ gamma(2, 10);
   u_tilde ~ std_normal();
-  L_Omega ~ lkj_corr_cholesky(7);
+  L_Omega ~ lkj_corr_cholesky(5);
   
   // Shape parameters
   nu ~ gamma(2, 0.1);

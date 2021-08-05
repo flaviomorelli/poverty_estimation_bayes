@@ -33,7 +33,7 @@ The LKJ correlation distribution implies that $p(\Sigma|\eta) \propto \det(\Sigm
 Note that the determinant of $\Sigma$ increases as the correlation between components decreases:
 an identity matrix has a determinant of 1, while a correlation matrix consisting only of ones (perfect correlation between components) has a determinant of 0.
 For $\eta = 1$, the LKJ prior is a uniform distribution over all possible correlation matrices.
-However, due to the fact that the function $k^\eta$ for a fixed $k < 1$ does not converge uniformly towards zeroas $\eta \rightarrow \infty$, a higher $\eta$ puts more probability mass on matrices with a higher determinant, i.e., on matrices with a lower correlation between components.\footnote{In practice, it is common to use the Cholesky decomposition of $\Omega$ to avoid numerical issues when estimating the model.
+However, due to the fact that the function $f(x) = k^x$ for a fixed $k \in (0, 1)$ does not converge uniformly towards zero as $x \rightarrow \infty$, a higher $\eta$ puts more probability mass on matrices with a higher determinant, i.e., on matrices with a lower correlation between components.\footnote{In practice, it is common to use the Cholesky decomposition of $\Omega$ to avoid numerical issues when estimating the model.
 For clarity, the traditional matrix specification is kept in the paper, but note that the decomposition is used in the accompanying code.}
 
 The results from the model comparison can be seen in in Table XY.
@@ -42,10 +42,18 @@ However, it is important to remember that elpd$_{\text{LOO}}$ is just an approxi
 It is likely that the difference between the predictive power of both specifications would be clearer when using leave-one-group-out cross-validation.
 Unfortunately, this is still an area of active research and it is therefore beyond the scope of this paper.
 In any case, the slightly better performance of the model with the LKJ priors is taken as a sign that it captures correlations between strata that improve predictions.
+Eta parameter?
 
 Figure XY shows four posterior draws for Omega as heatmaps. In the plot, it is possible to see a very clear pattern, that is consistent among draws.
 
 
+In the current model specification, the random intercept was redifined so that there are no out-of-sample areas.
+Nevertheless, the LKJ prior is not as useful when there are out-of-sample regions, as the correlation matrix is assumed to have as many dimensions as in the training set.
+In such cases, an autoregressive or a random walk prior on $u_d$ such as in RUE/HELD 2005 or GAO et AL 2021 can be more appropriate, as it does not depend strictly on the dimensions of the correlation matrix.
+
+
+\includegraphics[width=\textwidth]{./graphics/rand_intercept/corr_plot}
+\includegraphics[width=\textwidth]{./graphics/rand_intercept/dens_corr_plot}
 
 
 

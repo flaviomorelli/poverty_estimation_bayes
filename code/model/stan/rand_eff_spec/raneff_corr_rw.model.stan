@@ -25,7 +25,6 @@ parameters {
   real<lower=0> sigma;
   real<lower=0> sigma_u;
   vector[D] u_tilde;
-  cholesky_factor_corr[D] L_Omega;
   
   vector[K] beta;
 }
@@ -33,8 +32,7 @@ transformed parameters{
   vector[N] log_y = log(y + lambda);
   real s = skewness(log_y) * 1000;
   real sigma_e = sigma * sqrt(nu - 2 / nu);
-  matrix[D, D] L_Sigma = diag_pre_multiply(rep_vector(sigma_u, D), L_Omega);
-  vector[D] u = L_Sigma * u_tilde;
+  vector[D] u = u_tilde * sigma_u;
 }
 
 model {
@@ -43,8 +41,9 @@ model {
   sigma ~ gamma(2, 10);
   
   sigma_u ~ gamma(2, 10);
-  u_tilde ~ std_normal();
-  L_Omega ~ lkj_corr_cholesky(5);
+  for(d in 2:D)
+    u_tilde[d] ~ normal(u_tilde[d-1], 1);
+  sum(u) ~ normal(0, 10^-3);
   
   // Shape parameters
   nu ~ gamma(2, 0.1);
@@ -61,8 +60,6 @@ model {
 
 generated quantities{
   vector[N] log_lik;
-  matrix[D, D] Sigma = multiply_lower_tri_self_transpose(L_Sigma);
-  matrix[D, D] Omega = multiply_lower_tri_self_transpose(L_Omega);
   for (n in 1:N) {
     log_lik[n] = student_t_lpdf(log_y[n] |nu,
                         intercept + X[n] * beta + u[domain[n]],

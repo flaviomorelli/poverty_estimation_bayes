@@ -1,0 +1,18 @@
+\subsection{Estimating poverty indicators with Bayesian models}
+
+Based on model \ref{eq:mod_hb}, it is possible to generate synthetic income data. The HB estimator for the poverty indicator $F_d$ described in section 3.1 is given by the following algorithm, where $S$ denotes the total number of MCMC samples: \\
+\code{For $s = 1, ..., S$}
+\begin{enumerate}
+    \itemsep -6mm
+    \item Sample $\boldsymbol {\hat \beta^{(s)}}, \hat u_d^{(s)}, \hat \sigma_e^{(s)}, \hat \sigma_u^{(s)}[, \hat \nu^{(s)}]$ from the posterior distribution.\\
+    \item Sample $\tilde y_d^{(s)}|y$ from the posterior predictive distribution. There are two cases:
+    \begin{enumerate}
+        \itemsep -8mm
+        \item If municipality $d$ is in-sample, then sample $\tilde y^{(s)}_d|y$ from  $\mathcal L (\boldsymbol{x'}_{di} \boldsymbol {\hat \beta^{(s)}} + \hat u_d^{(s)}, \hat \sigma_e^{(s)}[, \hat \nu^{(s)}])$. \\
+        \item If municipality $d$ is out-of-sample, first sample $\tilde u_d^{(s)}$ from $\mathcal N(0, \hat \sigma_u^{(s)})$ and then sample $\tilde y^{(s)}_d|y$ from $\mathcal L (\boldsymbol{x'}_{di} \boldsymbol {\hat \beta^{(s)}} + \tilde u_d^{(s)}, \hat \sigma_e^{(s)}[, \hat \nu^{(s)}])$.\\
+    \end{enumerate}
+    \item Calculate the poverty line $t^{(s)} = 0.6 \cdot median(\tilde y ^{(s)})$. Then calculate $F_d^{(s)}(\alpha, t^{(s)})$ for each $d$ based on $\tilde y_{d}^{(s)}|y$.\\
+    \item Finally, $\hat F_d^{HB} = \displaystyle \frac 1 S \sum_{s = 1}^S F_d^{(s)}$ and $\hat \sigma^{HB}_d = \displaystyle\sqrt{ \frac{1}{S-1}  \sum_{s = 1}^S \left( F_d^{(s)} - \hat F_d^{HB} \right)^2}$.
+
+\end{enumerate}
+Note that the poverty line $t^{(s)}$ is based on $\tilde y^{(s)} = (y^{(s)}_1|y, ..., y^{(s)}_d|y)$ – the generated income for $all$ areas –, not just for the income of area $d$ given by $\tilde y_d^{(s)}$. Therefore, there is only one poverty line for each MCMC sample $s$. This is a similar procedure to \cite{rojas_perilla_data_2020}, adapted to the Bayesian context. Having discussed the HB model and the likelihoods that can be chosen, it is necessary to compare the different approaches and determine the best one to model income, before being able to estimate poverty indicators.
