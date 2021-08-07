@@ -1,17 +1,17 @@
 \subsection{Evaluation of Bayesian models}
 
 There are numerous ways to evaluate Bayesian models.
-(PIIRONEN VEHTARI 2017) provides an overview of evaluation methods that quantify predictive power of a model, which can be used to compare different models.
-On the other hand, Bayesian inference provides two additional checking tools: prior and posterior predictive checks.
-The main idea here is to generate numerous samples either from the prior predictive or posterior predictive distribution described in section XY.
-Thus, it is possible to check how the model behaves before and after fitting the data and whether the generated samples are in a plausible range of the dependent variable.
+\cite{piironen_comparison_2017} provide an overview of evaluation methods that quantify predictive power of a model, which can be used to compare different models.
+Moreover, Bayesian inference provides two additional checking tools: prior and posterior predictive checks.
+The main idea is to generate numerous samples either from the prior predictive or posterior predictive distributions described in the previous section.
+Thus, it is possible to check how the model behaves before and after fitting the data and whether the generated samples are in a plausible range compared to the dependent variable.
 This section focuses on PSIS-LOO as a measure of predictive power and includes a brief discussion of prior and posterior predictive checks.
 
-Given some data $y$ and future observations $\tilde y_i, i = 1, ..., N$, where $N$ is the original sample size, the quality of the predictive distribution can be defined in terms of a utility function in terms of the logarithmic score (Good, 1952, Piironen/Vehtari 2017)
+Given some data $y$ and future observations $\tilde y_i, i = 1, ..., N$, where $N$ is the original sample size, the quality of the predictive distribution can be defined in terms of a utility function as a logarithmic score \citep{piironen_comparison_2017}
 \begin{gather*}
     u(\tilde y_i) = \displaystyle \sum_{i = 1}^N\log p(\tilde y_i|y).
 \end{gather*}
-However, as $\tilde y$ is unobserved, it is necessary to marginalize it out of $u$, thus getting the expected utility
+However, as $\tilde y$ is unobserved, it is necessary to marginalize it out of the exptression, thus getting the expected utility
 \begin{gather*}
     \text{elpd} =
     \displaystyle \sum_{i = 1}^N E[\log p(\tilde y_i| y)] =
@@ -29,19 +29,19 @@ Here, $p(\tilde y_i| y_{-i})$ is the leave-one-out predictive distribution given
 In practice, $\text{elpd}_{\text{loo}}$ is estimated efficiently by Pareto-smoothed importance sampling without having to refit the model $N$ times and is therefore referred to as PSIS-LOO.
 A higher PSIS-LOO indicates a model with a higher predictive power.
 Pareto smoothing is not only useful for the efficient estimation of elpd$_{\text{loo}}$, but it also provides a diagnostic to whether the estimated PSIS-LOO can be trusted.
-Specifically if the shape parameter $k$ of the Pareto distribution is higher than 0.7, then PSIS-LOO is not reliable(Vehtari/Gelman 2017).
-This might be alleviate with the moment match method (Bürkner, Vehtari), but it can also indicate that the model does not deal with outliers well.
+Specifically if the shape parameter $k$ of the Pareto distribution is higher than 0.7, then PSIS-LOO is not reliable \citep{vehtari_practical_2017}.
+Problems with very high $k$ values can be alleviated with the moment match method \cite{paananen_implicitly_2021}, but they can also indicate that the model does not deal with outliers well.
 Note that a utility function that quantifies predictive power takes into account the distributional characteristics of the model.
-In contrast, loss function approaches such as the root mean squared error (RMSE) or the mean absolute error (MAE) measure the distance between the predicted values and the true values, but are distribution-agnostic.
+In contrast, loss function approaches such as the root mean squared error (RMSE) or the mean absolute error (MAE) measure the distance between the predicted values and the true values, but are not directly related to the distribution.
 
 Beyond PSIS-LOO, prior and posterior predictive checks are useful to asses model quality.
 The main idea is to generate multiple samples from the prior predictive distribution $\int p(\theta) p(y|\theta)d\theta$ or from the posterior predictive distribution $\int p(y | \theta) p(\theta|y) d\theta$.
 With these samples, it is possible to check how similar the simulated distribution is to the original distribution and also whether the simulations are within a reasonable range.
-This similarity check can be done for example with histograms or KDE plots when using the full distribution.
-As Bayesian models produce a full distribution, it is also possible to check how certain summary statistics (median, IQR, variance, quantiles etc.) vary between the simulated samples and compare them to the summary statistics in the original distributions. (GELMAN et al 2014)
+This similarity check can be done for example with histograms, KDE plots or scatter plots when using the full distribution.
+As Bayesian models produce a full distribution, it is also possible to check how certain summary statistics (median, IQR, variance, quantiles etc.) vary between the simulated samples and compare them to the summary statistics in the original distributions \citep[Chapter 6]{gelman_bayesian_2014}.
 However, these statistics should be ancillary in the sense that they should test something different than parameter fit.
-While a linear model fits the mean and the variance quite well, this is not the case for a Poisson regression.
-Therefore, checking the mean and the variance in the Poisson case will reveal potential problems in the model (Stan User guide 27.3).
+For example, while a linear model fits the mean and the variance quite well, this is not the case for a Poisson regression.
+Therefore, checking the mean and the variance in the Poisson case will reveal potential problems in the model \citep[Chapter 27.3]{stan_development_team_stan_2021}.
 A practical application of prior and posterior check will be shown in section X and section Y.
 
 

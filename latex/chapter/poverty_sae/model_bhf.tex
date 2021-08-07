@@ -1,12 +1,20 @@
 \subsection{Bayesian unit-level model for small area estimation}
 
-SHORT INTRODUCTION to SAE.    \cite{rao_small_2015}
+\textit{Small area estimation} is a field of survey statistics that deals with prediction in areas for which there is little or no information.
+The terms \textit{area} or \textit{domain}, usually used as synonyms, do not necessarily imply geographic area.
+More generally, it can denote any subgroup of a population arising from disaggregation – by gender, region, ethnicity, etc.
+A typical scneario for small area estimation arises in surveys, where the representative sample is small compared to the whole population.
+If indicators are needed at a finer disaggregated level, e.g., by municipality, the sample size in each area can become extremely small (under 20 observations) and there might be areas with no observations at all.
+To improve predictions for these small areas, the models borrow strength from additional data sources such as a census or a register.
+Depending on the data available, there are two types of small area models.
+Area-level models such as the Fay-Herriot use aggregated data for each area to improve direct estimators.
+On the other hand, unit-level models need information at the individual or household level to generate predictions \citep[Chapter 1 and 2]{rao_small_2015}.
 
-\cite{molina_small_2014} formulated a Bayesian unit-level model based on the BHF model \citep{battese_error_1988}, which is usually referred to as the Hierarchical Bayes (HB) model:
+\cite{molina_small_2014} formulates a Bayesian unit-level model, which is referred to as the Hierarchical Bayes (HB) model and is based on the BHF model \citep{battese_error_1988}:
 \begin{equation}
     \label{eq:hb_rao}
 	\begin{split}
-	y_{di} |\boldsymbol \beta, u_d, \sigma_e & \sim \mathcal N(\boldsymbol{x'}_{di} \boldsymbol{\beta}+ u_d, \sigma_e),\ d = 1, ..., D,\ i = 1, ..., N_d \\
+	y_{di} |\boldsymbol \beta, u_d, \sigma_e & \sim \mathcal N(\boldsymbol{x'}_{di} \boldsymbol{\beta}+ u_d, \sigma_e), ~ d = 1, ..., D, ~ i = 1, ..., N_d \\
 	u_d | \sigma_u & \sim \mathcal N(0, \sigma_u), d = 1, ..., D \\
 	p(\boldsymbol \beta, \sigma_u, \sigma_e) & = p(\boldsymbol \beta) p(\sigma_u)p(\sigma_e) \propto p(\sigma_u)p(\sigma_e).
 	\end{split}
@@ -19,43 +27,48 @@ The variance parameter at the individual level is given by $\sigma_e$.
 Note that $\boldsymbol \beta, \sigma_u$ and $\sigma_e$ are assumed to be independent.
 Their priors are $p(\boldsymbol \beta), p(\sigma_u)$ and $p(\sigma_e)$ respectively.
 
-
-
 However, the model described in \ref{eq:hb_rao} does not take full advantage of Bayesian modelling.
 By taking the normal distribution as the likelihood, the model faces the same limitations of a frequentist linear regression and will not be able to deal with heavy-tailed data.
-Following (MORELLI 2020), the likelihood is replaced with a Student's $t$-distribution.
-Moreover, the prior distributions in \cite{molina_small_2014} are non-informative (flat).
-This ignores the extra control that priors provide over the model. Therefore, the model \ref{eq:hb_rao} is reformulated as follows:
+Following \cite{morelli_hierarchical_2021}, the likelihood is replaced with a Student's $t$-distribution.
+Moreover, the prior distributions in \cite{molina_small_2014} are non-informative (flat), i.e., they are proportional to a constant and not a proper distribution.
+This poses two problems.
+First, a Bayesian model with flat priors is not a generative model in the sense that it is not possible to simulate new observations from the prior of posterior predictive distributions.
+Second, it does not take advantage of the the extra control that priors provide over the model when modelling relation between parameters.
+Therefore, \cite{morelli_hierarchical_2021} reformulates the model \ref{eq:hb_rao} as follows with a Student's $t$-likelihood:
 \begin{equation}
 	\begin{split}
 		y_{di} |\boldsymbol \beta, u_d, \sigma_e & \sim
             \text{Student}(\boldsymbol{x'}_{di} \boldsymbol \beta + u_d,\ \sigma_e\ , \nu),\ d = 1, ..., D,\ i = 1, ..., N_d \\
 		u_d | \sigma_u & \sim \mathcal N(0, \sigma_u),\ d = 1, ..., D \\
 		\beta_k & \sim \mathcal N(\mu_k, \sigma_k),\ k = 1, ..., K\\
-		\sigma_u & \sim Ga(2, 0.75), \\
-		\sigma_e & \sim Ga(2, 0.75), \\
+		\sigma_u & \sim Ga(2, a), \\
+		\sigma_e & \sim Ga(2, b), \\
 		\nu & \sim Ga(2, 0.1). \\
 	\end{split}
 	\label{eq:mod_hb}
 \end{equation}
-All the chosen distributions have a location parameter (the regression equation) and a scale parameter $\sigma_e$. The gamma distribution is chosen for $\sigma_u$ and $\sigma_e$, as the standard deviation cannot be negative.
-The shape parameter is set to 2 in line with \cite{gelman_prior_2020}.
-The rate parameter is set to 0.75, because the 95\% quantile of $Ga(2, 0.75)$ is around 6.3 which in the logarithmic scale is large enough to account for deviations at the observation $(\sigma_e)$ and at the area level ($\sigma_u$).
-Certainly, the exact effect of the scale $\sigma_e$ depends on the likelihood distribution (FORMULA for variance in STUDENT t), but this parametrization is flexible enough to produce good results even when the scale parameter cannot be directly interpreted in terms of standard deviation as in the normal distribution.
-The $t$-distribution has an extra parameter $\nu$ representing the degrees of freedom that has an impact on its excess kurtosis and consequently also on the variance.
+The $t$-distribution has an extra parameter $\nu$, the degrees of freedom, that has an impact on its excess kurtosis and consequently also on the variance.
 Note that in this case there is only one $\nu$ for all areas.
-Since the excess kurtosis converges to zero as $\nu \leftarrow \infty$  (for $\nu=50$ the excess kurtosis is just 0.1), I use a gamma distribution with shape 2 and $0.1$ as the rate parameter.
-This puts more weight on the areas of $\nu$ for which the $t$-distribution is leptokurtic (the 95\% quantile is 47) and forces $\nu$ to be positive.
+Because the excess kurtosis converges to zero as $\nu \rightarrow \infty$  (for $\nu \approx 50$ the excess kurtosis is just 0.1), I use a gamma distribution with shape 2 and $0.1$ as the rate parameter.
+This forces $\nu$ to be positive and places more weight on the areas of $\nu$ for which the $t$-distribution is leptokurtic, while still allowing values where the likelihood is close to normal (the 95\% quantile is just below 50, and for $\nu \ge 50$ there is little difference between a Gaussian and a Student's $t$-distribution).
+Note that $\sigma_e$ is a scale parameter of the Student's $t$-distribution and is not equal to its standard deviation.
+The standard deviation of the likelihood is given by the relation $\sigma = \sigma_e \cdot \frac{\nu}{\nu - 2}$, which makes clear that the variance is only finite for $\nu > 2$.
+The gamma distribution is chosen for the scale parameters $\sigma_u$ and $\sigma_e$, as the standard deviation cannot be negative.
+The shape parameter is set to 2 in line with \cite{gelman_prior_2020}, which makes the distribution clearly skewed to the right.
+$a$ and $b$ are positive constants that define the rate parameters of the gamma distributions.
+This have to be chosen according to the scale of the dependent variable $y_{di}$ for each concrete data set.
 $K$ is the number of coefficients in the regression, and $k = 1$ is the intercept.
-Thus, according to \ref{eq:mod_hb} the prior can be set independently for each coefficient in $\boldsymbol \beta$.
+Thus, according to \ref{eq:mod_hb} the prior can in theory be set independently for each coefficient in $\boldsymbol \beta$.
 The exact prior parameters for the coefficients will be discussed in the next sections based on the variables from the data set.
 
-\cite{molina_small_2014} also present a reparametrized version of model \ref{eq:hb_rao} with $\rho = \sigma_u(\sigma_u + \sigma_e)^{-1} $ to avoid using MCMC methods.
-Due to the many developments in the field of Bayesian computation in the years since, this should not be a major concern.
-In 2014, the first version of the NUTS algorithm was published \citep{hoffman_no-u-turn_2014}, a HMC extension that makes it possible to sample from high-dimensional parameter spaces efficiently and is now the standard for most Bayesian frameworks.
-Although the reparametrized may simplify estimation, it comes at the cost of model flexibility and it is not straightforward to imagine how the reparametrized version would change with different likelihood or prior distributions.
 
-Based on model \ref{eq:mod_hb}, it is possible to generate synthetic income data by sampling from the posterior predictive distribution.
-With this synthetic data, poverty indicators described in XY can be calculated.
-An explicit algorithm for this will be formulated in XY.
-Other Bayesian approaches INCLUDE for example: Mixtures, Robust SAE, etc.
+\cite{molina_small_2014} also present a reparametrized version of model \ref{eq:hb_rao} with $\rho = \sigma_u(\sigma_u + \sigma_e)^{-1} $ to avoid using MCMC methods.
+Avoiding MCMC should not be a major concern due to the many developments in the field of Bayesian computation since 2014.
+While the reparametrized model may simplify estimation under certain circumstances, it comes at the cost of model flexibility and it is not straightforward to imagine how the reparametrized version would change with different likelihood or prior distributions.
+Further information on Bayesian computation can be found in appendix \ref{ch:computation}.
+
+Beyond the HB model by \cite{molina_small_2014}, there are other other Bayesian approaches in small area estimation, which are mentioned for completeness. Those INCLUDE for example: Mixtures, Robust SAE, etc.
+Nevertheless, this paper focuses on extending the linear mixed model by \cite{molina_small_2014}, building on the insights from \cite{morelli_hierarchical_2021}.
+
+How does the likelihood relate to income data? Why normal? Why symmetric?
+The next section defines poverty indicators based on income and describes an algorithm to calculate them based on Bayesian models such as \ref{eq:mod_hb}.

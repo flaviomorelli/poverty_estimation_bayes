@@ -40,6 +40,55 @@
 	file = {Stock, James H._ Watson, Mark W. - Introduction to Econometrics-Pearson Education (2015).pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/RGGW5W2Y/Stock, James H._ Watson, Mark W. - Introduction to Econometrics-Pearson Education (2015).pdf:application/pdf},
 }
 
+@article{betancourt_conceptual_2017,
+	title = {A {Conceptual} {Introduction} to {Hamiltonian} {Monte} {Carlo}},
+	url = {http://arxiv.org/abs/1701.02434},
+	abstract = {Hamiltonian Monte Carlo has proven a remarkable empirical success, but only recently have we begun to develop a rigorous understanding of why it performs so well on diﬃcult problems and how it is best applied in practice. Unfortunately, that understanding is conﬁned within the mathematics of diﬀerential geometry which has limited its dissemination, especially to the applied communities for which it is particularly important.},
+	urldate = {2021-01-21},
+	author = {Betancourt, Michael},
+	year = {2017},
+	keywords = {statistics, bayesian statistics, monte carlo, hamiltonian, bayesian computation, markov chain},
+	file = {Betancourt - 2017 - A Conceptual Introduction to Hamiltonian Monte Car.pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/SAI2Q3CZ/Betancourt - 2017 - A Conceptual Introduction to Hamiltonian Monte Car.pdf:application/pdf},
+}
+
+@article{hoffman_no-u-turn_2014,
+	title = {The {No}-{U}-{Turn} {Sampler}: {Adaptively} {Setting} {Path} {Lengths} in {Hamiltonian} {Monte} {Carlo}},
+	volume = {15},
+	abstract = {Hamiltonian Monte Carlo (HMC) is a Markov chain Monte Carlo (MCMC) algorithm that avoids the random walk behavior and sensitivity to correlated parameters that plague many MCMC methods by taking a series of steps informed by ﬁrst-order gradient information. These features allow it to converge to high-dimensional target distributions much more quickly than simpler methods such as random walk Metropolis or Gibbs sampling. However, HMC’s performance is highly sensitive to two user-speciﬁed parameters: a step size and a desired number of steps L. In particular, if L is too small then the algorithm exhibits undesirable random walk behavior, while if L is too large the algorithm wastes computation. We introduce the No-U-Turn Sampler (NUTS), an extension to HMC that eliminates the need to set a number of steps L. NUTS uses a recursive algorithm to build a set of likely candidate points that spans a wide swath of the target distribution, stopping automatically when it starts to double back and retrace its steps. Empirically, NUTS performs at least as eﬃciently as (and sometimes more eﬃciently than) a well tuned standard HMC method, without requiring user intervention or costly tuning runs. We also derive a method for adapting the step size parameter on the ﬂy based on primal-dual averaging. NUTS can thus be used with no hand-tuning at all, making it suitable for applications such as BUGS-style automatic inference engines that require eﬃcient “turnkey” samplers.},
+	language = {en},
+	journal = {Journal of Machine Learning Research},
+	author = {Hoffman, Matthew D and Gelman, Andrew},
+	year = {2014},
+	keywords = {statistics, bayesian statistics, monte carlo, hamiltonian, bayesian computation, markov chain, nuts},
+	pages = {1593--1623},
+	file = {Hoﬀman and Gelman - The No-U-Turn Sampler Adaptively Setting Path Len.pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/V4D23DPZ/Hoﬀman and Gelman - The No-U-Turn Sampler Adaptively Setting Path Len.pdf:application/pdf},
+}
+
+@article{blei_variational_2017,
+	title = {Variational {Inference}: {A} {Review} for {Statisticians}},
+	volume = {112},
+	shorttitle = {Variational {Inference}},
+	abstract = {One of the core problems of modern statistics is to approximate difﬁcult-to-compute probability densities. This problem is especially important in Bayesian statistics, which frames all inference about unknown quantities as a calculation involving the posterior density. In this paper, we review variational inference (VI), a method from machine learning that approximates probability densities through optimization. VI has been used in many applications and tends to be faster than classical methods, such as Markov chain Monte Carlo sampling. The idea behind VI is to ﬁrst posit a family of densities and then to ﬁnd the member of that family which is close to the target. Closeness is measured by Kullback-Leibler divergence. We review the ideas behind mean-ﬁeld variational inference, discuss the special case of VI applied to exponential family models, present a full example with a Bayesian mixture of Gaussians, and derive a variant that uses stochastic optimization to scale up to massive data. We discuss modern research in VI and highlight important open problems. VI is powerful, but it is not yet well understood. Our hope in writing this paper is to catalyze statistical research on this class of algorithms.},
+	language = {en},
+	number = {518},
+	journal = {Journal of the American Statistical Association},
+	author = {Blei, David M. and Kucukelbir, Alp and McAuliffe, Jon D.},
+	year = {2017},
+	pages = {859--877},
+	file = {Blei et al. - 2017 - Variational Inference A Review for Statisticians.pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/FM9U7DTH/Blei et al. - 2017 - Variational Inference A Review for Statisticians.pdf:application/pdf},
+}
+
+@article{blei_latent_2003,
+	title = {Latent {Dirichlet} {Allocation}},
+	volume = {3},
+	language = {en},
+	journal = {Journal of Machine Learning Research},
+	author = {Blei, David M and Ng, Andrew Y. and Jordan, Michael I.},
+	year = {2003},
+	pages = {993--1022},
+	file = {Blei - Latent Dirichlet Allocation.pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/44N8NUA5/Blei - Latent Dirichlet Allocation.pdf:application/pdf},
+}
+
 @book{rao_small_2015,
 	address = {Hoboken, NJ (USA)},
 	edition = {2},
@@ -80,7 +129,7 @@
 	journal = {Statistics and Computing},
 	author = {Vehtari, Aki and Gelman, Andrew and Gabry, Jonah},
 	year = {2017},
-	keywords = {bayesian statistics, model evaluation, statistics},
+	keywords = {statistics, bayesian statistics, model evaluation},
 	pages = {1413--1432},
 	file = {Vehtari et al. - 2017 - Practical Bayesian model evaluation using leave-on.pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/9CTQ9VLC/Vehtari et al. - 2017 - Practical Bayesian model evaluation using leave-on.pdf:application/pdf},
 }
@@ -111,6 +160,17 @@
 	file = {Rojas‐Perilla et al. - 2020 - Data‐driven transformations in small area estimati.pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/UYIF493Q/Rojas‐Perilla et al. - 2020 - Data‐driven transformations in small area estimati.pdf:application/pdf},
 }
 
+@article{vehtari_rank-normalization_2021,
+	title = {Rank-{Normalization}, {Folding}, and {Localization}: {An} {Improved} {R}-hat for {Assessing} {Convergence} of {MCMC}},
+	volume = {16},
+	number = {2},
+	journal = {Bayesian Analysis},
+	author = {Vehtari, Aki and Gelman, Andrew and Simpson, Daniel and Carpenter, Bob and Bürkner, Paul-Christian},
+	year = {2021},
+	pages = {667--718},
+	file = {Vehtari et al. - 2020 - Rank-Normalization, Folding, and Localization An .pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/Y9PMX46A/Vehtari et al. - 2020 - Rank-Normalization, Folding, and Localization An .pdf:application/pdf},
+}
+
 @article{foster_class_1984,
 	title = {A {Class} of {Decomposable} {Poverty} {Measures}},
 	volume = {52},
@@ -129,6 +189,18 @@
 	urldate = {2021-08-05},
 	author = {{R Core Team}},
 	year = {2021},
+}
+
+@article{paananen_implicitly_2021,
+	title = {Implicitly {Adaptive} {Importance} {Sampling}},
+	volume = {31},
+	abstract = {Adaptive importance sampling is a class of techniques for ﬁnding good proposal distributions for importance sampling. Often the proposal distributions are standard probability distributions whose parameters are adapted based on the mismatch between the current proposal and a target distribution. In this work, we present an implicit adaptive importance sampling method that applies to complicated distributions which are not available in closed form. The method iteratively matches the moments of a set of Monte Carlo draws to weighted moments based on importance weights. We apply the method to Bayesian leave-one-out cross-validation and show that it performs better than many existing parametric adaptive importance sampling methods while being computationally inexpensive.},
+	number = {16},
+	journal = {Statistics and Computing},
+	author = {Paananen, Topi and Piironen, Juho and Bürkner, Paul-Christian and Vehtari, Aki},
+	year = {2021},
+	keywords = {bayesian statistics, model evaluation},
+	file = {Paananen et al. - 2020 - Implicitly Adaptive Importance Sampling.pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/B69INYGW/Paananen et al. - 2020 - Implicitly Adaptive Importance Sampling.pdf:application/pdf},
 }
 
 @article{box_science_1976,
@@ -179,6 +251,19 @@
 	file = {Chakraborty et al. - 2019 - Robust Hierarchical Bayes Small Area Estimation fo.pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/NJQ6KE54/Chakraborty et al. - 2019 - Robust Hierarchical Bayes Small Area Estimation fo.pdf:application/pdf},
 }
 
+@article{piironen_comparison_2017,
+	title = {Comparison of {Bayesian} predictive methods for model selection},
+	volume = {27},
+	abstract = {The goal of this paper is to compare several widely used Bayesian model selection methods in practical model selection problems, highlight their differences and give recommendations about the preferred approaches. We focus on the variable subset selection for regression and classiﬁcation and perform several numerical experiments using both simulated and real world data. The results show that the optimization of a utility estimate such as the cross-validation (CV) score is liable to ﬁnding overﬁtted models due to relatively high variance in the utility estimates when the data is scarce. This can also lead to substantial selection induced bias and optimism in the performance evaluation for the selected model. From a predictive viewpoint, best results are obtained by accounting for model uncertainty by forming the full encompassing model, such as the Bayesian model averaging solution over the candidate models. If the encompassing model is too complex, it can be robustly simpliﬁed by the projection method, in which the information of the full model is projected onto the submodels. This approach is substantially less prone to overﬁtting than selection based on CV-score. Overall, the projection method appears to outperform also the maximum a posteriori model and the selection of the most probable variables. The study also demonstrates that the model selection can greatly beneﬁt from using crossvalidation outside the searching process both for guiding the model size selection and assessing the predictive performance of the ﬁnally selected model.},
+	number = {3},
+	journal = {Statistics and Computing},
+	author = {Piironen, Juho and Vehtari, Aki},
+	year = {2017},
+	keywords = {bayesian statistics, model evaluation},
+	pages = {711--735},
+	file = {Piironen and Vehtari - 2017 - Comparison of Bayesian predictive methods for mode.pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/NRVQDL23/Piironen and Vehtari - 2017 - Comparison of Bayesian predictive methods for mode.pdf:application/pdf},
+}
+
 @article{gabry_visualization_2019,
 	title = {Visualization in {Bayesian} workflow},
 	volume = {182},
@@ -193,7 +278,7 @@
 	author = {Gabry, Jonah and Simpson, Daniel and Vehtari, Aki and Betancourt, Michael and Gelman, Andrew},
 	month = feb,
 	year = {2019},
-	keywords = {bayesian statistics, data visualization, statistics},
+	keywords = {data visualization, statistics, bayesian statistics},
 	pages = {389--402},
 	file = {Gabry et al. - 2019 - Visualization in Bayesian workflow.pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/BIFCDUNP/Gabry et al. - 2019 - Visualization in Bayesian workflow.pdf:application/pdf},
 }
@@ -384,7 +469,7 @@
 	journal = {Electronic Journal of Statistics},
 	author = {Piironen, Juho and Paasiniemi, Markus and Vehtari, Aki},
 	year = {2020},
-	keywords = {bayesian statistics, machine learning, model selection, priors},
+	keywords = {machine learning, bayesian statistics, priors, model selection},
 	pages = {2155 -- 2197},
 	file = {Piironen et al. - 2020 - Projective Inference in High-dimensional Problems.pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/PZKRLTTV/Piironen et al. - 2020 - Projective Inference in High-dimensional Problems.pdf:application/pdf},
 }
@@ -505,7 +590,7 @@
 	journal = {Journal of the American Statistical Association},
 	author = {Mitchell, T. J. and Beauchamp, J. J.},
 	year = {1988},
-	keywords = {model selection, priors},
+	keywords = {priors, model selection},
 	pages = {1023--1032},
 	file = {Mitchell and Beauchamp - 1988 - Bayesian Variable Selection in Linear Regression.pdf:/Users/flaviomejia/Documents/Books/Zotero/storage/C9PH8FCY/Mitchell and Beauchamp - 1988 - Bayesian Variable Selection in Linear Regression.pdf:application/pdf},
 }
