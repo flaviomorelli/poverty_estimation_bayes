@@ -1,4 +1,4 @@
-\section{Data transformation of the dependent variable}
+\subsection{Alternative 1: Data-driven transformations}
 
 At the unit level, income is usually a right-skewed distribution.
 As measures of poverty and inequality are usually based on income, this characteristic shape poses challenges to model specification.
@@ -7,7 +7,7 @@ A possible solution would be to use a regression with a skewed likelihood like a
 In practice, those distributions have strong limitations: the logarithm of the lognormal has to be a normal distribution and the skewness of the skew-normal distribution is limited to the range $(-1, 1)$.
 The inadequacy of these distribution to model income is shown in appendix ??? through posterior predictive checks.
 
-\subsection{Log-shift transformation and skewness}
+\subsubsection{Log-shift transformation and skewness}
 A common transformation for income in economic applications is the natural logarithm of the form $\log(y + \lambda)$. However, there might still be some skewness left, which is exacerbated by very low incomes.
 If there are a lot of units with incomes between zero, there will likely be a long tail to the in the left side of the transformed distribution.
 As \cite{rojas_perilla_data_2020} point out, it is possible to add a fixed term $s$ inside the logarithm so that $y+s \ge 1$ to avoid problems when $0 \le y \le 1$,
@@ -40,7 +40,7 @@ Any distribution of $u_d$ will reflect primarily the arbitrary subdivision rathe
 Therefore, only the skewness at the unit-level errors is considered in this paper.
 The Bayesian model proposed assumes that $u_d$ follows a normal distribution and is therefore symmetric by definition.
 
-\subsection{Estimating the shift parameter}
+\subsubsection{Estimating the shift parameter}
 A key question is how to estimate the shift term $\lambda$.
 There are two options: estimate it from the data in an empirical Bayes way or do full Bayesian inference.
 Both approaches have their advantages and disadvantages.
@@ -75,27 +75,8 @@ By plotting the posterior density of $S$ and using Bayesian diagnostic tools suc
 
 (EXAMPLES PLOTS for too large/small $\delta$?)
 
-\subsection{Adjusting the Jacobian of the likelihood}
 
-The transform of the dependent variable introduces a distortion that makes it necessary to adjust the Jacobian of the likelihood using Jacobi's transformation formula (12.6, Jacod Protter / Theorem 1.101 Klenke).
-Let $X$ be a random variable defined over $I \subseteq \mathbb{R}$ with density $f^X$. For a continuous differentiable function $\varphi: I \rightarrow \mathbb{R}$ and $\varphi' \ne 0$ for all $x \in I$, define $Y := \varphi(X)$.
-The density of the random variable $Y$ can then be defined as
-\begin{equation*}
-    f^Y(y) = f^X(\varphi^{-1}(y))
-    \left|\displaystyle \frac{d \varphi^{-1}(y)}{dy}\right|
-    \mathbb{I}(y \in \varphi(I)), ~~ y \in \mathbb{R},
-\end{equation*}
-where $\mathbb{I}(\cdot)$ is the indicator function.
-Assuming that $y$ represents the dependent variable in the original scale, then $\varphi^{-1}(y) = \log(y + \lambda)$ and the Jacobian adjustment $\displaystyle \frac{d \varphi^{-1}(y)}{dy} = \frac{1}{y + \lambda}$, which is positive due to $y + \lambda > 0$. As the transformation parameter $\lambda$ is chosen to drastically reduce the skewness of $\log(y + \lambda)$, the density $f^X$ is chosen to be from a symmetric distribution – e.g., a Student's $t$-distribution. The likelihood of $y$ under the log-shift transformation is therefore
-\begin{equation}
-    \displaystyle f^Y(y) = \text{Student}(\log(y + \lambda)| \mu , \sigma, \nu)
-    \cdot \frac{1}{y + \lambda}
-    \cdot\mathbb{I}(y \ge \lambda), ~~ y \in \mathbb{R}.
-\end{equation}
-
-\subsection{Redefining the linear mixed model}
-
-The Jacobian adjustment in the likelihood due to the log-shift transformation and the prior over the transformed dependent variable leads to a reformulation of model \ref{eq:mod_hb} as follows:
+The Jacobian adjustment in the likelihood due to the log-shift transformation (appendix \ref{appendix:jacobian}) and the prior over the transformed dependent variable leads to a reformulation of model \ref{eq:mod_hb} as follows:
 
 \begin{equation}
     \begin{split}
@@ -111,45 +92,7 @@ The Jacobian adjustment in the likelihood due to the log-shift transformation an
 \end{equation}
 where $\ d = 1, ..., D,\ i = 1, ..., N_d$. Unless otherwise specified, this model will be the basis for the analysis in the rest of this paper.
 
-\subsection{Coefficient interpretation in the transformed model}
-The transformation of the dependent variable complicates coefficient interpretation.
-In a prediction context, coefficients are of secondary importance, as the estimated values might be bias due to complex interactions between variables, e.g., omitted variable bias, post-treatment bias, collider bias.
-Models with biased coefficient can offer even better predictive performance than non-biased models (MCELREATH).
-However, in a Bayesian context it is still useful to understand how regressors affect the dependent variable to choose adequate priors.
-
-For simplicity, consider a regression with a transformed dependent variable and two independent variables:
-\begin{equation*}
-    \log(y + \lambda) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \varepsilon
-\end{equation*}
-By taking the exponential function on both sides, the expression becomes
-\begin{equation*}
-    y + \lambda = e^{\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \varepsilon}
-\end{equation*}
-Assuming that $\lambda$ is a fixed constant, it can be analyzed how $y$ changes when increasing $x_1$ by one unit
-\begin{equation}
-    \displaystyle \frac{y^{new} + \lambda}{y^{old} + \lambda} =
-        \frac{e^{\beta_0 + \beta_1 (x_1 + 1) + \beta_2 x_2 + \varepsilon}}
-             {e^{\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \varepsilon}} = e^{\beta_1}.
-\end{equation}
-When $\lambda = 0$, this derivation corresponds to the coefficient interpretation in a log-linear model as an approximate percentage change (SOURCE – Stock \& Watson?).
-This stems from the approximate relation $\beta_1 \approx e^{\beta_1} - 1$, which is accurate for small $\beta_1$ ($e^{0.04} - 1 \approx 0.0408$), but worsens as $\beta_1$ increases ($e^{0.6} - 1 \approx 0.822$).
-Nevertheless, this inaccuracy has to be put into perspective.
-If $x_1$ is scaled so that an increase of one unit is comparatively small, an increase of 4\% in income for each additional unit of $x_1$ seems plausible and even high.
-On the other hand, $\beta_1 = 0.6$ would imply an increase of around 82\%, which seems extraordinarily high for a comparatively small change in $x_1$.
-Therefore, it is safe to expect that most coefficients in a log-linear should be rather close to zero – assuming that there is no confounding that might radically change the magnitude of coefficients.
-
-Finally, the effect of the shift term $\lambda$ on coefficient interpretation has to be considered.
-There are two main factors.
-First, the distortion of the interpretation of $\beta_1$ is smaller as $\lambda$ gets closer to zero or is comparatively small compared to the whole range of $y$.
-As $\lambda$ is usually below the 2\% quantile of variable $y$ (s. simulation results in CHAPTER XY), it is reasonable to assume that the interpretation as an approximate percentage change can still be used.
-Second, it is crucial to remember that a linear regression is mainly related to the expected value of the dependent variable.
-$\beta_1$ has to be interpreted with this in mind.
-Focusing on extreme regions of $y$, shows a larger effect of $\lambda$.
-For example, assume that $y \in (0, 100)$ and $\lambda = 1$.
-For values near the minimum of $y$, $\lambda$ has a very large influence: $\frac{y^{new} + 1 } {y^{old} + 1} = \frac{3 + 1}  {2 + 1} = 1.33$, while with no shift term $\lambda$ the ratio between $y^{new}$ and $y^{old}$ would be 1.5. With larger values of $y$ the difference between the ratios of shifted and non-shifted dependent variables is much smaller: $\frac{30 + 1}{20 + 1} = 1.48$, which is much closer to $\frac{30}{20} = 1.5$.
-
-In summary, the traditional coefficient interpretation as approximate percentage changes in a log-linear model can also be used with a log-shift transform.
-The interpretation has some caveats that assume that $\lambda$ is small compared to the range of $y$ and that the focus is not on values in the extremes of $y$.
-However, the interpretation when $\lambda = 0$ is itself an approximation and it is therefore possible to use it as a rule of thumb when $\lambda \ne 0$.
+After a log-shift transformation the coefficient can be interpreted as an approximate percentage change.
+A detailed justification for this interpretation can be found in \ref{appendix:coeff}.
 
 

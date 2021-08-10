@@ -1,0 +1,78 @@
+\section{Simulation scenarios}
+
+Working with simulated is one key step of Bayesian workflow \cite{gelman_bayesian_2020}.
+Testing models against fake data allows the researcher to check understand potential problems with the methods.
+While a model that works well with simulated data is not guaranteed to work well with real-world data,
+a model that does not work with simulated data is certain to fail in a real application.
+This will become clearer in the next chapter on Bayesian workflow.
+
+As described in section \ref{ch:difficulties}, income data is characterized by a unimodal, right-skewed and leptokurtic distribution.
+To mimic this characteristics, three simulation scenarios based on \cite{rojas_perilla_data_2020} are proposed.
+The first one – the \textit{log-scale} scenario – is defined so that the logarithm of simulated income is roughly normal:
+\begin{equation}
+    \begin{split}
+        u_d & \sim \mathcal N(0, 0.4), ~~ d = 1,...,D,\\
+        \varepsilon_{di} & \sim \mathcal{N}(0, 0.3), i = 1,...,N,\\
+        \mu_{dk} & \sim \mathcal{U}(2, 3), k = 1,...,K,\\
+        \Sigma_{mn} = &\begin{cases} 1, ~~ m = n \\ \rho,  ~~ \text{otherwise}  \end{cases},
+            m = 1,...,K, n = 1,...,K,\\
+        \boldsymbol x_{di}  &\sim \text{MvNormal} (\boldsymbol \mu_{d}, \Sigma) ,
+            ~~ \boldsymbol \mu_{d} = (\mu_{d1}, ..., \mu_{dK}),\\
+        y_{di} & = \exp(5 + 0.1 \cdot \boldsymbol x_{di}  + u_d + \varepsilon_{di}),\\
+    \end{split}
+    \label{eq:log_scenario}
+\end{equation}
+where $K$ is the number of regressors, $D$ is the number of domains, and $N = N_1 + ... + N_D$ is the total number of observations.
+$\Sigma$ is the covariance matrix and it assumes that all covariates have unit variance. $\rho$ controls the correlation between independent variables and is set to 0.2.
+A certain varation among areas is achieved through the vector $\boldsymbol \mu_d$, which contains the means for all covariates in area $d$.
+Thus, some covariates are consistently higher or lower in a given area, creating a clear profile for each area.
+Because the focus is on prediction, the regression coefficients are fixed and equal for all covariates (e.g., 0.1 in the log-scale scenario), but this can also be varied.
+There are two additional scenarios – the \textit{Pareto} and the \textit{GB2}.
+The GB2 scenario can be formulated as
+\begin{equation}
+    \begin{split}
+        u_d & \sim \mathcal N(0, 500), ~~ d = 1,...,D,\\
+        \varepsilon_{di} & \sim \mathcal{GB}2(2.5, 18, 1.46, 1700), i = 1,...,N,\\
+        \mu_{dk} & \sim \mathcal{U}(-1, 1), k = 1,...,K,\\
+        \boldsymbol x_{di}  &\sim \text{MvNormal} (\boldsymbol \mu_{d}, \Sigma) ,
+        ~~ \boldsymbol \mu_{d} = (\mu_{d1}, ..., \mu_{dK}),\\
+        \tilde{\varepsilon}_{di} & = \varepsilon_{di} - \bar \varepsilon,  \\
+        y_{di} & = 9000 - 250 \cdot \boldsymbol x_{di} + u_d + \tilde \varepsilon_{di}, \\
+    \end{split}
+    \label{eq:gb2_scenario}
+\end{equation}
+where $\mathcal{GB}2$ is the generalized beta distribution of the second kind with four parameters usually referred to as $a, b, p, q$. $\Sigma$ is defined as in scenario \ref{eq:log_scenario} with $\rho = 0.2$. Note that $\varepsilon_{di}$ needs to be centered, as they have a non-zero mean. The third and last scenario has a Pareto error term:
+\begin{equation}
+    \begin{split}
+        u_d & \sim \mathcal N(0, 500), ~~ d = 1,...,D,\\
+        \varepsilon_{di} & \sim \text{Pareto}(3, 2000), i = 1,...,N,\\
+        \mu_{dk} & \sim \mathcal{U}(-3, 3), k = 1,...,K,\\
+        \boldsymbol x_{di}  &\sim \text{MvNormal} (\boldsymbol \mu_{d}, \Sigma) ,
+        ~~ \boldsymbol \mu_{d} = (\mu_{d1}, ..., \mu_{dK}),\\
+        \tilde{\varepsilon}_{di} & = \varepsilon_{di} - \bar \varepsilon,  \\
+        y_{di} & = 12000 - 350 \cdot \boldsymbol x_{di}    + u_d + \tilde \varepsilon_{di}.\\
+    \end{split}
+    \label{eq:pareto_scenario}
+\end{equation}
+Here again, $\tilde \varepsilon_{di}$ are the centered unit-level residuals.
+Note that all fixed parameters in the three scenarios (e.g., the standard deviation of the area-level random effect $u_d$) are chosen so that the simulations are in a realistic range in line with the income variable \code{icptc} from the Mexican survey.
+This means roughly that no simulation should be above the tens of thousands.
+
+The three scenarios provide a variety of characteristics against which to test the models in the workflow.
+First, the log-scale scenario is multiplicative, while the GB2 and Pareto scenarios are additive.
+This is useful to check whether a model with a multiplicative likelihood also can approximate a model whose generating process is additive.
+Moreover, the logarithmic transform of $y_{di}$ should be roughly normal, while the GB2 and Pareto scenarios should display a higher excess kurtosis after a logarithmic transform, which is often observed in real-world income data.
+
+Nevertheless, there are two main limitations with the simulation scenarios.
+First, the area-level intercepts $u_d$ are assumed to be independent, by defining the standard deviation as a constant.
+This is unrealistic, as there are similarities and differences between areas that are likely to manifest themselves in the for of correlations.
+A clear example would be two neighboring geographic areas with highly intertwined economies.
+Second, some covariates might have different effect sizes depending on the area.
+For example, a higher level of education could have a much stronger effect on income in an urban region, where there is a higher demand for specialized, well-paying jobs.
+In contrast, most jobs in a rural region are less likely to require high skills and therefore offer a lower pay.
+Here, income does not only depend on the quality of labor supply, but also on the job market demands in a gives area.
+For the present paper, these two limitations are acceptable.
+On the one hand, there are many ways of including spatial correlation in the simulation scenarios\footnote{A more detailed overview of this topic with references can be found in chapter XY} and it is not clear, whether a decision for one type of correlation might turn out to be unlike the spatial dependencis present in real-world data.
+On the other hand, random slopes are not considered in the Bayesian workflow of the next chapter.
+These two elements are left out of the simulations, to reduce the complexity of all the aspects that in theory could be explored.
+Spatial correlation, random slope and other extensions in the simulation scenarios might play an important role in developing a model for poverty estimation, but this is left for further research.

@@ -1,0 +1,18 @@
+\chapter{Appendix: Adjusting the Jacobian due to a Log-Shift Transformation}
+\label{appendix:jacobian}
+
+The transform of the dependent variable introduces a distortion that makes it necessary to adjust the Jacobian of the likelihood using Jacobi's transformation formula \cite[Theorem 12.6]{jacod_probability_2004}.
+Let $X$ be a random variable defined over $I \subseteq \mathbb{R}$ with density $f^X$. For a continuous differentiable function $\varphi: I \rightarrow \mathbb{R}$ and $\varphi' \ne 0$ for all $x \in I$, define $Y := \varphi(X)$.
+The density of the random variable $Y$ can then be defined as
+\begin{equation*}
+    f^Y(y) = f^X(\varphi^{-1}(y))
+    \left|\displaystyle \frac{d \varphi^{-1}(y)}{dy}\right|
+    \mathbb{I}(y \in \varphi(I)), ~~ y \in \mathbb{R},
+\end{equation*}
+where $\mathbb{I}(\cdot)$ is the indicator function.
+Assuming that $y$ represents the dependent variable in the original scale, then $\varphi^{-1}(y) = \log(y + \lambda)$ and the Jacobian adjustment $\displaystyle \frac{d \varphi^{-1}(y)}{dy} = \frac{1}{y + \lambda}$, which is positive due to $y + \lambda > 0$. As the transformation parameter $\lambda$ is chosen to drastically reduce the skewness of $\log(y + \lambda)$, the density $f^X$ is chosen to be from a symmetric distribution – e.g., a Student's $t$-distribution. The likelihood of $y$ under the log-shift transformation is therefore
+\begin{equation}
+    \displaystyle f^Y(y) = \text{Student}(\log(y + \lambda)| \mu , \sigma, \nu)
+    \cdot \frac{1}{y + \lambda}
+    \cdot\mathbb{I}(y \ge \lambda), ~~ y \in \mathbb{R}.
+\end{equation}

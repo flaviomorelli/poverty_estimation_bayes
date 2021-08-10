@@ -1,0 +1,100 @@
+\section{Data from the Mexican state of Guerrero}
+To explore the estimation of poverty indicator for small areas, this paper uses the 2010 Household Income and Expenditure Survey (\textit{Encuesta Nacional de Ingresos y Gastos de los Hogares – ENIGH}) and the 2010 National Population and Housing Census from Mexico by the National Institute of Statistics and Geography (INEGI).
+Specifically, both data sets will be used to estimate the head count ratio (HCR) and poverty gap (PGAP) presented in chapter \ref{ch:indicators}.
+This state of Guerrero is divided into 81 municipalities of which 40 are in-sample and 41 out-of-sample in the income survey.
+The median sample size at the municipality level is 26.5.
+The census contains X observations after cleaning the data. Income data is provided at the household level and there are 1801 households in the income survey.
+The Acapulco municipality contains 511 households – is almost a third of the survey sample, and the smallest municipality contains only 13 households.
+Most of the state's population consists of impoverished Indians and mestizos.
+However, there are important tourist destinations in the municipalities of Acapulco and Zihuatanejo on the pacific coast and also in Taxco de Alarcón in the highlands.
+Guerrero's economy is based mainly on the primary sector and two-fifths of the population lives in rural areas \citep{encyclopaedia_britannica_guerrero_2019}.
+\begin{table}[t]
+    \caption{Variables related to head of household}
+    \centering
+    \begin{tabular}{ l | m{8cm} | l }
+        \textbf{Variable} & \textbf{Description} & \textbf{Source} \\
+        \hline
+        Occupation type & Occupation in the primary,
+        secondary, tertiary sector or not employed
+        & \code{jsector}\\
+        Gender & male or female & \code{jsexo}\\
+        Work experience & Years of work experience & \code{jexp}\\
+        Age & Age of head of household  & \code{jedad}\\
+    \end{tabular}
+    \label{tab:head_household}
+\end{table}
+
+
+In an applied setting, the variables that can actually be chosen is limited by a number of factors.
+For SAE methods, it is necessary to have auxiliary data to borrow strength and improve the estimations, which is only possible if both the main and auxiliary data sources contain the same variables.
+Moreover, the amount of missings in a variable can severly undermine its usefulness for prediction.
+A large number of missings (20\% or more) in one or multiple variables can lead to a high number of observations being discarded.
+While imputation is possible in principle, it is not straightforward to take the clustered and stratified structure of survey data into account in the imputation process.
+Finally, some variables include missing values due to structural reasons.
+For example, if the head of household is single then there will be missing values in variables that concern the partner.
+Imputation in such cases seems unrealistic.
+Therefore, variables with a low amount of missings (<5 \%) both in the survey and in the census are chosen as candidates for the final model.
+
+\begin{table}[t]
+    \caption{Variables related to household demographics.}
+    \centering
+    \begin{tabular}{ l | m{7cm} | l }
+        \textbf{Variable} & \textbf{Description} & \textbf{Source} \\
+        \hline
+        Minors under 16 & Presence of minors under 16 years old in household
+        & \code{id\_men}\\
+        Percentage of women & Percentage of women in household & \code{muj\_hog / tam\_hog}\\
+        Literacy & Percentage of literate memebers of household & \code{nalfab / tam\_hog}\\
+        Indigenous population & Presence of indigenous population in household  & \code{pob\_ind}\\
+        Geography & Household in urban or rural area  & \code{rururb}\\
+    \end{tabular}
+    \label{tab:demo_household}
+\end{table}
+
+The income variable $y_{di}$ for a given municipality and individual corresponds to \code{icptc} in the survey and it is not available in the census.
+\code{icptc} measures equivalized total household per capita income in Mexican pesos and is used as a proxy for the living standard.
+To generate high-quality predictions, variables present in both data sets that are plausibly related to income are used as regressors.
+These variables are grouped into three categories.
+Variables related to head of household (Table \ref{tab:head_household}\footnote{For practical purposes, the \textit{not employed} category summarizes both the unemployed and individuals out of the labor force.}) are likely to have high predictive power, because the head of household is usually the main breadwinner of the household and his/her situation has a large impact on the economic situation of the household more broadly.
+Additionally, variables related to household demographics (Table \ref{tab:demo_household}) are relevant, because they provide information about socio-demographic patterns that impact household income – e.g., rural areas tend to have lower income than rural areas, or indigenous people are more likely to be marginalized in former colonies.\footnote{In the table, code notation is used for some variables. The symbol \code{/} indicates division and \code{||} indicates the Boolean OR. The variable \code{tam\_hog} is the number of members in the household and is used to compute certain quantities per capita to make them more comparable among households of different sizes.}
+Finally, variables about the economic situation of the household (Table \ref{tab:economic_household}), represent economic circumstances, which reflect household income and wealth more directly.
+These variable are only a starting point and a more careful variable selection is contained in Chapter \ref{ch:varsel}.
+
+
+
+\begin{table}[t]
+    \caption{Variables related to economic situation.}
+    \centering
+    \begin{tabular}{ m{3.4cm} | m{7cm} | l }
+        \textbf{Variable} & \textbf{Description} & \textbf{Source} \\
+        \hline
+        Working members & Percentage of working members of household
+        & \code{pcocup}\\
+        Income-receiving members & Percentage of members who receive an income & \code{pcpering}\\
+        Unusual work & Presence of child or senior work in household& \code{trabinf || trabadulmay}\\
+        External income & Household receives remittances or financial help from other households  & \code{remesas || ayuotr}\\
+        Communication goods & Number of communication goods per capita in household & \code{actcom / tam\_hog}\\
+        General goods & Number of goods per capita in household  & \code{actcom / tam\_hog}\\
+    \end{tabular}
+    \label{tab:economic_household}
+\end{table}
+
+There is a last group of binary indicator variables that are based on the presence of certain structural disadvantages in the household concerning four different areas (Table \ref{tab:disadvantages}): education, health care, housing quality and access to public utilities.
+These variables are not used as predictors in the regression, but they will be considered in chapter \ref{ch:raneff} when discussing whether it is possible to have an alternative definition of the random effect in the model.
+
+\begin{table}[h]
+    \caption{Indicators of structural disadvantages.}
+    \centering
+    \begin{tabular}{ l | m{8cm} | l }
+        \textbf{Variable} & \textbf{Description} & \textbf{Source} \\
+        \hline
+        Education & Adequate access to education
+        & \code{ic\_rezedu}\\
+        Health care & Adequate access to health care & \code{ic\_asalud}\\
+        Housing quality & Adequate housing quality & \code{ic\_cv}\\
+        Public utilities & Adequate acces to public utilities (electricity, running water, sewer system)  & \code{ic\_sbv}\\
+    \end{tabular}
+    \label{tab:disadvantages}
+\end{table}
+
+%%%

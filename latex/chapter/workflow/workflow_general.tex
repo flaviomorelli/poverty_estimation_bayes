@@ -1,41 +1,28 @@
-\section{Bayesian workflow}
+\section{An introduction to Bayesian workflow}
 
-The idea of statistical workflow is not new – especially at a time when statistics is increasingly dependent on computational systems. One early example of a statistical workflow can be found in (Box).
-In the Bayesian context, (Gabry 2019) and (Betancourt 2020a) have referred to the idea of a Bayesian workflow.
-A full list of additional references can be found in (Gelman 2020).
-This section summarizes the ideas behind Bayesian workflow as presented by (Gelman et al. 2020).
-While Bayesian \textit{inference} deals with the formulation and computation of probability theory, Bayesian \textit{workflow} consists of three main steps: model building, inference, and model checking or improvement.
-The last step is not limited to choosing the best model, but allows to better understand the models used, specifically why the fail or lead to different results under certain conditions.
-Moreover, it is possible to gain valuable insights by comparing a good model to a simpler or a more complex model.
-In the Bayesian workflow proposed by Gelman, it is inevitable to fit a series of models iteratively.
+The idea of statistical workflow is not new.
+One early example of a statistical workflow can be found in% \cite{box_science_1976}.
+In the Bayesian context, \cite{gabry_visualization_2019} and \cite{betancourt_towards_2020} have referred to the idea of a Bayesian workflow.
+This section summarizes the ideas behind Bayesian workflow as presented by \cite{gelman_bayesian_2020}.
+
+While Bayesian \textit{inference} deals with the formulation and computation of (conditional) probability densities, Bayesian \textit{workflow} consists of three steps: model building, inference and model checking/improvement.
+In Bayesian workflow, it is inevitable to fit a series of models iteratively.
 Flawed models are a necessary step towards improving the model and finding models that are useful in practice.
+At the same time, model improvement is not limited to finding the best model, but it also allows to better understand the models used; specifically, why they fail or lead to different results under certain conditions.
 There are several reasons for considering a workflow and not just plain inference.
 Bayesian computation is challenging and it is often necessary to iterate through simpler and alternative models, sometimes using faster but less precise approximation algorithms.
 Moreover, it might not be clear ahead of time which model adequate and how it can be modified or extended.
 The relation between fitted models and data can be best understood by comparing inferences from different models.
-Finally, there is uncertainty associated with model choice, as different models might display different characteristics.
+For example, it is possible to gain valuable insights by comparing a model to simpler or more complex models.
+Finally, there is uncertainty associated with model choice, as different models might display diverging but realistic results for the same application.
 
-
-The main steps of the workflow in (Gelman 2020) are:
-\begin{enumerate}
-    \setlength\itemsep{0.1em}
-    \item Pick an initial model
-    \item Fit the model
-    \item Validate computation
-    \item Address computational issues
-    \item Evaluate and use the model
-    \item Modify the model
-    \item Compare models
-\end{enumerate}
-The graphical representation of the workflow is included in Figure X.
+The graphical representation of the workflow is included in Figure \ref{fig:gelman_wf}.
 The workflow contains many steps, but the authors emphasize that there are some steps that might be skipped or changed depending on the data and the use case.
+For this reason, \cite{gelman_bayesian_2020} argues that a workflow is more general than an example, but less clearly specified than a methodology.
+While the exact steps are likely to vary depending on the specific application, a workflow provides a framework to develop statistical models.
 Note that this workflow is mostly focused on data modeling.
 Other steps such as data collection are not taken into account.
-An exhaustive discussion of the whole workflow is beyond the scope of the present paper.
-The focus here is on how the ideas in (Gelman 2020) can be applied to the estimation of poverty indicators in the small area estimation context.
-In the following, the ideas in Gelman 2020 are applied to the data of the Mexican state of Guerrero.
-Due to the non-linear nature of the workflow, the sections and subsections are not named after single steps of the workflow.
-However, throughout the rest of the paper there are explicit references to the corresponding step and an explanation of why it is necessary at a given stage.
+
 \begin{figure}
     \includegraphics[width=16cm]{./graphics/workflow}
     \label{fig:gelman_wf}
@@ -43,26 +30,33 @@ However, throughout the rest of the paper there are explicit references to the c
 \end{figure}
 
 
-For the sake of completeness, we include a short explanation of each one of the steps in the workflow in Gelman 2020.
+An exhaustive discussion of the whole workflow is beyond the scope of the present paper.
+Instead, the focus is on how the ideas in \cite{gelman_bayesian_2020} can be applied to the estimation of poverty indicators in the small area estimation context.
+Due to the non-linear nature of the workflow, the sections and subsections in the current chapter are not strictly named after single steps of the workflow.
+On the contrary, each section in this chapter reflect specific aspects of a model that are investigated separately.
+However, throughout the rest of the paper there are explicit references to the corresponding step and an explanation of why it is necessary at a given stage.
+For completeness, the rest of this section summarizes the seven workflow steps in \cite{gelman_bayesian_2020} that are also represented in Figure \ref{fig:gelman_wf}.
 
-\textbf{1. Pick an initial model}
+\textbf{Step 1. Pick an initial model}
 
 Usually, the starting point is to adapt an idea that already exists in the literature.
 This adaptation can be done in different ways: (i) start with a simple model and add layers of complexity, (ii) simplify a complex model, so that it is more understandable or easier to fit while still delivering a similar performance, (iii) consider different starting models with diverging assumptions and follow multiple paths.
 Bayesian models are highly modular, as priors and likelihood can be replaced with other distributions if necessary.
-Moreover, there is a flexibility regarding how parameter priors interact with each other, which allows for a high degree of model complexity.
-Prior predictive checks are a valuable tool when building a model, because it allows to refine the model without without fitting the data multiple times.
-This is especially important when the priors should regularize the model to avoid extreme predictions.
+Moreover, there is flexibility regarding how parameter priors interact with each other, which allows for a high degree of model complexity.
 
-Additionally, fully generative model?
+%(HERE? )Prior predictive checks are a valuable tool when building a model, because it allows to refine the model without fitting the data multiple times.
+%This is especially important when the priors should regularize the model to avoid extreme predictions.
+%Additionally, fully generative model?
 
-In this paper, the initial model is the HB model by \cite{molina_small_2014}.
-This model is expanded in (Morelli 2021), where the effect of different likelihoods for income in the logarithmic scale was analyzed with the $t$-distribution providing the best performance over many different scenarios.
-The results in these two papers are taken as given and will not be further discussed here.
+Here, the initial model is the HB model by \cite{molina_small_2014} with its extensions in \cite{morelli_hierarchical_2021}, where the effect of different likelihoods for log-shift transformed income was explored.
+The $t$-distribution provides the best performance over many different scenarios.
+However, in \cite{morelli_hierarchical_2021} the shift parameter was found through a heuristic whereas
+the initial model in the present paper does full inference on the shift parameter from the start.
+Additionally, an alternative group of initial models that use skewed likelihoods instead of transformation will be considered in section \ref{ch:skewed_likelihoods}.
 
-Multiple models in the appendix? What did not work?
 
-\textbf{2. Fit the model}
+
+\textbf{Step 2. Fit the model}
 
 Section XY already discussed the two most common Bayesian estimation approaches: MCMC and variational inference.
 When fitting a model, the user is confronted with decisions on which algorithm to run and under which conditions.
@@ -76,7 +70,7 @@ In this paper, variational algorithms were often used to do a first fit of the m
 While iterating through the models only 2 Markov chains were used and, depending on fitting time, the number of iterations was reduced compared to the degault in \code{Stan}.
 
 
-\textbf{3. Validate computation}
+\textbf{Step 3. Validate computation}
 
 Diagnostics for Bayesian computation methods were already discussed in Section XY.
 In the HMC context, the two main aims are to have no divergences and to have an $\hat R$ lower than 1.01.
@@ -95,7 +89,7 @@ First, model parameters are generated from the prior and used to simulate data c
 Then the model is fitted to data and the posterior is compraed to the simulated parameters from the priors that were used to generate the data.
 By repeating this procedure, it is possible to check the inference algorithms – the prior should be recovered when performing inference on data sets drawn from the prior.)
 
-\textbf{4. Address computational issues}
+\textbf{Step 4. Address computational issues}
 
 A model that leads to computational problems usually has some underlying modelling issues.
 Usually, it is best to start with a simple model and make it more complex one step at a time, making it easier to determine what part of the model is causing problems.
@@ -106,7 +100,7 @@ Tightening moderately informative priors can help by pushing the sampler towards
 However, this adjustment of priors should be in line with available knowledge and not only to solve fitting problems.
 One example will be discussed in section XY (prior on shift parameter).
 
-\textbf{5. Evaluate and use the model}
+\textbf{Step 5. Evaluate and use the model}
 
 Posterior predictive checks are a useful tool when diagnosing fit problems to the data.
 This can be seen as a safeguard against misspecification.
@@ -118,7 +112,7 @@ While refittig model multiple times to do cross-validation can be computationall
 
 To check how informative the data with respect to a parameter, one can compare the standard deviation of prior and posterior parameters. A higher shrinkage in uncertainty indicates that the data is more informative.
 
-\textbf{6. Modify the model}
+\textbf{Step 6. Modify the model}
 
 Bayesian statistics provides a modular approach in which models can be expanded or reduced in response to new data or failures to fit the model to the data.
 Mix of fitting the data and domain expertise.
@@ -135,7 +129,7 @@ Note that the std. deviation of a $t$-distribution varies with the df.
 Joint priors?
 
 
-\textbf{7. Compare models}
+\textbf{Step 7. Compare models}
 
 Models are fitted many times, for multiple reasons.
 It might be easier to start with simple models, before getting to a more complex model. There are often bugs in the code and in the models.

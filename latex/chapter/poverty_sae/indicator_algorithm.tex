@@ -1,4 +1,5 @@
 \subsection{Estimating poverty indicators with Bayesian models}
+\label{ch:indicators}
 
 The aim of this paper is to calculate poverty indicators based on income data.
 There are other measures of income that take other dimensions into account (SOURCE), but which are not relevant for the present paper.
@@ -26,7 +27,7 @@ The HB estimator for the poverty indicator $F_d$ is given by the following algor
     \For{$s \in \{1,...,S\}$}{
 
         \For{$d \in \{1,...,D\}$}{
-            $\tilde y_d|y^{(s)} = (\tilde y_{d1}^{(s)}, ..., \tilde y_{dN_d}^{(s)})'$\;
+            $\tilde y_d^{(s)}|y = (\tilde y_{d1}^{(s)}, ..., \tilde y_{dN_d}^{(s)})'$\;
             Sample $\boldsymbol {\hat \beta^{(s)}}, \hat u_d^{(s)}, \hat \sigma_e^{(s)}, \hat \sigma_u^{(s)}, \hat \nu^{(s)}$ from $p(\beta, u_d, \sigma_e, \sigma_u, \nu|y)$\;
         \eIf{$d$ is in-sample}{
             Sample $\tilde y^{(s)}_d|y$ from  $\text{Student}(\boldsymbol{x'}_{d} \boldsymbol {\hat \beta^{(s)}} + \hat u_d^{(s)}, \hat \sigma_e^{(s)}, \hat \nu^{(s)})$
