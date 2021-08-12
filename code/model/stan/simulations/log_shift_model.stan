@@ -33,26 +33,22 @@ transformed parameters{
 }
 
 model {
-  // define transformed outcome
-  
-  // Regression parameters
-  intercept ~ student_t(3, 0, 10);
+  intercept ~ normal(0, 5);
   beta ~ normal(0, 0.5);
-  sigma_e ~ gamma(2, 10^-3);
+  sigma_e ~ gamma(2, 0.75);
   
-  // Group effects
-  sigma_u ~ gamma(2, 10^-3);
+  sigma_u ~ gamma(2, 0.75);
   u ~ normal(0, sigma_u); 
   
-  // Raw parameters with a zero lower bound
   nu ~ gamma(2, 0.1);
   s ~ normal(0, 10^-3); 
   
-  // Transformed Regression 
+  vector[N] mu;
   for(n in 1:N){
-  target += student_t_lpdf(log_y[n] |nu, intercept + X[n] * beta + u[domain[n]], sigma_e) 
-                - log(y[n] + lambda);
+    mu[n] = intercept + X[n] * beta + u[domain[n]];
   }
+  log_y ~ student_t(nu, mu, sigma_e);
+  target += - log_y; // Jacobian adjustment
 }
 
 generated quantities{

@@ -28,7 +28,10 @@ gq_miss_model <- cmdstan_model(gq_miss_path)
 fit <- lapply(scenarios,
               scenario_fit, 
               data = sim_data, 
-              model = log_shift_model)
+              model = log_shift_model, 
+              chains = 4, 
+              iter_warmup = 1200, 
+              iter_sampling = 300)
                             
 y_pred <- scenario_pred_list(sim_data, 
                              gq_model,
@@ -36,7 +39,7 @@ y_pred <- scenario_pred_list(sim_data,
                              fit, 
                              scenarios)
 
-create_graphs(sim_data, y_pred, scenarios)
+create_graphs(sim_data, y_pred, scenarios, graph_path = graph_path)
 skewness_graphs(fit, scenarios)
 
 hcr_pop <- indicator_pop_list(sim_data, scenarios, "hcr")
@@ -48,8 +51,8 @@ pgap_sample <- indicator_list(sim_data, y_pred, scenarios, "pgap")
 hcr_hb <- hb_list(hcr_sample, scenarios)
 pgap_hb <- hb_list(pgap_sample, scenarios)
 
-create_graphs(hcr_pop, hcr_sample, scenarios,  "hcr")
-create_graphs(pgap_pop, pgap_sample, scenarios, "pgap")
+# create_graphs(hcr_pop, hcr_sample, scenarios,  "hcr")
+# create_graphs(pgap_pop, pgap_sample, scenarios, "pgap")
 
 hcr_diagnostics <- diagnostics_list(hcr_sample, hcr_pop, scenarios)
 pgap_diagnostics <- diagnostics_list(pgap_sample, pgap_pop, scenarios)

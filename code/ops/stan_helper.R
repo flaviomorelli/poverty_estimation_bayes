@@ -27,21 +27,29 @@ pop_data_miss <- function(pop_data, smp_data){
 }
 
 
-stan_fit <- function(model, data, chains = 2){ 
+stan_fit <- function(model, data, chains, 
+                     iter_warmup, iter_sampling){ 
   model$sample(
     data = data,
     chains = chains, 
-    parallel_chains = chains
+    parallel_chains = chains,  
+    iter_warmup = iter_warmup,
+    iter_sampling = iter_sampling
   )
 }
 
 
-scenario_fit <- function(data, model, scenario){
+scenario_fit <- function(data, model, scenario, chains = 2, 
+                         iter_warmup = 1000, iter_sampling = 1000){
   lapply(
     list(
       smp = data[[scenario]][["smp_stan"]],
       smp_miss = data[[scenario]][["smp_miss_stan"]]),
-    stan_fit, model = model
+    stan_fit, 
+    model = model,
+    chains = chains, 
+    iter_warmup = iter_warmup,
+    iter_sampling = iter_sampling
   )
 }
 
@@ -107,7 +115,7 @@ get_pred_std <- function(model, fit, pop, smp){
   posterior::as_draws_matrix(
     model$generate_quantities(
       fit, 
-      data = pop, 
+      data = smp, 
       seed = seed, 
       parallel_chains = 2
     )$draws() 

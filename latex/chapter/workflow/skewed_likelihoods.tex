@@ -1,14 +1,17 @@
 \subsection{Alternative 2: Skewed likelihoods}
 \label{ch:skewed_likelihoods}
-A natural question raised by the use of a log-shift transform together with a symmetric likelihood is whether it is better to use a skewed distribution for the likelihood instead.
-In line with the Bayesian workflow proposed by (GELMAN ET AL. 2020), different initial models were considered.
+A natural question raised by income data is whether a skewed likelihood might provide the best results.
+In line with the Bayesian workflow proposed by \cite{gelman_bayesian_2020}, this paper is not limited to a single initial model based on data-driven transformations, but also explores the impact of using skewed likelihoods.
 The following skewed likelihoods were taken into account: gamma with logarithmic link, gamma with
 softplus link, lognormal, skew-normal and exponentially modified Gaussian (exGaussian).
+This variety goes beyond the distribution shape, but it also affects the assumed relation between dependent variable and predictors.
+The gamma with lo link and lognormal distributions imply a multiplicative model, whereas the rest assume that the predictors have an additive impact on the dependent variable.
 
-Additive vs. Multiplicative.
-
-The results of these alternative models are presented in this chapter.
-To estimate the models the package \code{brms} was used.
+The results of these alternative models are presented in this section.
+The package \code{brms} \citep{burkner_brms_2017}, which provides a more user-friendly interface to \code{Stan}, is used to do a first check of the likelihoods.
+This follows a principle from \cite{gelman_bayesian_2020}: when working with preliminary models, it is better to use tools that allow for quick checks.
+\code{brms} already has a number of likelihoods implemented, and if modifications are needed, it is always possible to take the \code{Stan} code and modify it.
+But starting coding from scratch with \code{Stan} would take longer, especially because working with different likelihoods, requires different parametrizations.
 
 % PPC: skew-normal
 \begin{figure}[t]
@@ -25,10 +28,19 @@ To estimate the models the package \code{brms} was used.
         \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/skew_normal/pareto_smp}
         \caption{Pareto}
     \end{subfigure}
-    \label{fig:skewnormal_ppc}
+
     \caption[Posterior predictive check for skew-normal likelihood]{Posterior predictive check for skew-normal likelihood. The black line is the density plot of the dependent variable for the respective simulation scenario. The blue density plots represent 100 MCMC draws from the posterior predictive distribution.}
+    \label{fig:skewnormal_ppc}
 \end{figure}
-\vspace{-1cm}
+
+Some of this likelihoods proved to be very poor fits.
+The skew-normal likelihood (Figure \ref{fig:skewnormal_ppc}) captures well the main characteristics of the GB2 scenario. On the other hand, it is not adequate for the logscale scenario, which is characterized by a much higher skewness.
+This is due to the limitations of the skew-normal distribution, as it has a maximum skewness of $\pm 1$.
+Moreover, in this scenario the model produces some negative predictions.
+In the Pareto scenario, the model only converged for the version with some out-of-sample areas.
+This indicates that the model might need to be reparametrized and the priors adjusted for it to work properly.
+However, because this likelihood was already shown to be unreliable for the log-scale scenario, the model with a skew-normal likelihood is not further developed.
+
 % PPC: exGaussian
 \begin{figure}[h]
     \centering
@@ -44,8 +56,9 @@ To estimate the models the package \code{brms} was used.
         \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/exgaussian/pareto_smp}
         \caption{Pareto}
     \end{subfigure}
-    \label{fig:exgaussian_ppc}
+
     \caption[Posterior predictive check for exGaussian likelihood]{Posterior predictive check for exGaussian likelihood. The black line is the density plot of the dependent variable for the respective simulation scenario. The blue density plots represent 100 MCMC draws from the posterior predictive distribution. Note that the Markov chains have not mixed well in the lognormal and GB2 scenarios.}
+    \label{fig:exgaussian_ppc}
 \end{figure}
 
 \begin{figure}[t]
@@ -62,8 +75,9 @@ To estimate the models the package \code{brms} was used.
         \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/gamma_log/pareto_smp}
         \caption{Pareto}
     \end{subfigure}
-    \label{fig:gamma_ppc}
+
     \caption[Posterior predictive check for gamma likelihood]{Posterior predictive check for gamma likelihood with logarithmic link. The black line is the density plot of the dependent variable for the respective simulation scenario. The blue density plots represent 100 MCMC draws from the posterior predictive distribution.}
+    \label{fig:gamma_ppc}
 \end{figure}
 
 \begin{figure}[h]
@@ -80,20 +94,12 @@ To estimate the models the package \code{brms} was used.
         \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/lognormal/pareto_smp}
         \caption{Pareto}
     \end{subfigure}
-    \label{fig:lognormal_ppc}
+
     \caption[Posterior predictive check for lognormal likelihood]{Posterior predictive check for lognormal likelihood. The black line is the density plot of the dependent variable for the respective simulation scenario. The blue density plots represent 100 MCMC draws from the posterior predictive distribution.}
+    \label{fig:lognormal_ppc}
 \end{figure}
 
-
-Some of this likelihoods proved to be very poor fits.
-The skew-normal likelihood (Figure \ref{fig:skewnormal_ppc})captures well the main characteristics of the GB2 scenario. On the other hand, it is not adequate for the logscale scenario, which is characterized by a much higher skewness.
-This is due to the limitations of the skew-normal distribution, as it has a maximum skewness of $\pm 1$.
-Moreover, in this scenario the model produces some negative predictions.
-In the Pareto scenario, the model only converged for the version with some out-of-sample areas.
-This indicates that the model might need to be reparametrized and the priors adjusted for it to work properly.
-However, because this likelihood was already shown to be unreliable for the logscale scenario, the model with a skew-normal likelihood is not further developed.
-
-The exGaussian scenario (Figure \ref{fig:exgaussian_ppc})produces negative predictions in some scenarios and it is not able to capture the main features of the distributions.
+The exGaussian scenario (Figure \ref{fig:exgaussian_ppc}) produces negative predictions in some scenarios and it is not able to capture the main features of the distributions.
 While the exGaussian does a good job in the Pareto scenario, it fails on the other scenarios.
 In figure Xa and Xb, it can be seen that the algorithm does not converge, with two different posterior predictive as a result.
 Placing a more restrictive prior on the coefficients did not alleviate the convergence problem.

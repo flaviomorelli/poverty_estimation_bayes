@@ -1,0 +1,13 @@
+\chapter{Appendix: Imputation of very extreme predictions}
+\label{ch:imputation}
+Fitting skewed data is challenging due to the long right tail of the distribution, which can lead to very high predictions.
+This is especially the case when using the log-shift transformation combined with the Student's $t$-distribution, which has very heavy tails depending on the degrees of freedom.
+In practice, these extreme predictions represent only a small proportion (under 0.5\%) of the samples from the posterior predictive distribution.
+Still, to avoid problems with the posterior predictive checks a simple imputation procedure is implemented.
+The first step is to check which predictions are 10\% or more above the dependent variable $y$ maximum and to mark them as missing.
+Because the prediction has a very high value, the assumption is that it would still have a higher otherwise, just not in such an extreme range.
+Therefore, those predictions are then drawn from $\mathcal U(q_{0.99}(y), \max y)$, i.e. a uniform distribution between the 99\%-quantile of $y$ and its maximum.
+As an example, in the log-scale scenario the maximum of $y$ is around 30.000 while its 99\%-quantile is approximately 10.000.
+While a uniform distribution might seem a crude choice for the imputation, the probability mass above the 99\% quantile is almost zero and it should therefore be an adequate approximation.
+Nonetheless, it is certainly possible to use distributions that place less probability mass on higher values.
+Finally, it is important to underline that this imputation procedure is a heuristic and that depending on the application it might make sense to use another procedure.

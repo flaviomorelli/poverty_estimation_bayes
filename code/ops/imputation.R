@@ -22,7 +22,7 @@ impute_max <- function(y, y_rep, quant_prob = 0.99){
   q_y <- quantile(y, quant_prob)
   apply(y_rep, 
         MARGIN = 2, 
-        FUN = function(x) ifelse(x > max_y, 
+        FUN = function(x) ifelse(x > max_y * 1.1, 
                                  runif(1, q_y, max_y),
                                  x))
 }

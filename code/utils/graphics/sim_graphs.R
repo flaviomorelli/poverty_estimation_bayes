@@ -2,14 +2,15 @@ library(bayesplot)
 
 # Load paths
 source(file.path("config", "sim_config.R"))
+source(file.path("ops", "stan_helper.R"))
 
 # Global theme setup
 bayesplot_theme_set(theme_minimal(base_size = 14) + theme(legend.position = "none"))
 
 save_graph <- purrr::partial(ggplot2::ggsave, 
                              device = "png", 
-                             width = 30, 
-                             height = 5, 
+                             width = 25, 
+                             height = 7, 
                              units = "cm")
 
 graph_list <- function(y, 
@@ -19,7 +20,7 @@ graph_list <- function(y,
   result <- list()
 
   result$dens <- ppc_dens_overlay(y, 
-                                  y_pred[1:n_pred, ])
+                                  y_pred[1:n_pred, ], size = 0.2) + xlim(c(0, 0.6 * max(y)))
   
   result$median_2d <- ppc_stat_2d(y, 
                                   y_pred, 
@@ -33,32 +34,38 @@ graph_list <- function(y,
   return(result)
 } 
 
-create_graphs <- function(data, y_pred, scenarios, name = ""){
+
+
+create_graphs <- function(data, y_pred, scenarios, graph_path = graph_path, name = "", from_brms = FALSE){
   for(scenario in scenarios){
     message(stringr::str_c("Creating graphs for ", scenario, " scenario."))
+    if(from_brms){
+      message("You are using data from brms")
+      y_pred_smp <- brms::posterior_predict(y_pred[[scenario]][["smp"]])
+      #y_pred_smp_miss <- t(brms::posterior_predict(y_pred[[scenario]][["smp_miss"]]))
+    } 
+    else{
+      y_pred_smp <- y_pred[[scenario]][["smp"]]
+      #y_pred_smp_miss <- y_pred[[scenario]][["smp_miss"]]
+    }
     
-    y <- data[[scenario]][["pop"]]
+    smp_list <- graph_list(data[[scenario]][["smp"]][["y"]], 
+                           y_pred_smp)
+    # smp_miss_list <- graph_list(data[[scenario]][["smp_miss"]][["y"]], 
+    #                             y_pred_smp_miss)
     
-    # Check if we are working with all the data or just the FGT indicator
-    if(!is.atomic(y)) y <- y$y
-    
-    smp_list <- graph_list(y, 
-                           y_pred[[scenario]][["smp"]])
-    smp_miss_list <- graph_list(y, 
-                                y_pred[[scenario]][["smp_miss"]])
-    
-    path <- file.path(graph_path, scenario)
     
     smp_plot <- bayesplot_grid(plots = smp_list, 
                                grid_args = list(ncol = length(smp_list)))
-    smp_miss_plot <- bayesplot_grid(plots = smp_miss_list, 
-                                    grid_args = list(ncol = length(smp_list)))
+    # smp_miss_plot <- bayesplot_grid(plots = smp_miss_list, 
+    #                                 grid_args = list(ncol = length(smp_list)))
     
+    path <- file.path(graph_path, scenario)
     message("Saving graphs.")
     save_graph(filename = file.path(path, stringr::str_c(scenario, "_smp_", name, ".png")), 
                plot = smp_plot)
-    save_graph(filename = file.path(path, stringr::str_c(scenario, "_smp_miss_", name, ".png")), 
-               plot = smp_miss_plot)
+    # save_graph(filename = file.path(path, stringr::str_c(scenario, "_smp_miss_", name, ".png")), 
+    #            plot = smp_miss_plot)
   }
 }
 
