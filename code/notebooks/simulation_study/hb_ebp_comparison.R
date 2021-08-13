@@ -68,3 +68,26 @@ compare_diagnostics(ebp_indicators,
 indicator_kde_graph(hcr_pop$pareto$pop,
                     ebp_indicators$pareto$smp$ind$Head_Count,
                     hcr_hb$pareto$smp) 
+
+# Create bad skewness plots
+
+bad_model <- cmdstan_model(file.path("model", "stan", "simulations", 
+                                     "log_shift_wide_skewness.model.stan"))
+bad_fit <- bad_model$sample(sim_data$gb2$smp_stan, 
+                            parallel_chains = 4,
+                            iter_sampling = 300)
+bad_fit_skewness <- bad_fit$draws() %>% mcmc_dens(pars = "s") + xlab("")
+ggsave(file.path("notebooks", "simulation_study", "bad_skewness.png"), 
+         plot = bad_fit_skewness, 
+         width = 8,
+         height = 7, 
+         units = "cm")
+
+gb2_skewness <- fit$gb2$smp$draws() %>% mcmc_dens(pars = "s") + xlab("")
+ggsave(file.path("notebooks", "simulation_study", "gb2_skewness.png"), 
+       plot = gb2skewness, 
+       width = 8,
+       height = 7, 
+       units = "cm")
+
+loo::loo_compare(bad_fit$loo(), fit$gb2$smp$loo())

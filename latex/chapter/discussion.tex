@@ -1,1 +1,33 @@
 \chapter{Discussion}
+
+\section{Adequacy of simulation scenarios}
+
+The use of simulated data is a central part of Bayesian workflow according to \cite{gelman_bayesian_2020}.
+However, it is also a time-consuming step.
+In general, it is hard to create a scenario or multiple scenarios that capture the main features of the data, while at the same time not defining overly complicated models or generating so many scenarios that it is a burden for the researcher to work with them.
+
+The models used in this paper are an extension of the models in \cite{rojas_perilla_data_2020}, mainly through the addition of correlated covariates.
+Nevertheless, there are some critical aspects that can be reconsidered.
+First, there might be room for improving the assumed distributions in the scenarios.
+On th one hand, the GB2 and Pareto scenarios add a skewed error term to covariates and random effects that are normal.
+The result is a relatively symmetric distribution with a long right tail.
+To make both scenarios more realistic, the distributions of the regressors could be more varied, so as to avoid a strong symmetry before adding the error term.
+On the other hand, the log-scale scenario assumes normality in the logarithmic scale.
+While this is a good sanity check for the results, it is unlikely to reflect the difficulty of fitting real-world data.
+A simple modification to avoid this strong assumption, would be again to change the normal distribution of the regressors to a heavier tailed Student's $t$ whith different the degrees of freedom for each covariate.
+Second, a majority of variables found in a survey or a census are categorical.
+Neither \cite{rojas_perilla_data_2020} nor the present paper include categorical variables in the simulations.
+Therefore, there are probably some blind spots in the analysis of this paper, regarding difficulties that might arise from the use of categorical covariates.
+Third, the area-level effects are assumed to be independent – an unrealistic assumption.
+Many different ways of including correlation were already mentioned in Chapter X: an LKJ prior, an autoregressive prior (SAR, IAR, ICAR, etc.) or using a random walk between areas.
+While choosing any one of those procedures can place a strong assumption on the simulations, it should at least help the researcher to show, whether the model can capture correlations at the area level.
+Finally, this paper ignored the issue of problematic regressors.
+The correlation between covariates is moderate, only 0.2.
+Fitting a model that does not overfit is more challenging with a higher correlation between regressors and also with covariates that are highly correlated with the dependent variable.
+Including this suggestions into the simulations scenarios, can provide a more realistic setting to test the models.
+
+At the same time, it is crucial not to overcomplicate the models and not to have too many scenarios.
+In this paper, the GB2 and the Pareto scenarios are both additive and generate dependent variables that are similar in shape.
+To simplify model analysis, it might be easier to limit the scenarios to one multiplicative scenario and one additive scenario, either with a GB2 or a Pareto error.
+
+LOGSCALE is MOST REALISTIC! WHAT TYPE OF SKEWNESS DO WE HAVE?

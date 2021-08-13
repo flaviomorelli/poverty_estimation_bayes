@@ -7,99 +7,37 @@ softplus link, lognormal, skew-normal and exponentially modified Gaussian (exGau
 This variety goes beyond the distribution shape, but it also affects the assumed relation between dependent variable and predictors.
 The gamma with lo link and lognormal distributions imply a multiplicative model, whereas the rest assume that the predictors have an additive impact on the dependent variable.
 
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{0.45\linewidth}
+        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/single_graphs/skewnormal_logscale}
+        \caption{Skew-normal}
+    \end{subfigure}
+    \begin{subfigure}{0.45\linewidth}
+        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/single_graphs/exgaussian_logscale}
+        \caption{exGaussian}
+    \end{subfigure}
+
+    \caption[Posterior predictive check for skew-normal and exGaussian likelihoods.]{Posterior predictive check for skew-normal and exGaussian likelihoods. The black line is the density of the dependent variable, while the blue lines represent 100 draws from the predictive posterior distribution. Neither the skew-normal nor the exGaussian likelihood provide an adequate approximation }
+    \label{fig:logscale_misfit}
+\end{figure}
+
 The results of these alternative models are presented in this section.
 The package \code{brms} \citep{burkner_brms_2017}, which provides a more user-friendly interface to \code{Stan}, is used to do a first check of the likelihoods.
 This follows a principle from \cite{gelman_bayesian_2020}: when working with preliminary models, it is better to use tools that allow for quick checks.
 \code{brms} already has a number of likelihoods implemented, and if modifications are needed, it is always possible to take the \code{Stan} code and modify it.
 But starting coding from scratch with \code{Stan} would take longer, especially because working with different likelihoods, requires different parametrizations.
 
-% PPC: skew-normal
-\begin{figure}[t]
-    \centering
-    \begin{subfigure}{0.29\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/skew_normal/logscale_smp}
-        \caption{lognormal}
-    \end{subfigure}
-    \begin{subfigure}{0.29\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/skew_normal/gb2_smp}
-        \caption{GB2}
-    \end{subfigure}
-    \begin{subfigure}{0.29\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/skew_normal/pareto_smp}
-        \caption{Pareto}
-    \end{subfigure}
-
-    \caption[Posterior predictive check for skew-normal likelihood]{Posterior predictive check for skew-normal likelihood. The black line is the density plot of the dependent variable for the respective simulation scenario. The blue density plots represent 100 MCMC draws from the posterior predictive distribution.}
-    \label{fig:skewnormal_ppc}
-\end{figure}
-
 Some of this likelihoods proved to be very poor fits.
-The skew-normal likelihood (Figure \ref{fig:skewnormal_ppc}) captures well the main characteristics of the GB2 scenario. On the other hand, it is not adequate for the logscale scenario, which is characterized by a much higher skewness.
+The skew-normal likelihood (Figure X) captures well the main characteristics of the GB2 scenario. On the other hand, it is not adequate for the logscale scenario, which is characterized by a much higher skewness.
 This is due to the limitations of the skew-normal distribution, as it has a maximum skewness of $\pm 1$.
 Moreover, in this scenario the model produces some negative predictions.
 In the Pareto scenario, the model only converged for the version with some out-of-sample areas.
 This indicates that the model might need to be reparametrized and the priors adjusted for it to work properly.
 However, because this likelihood was already shown to be unreliable for the log-scale scenario, the model with a skew-normal likelihood is not further developed.
 
-% PPC: exGaussian
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}{0.29\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/exgaussian/logscale_smp}
-        \caption{lognormal}
-    \end{subfigure}
-    \begin{subfigure}{0.29\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/exgaussian/gb2_smp}
-        \caption{GB2}
-    \end{subfigure}
-    \begin{subfigure}{0.29\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/exgaussian/pareto_smp}
-        \caption{Pareto}
-    \end{subfigure}
 
-    \caption[Posterior predictive check for exGaussian likelihood]{Posterior predictive check for exGaussian likelihood. The black line is the density plot of the dependent variable for the respective simulation scenario. The blue density plots represent 100 MCMC draws from the posterior predictive distribution. Note that the Markov chains have not mixed well in the lognormal and GB2 scenarios.}
-    \label{fig:exgaussian_ppc}
-\end{figure}
-
-\begin{figure}[t]
-    \centering
-    \begin{subfigure}{0.29\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/gamma_log/logscale_smp}
-        \caption{lognormal}
-    \end{subfigure}
-    \begin{subfigure}{0.29\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/gamma_log/gb2_smp}
-        \caption{GB2}
-    \end{subfigure}
-    \begin{subfigure}{0.29\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/gamma_log/pareto_smp}
-        \caption{Pareto}
-    \end{subfigure}
-
-    \caption[Posterior predictive check for gamma likelihood]{Posterior predictive check for gamma likelihood with logarithmic link. The black line is the density plot of the dependent variable for the respective simulation scenario. The blue density plots represent 100 MCMC draws from the posterior predictive distribution.}
-    \label{fig:gamma_ppc}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \begin{subfigure}{0.29\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/lognormal/logscale_smp}
-        \caption{lognormal}
-    \end{subfigure}
-    \begin{subfigure}{0.29\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/lognormal/gb2_smp}
-        \caption{GB2}
-    \end{subfigure}
-    \begin{subfigure}{0.29\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/lognormal/pareto_smp}
-        \caption{Pareto}
-    \end{subfigure}
-
-    \caption[Posterior predictive check for lognormal likelihood]{Posterior predictive check for lognormal likelihood. The black line is the density plot of the dependent variable for the respective simulation scenario. The blue density plots represent 100 MCMC draws from the posterior predictive distribution.}
-    \label{fig:lognormal_ppc}
-\end{figure}
-
-The exGaussian scenario (Figure \ref{fig:exgaussian_ppc}) produces negative predictions in some scenarios and it is not able to capture the main features of the distributions.
+The exGaussian scenario (Figure X) produces negative predictions in some scenarios and it is not able to capture the main features of the distributions.
 While the exGaussian does a good job in the Pareto scenario, it fails on the other scenarios.
 In figure Xa and Xb, it can be seen that the algorithm does not converge, with two different posterior predictive as a result.
 Placing a more restrictive prior on the coefficients did not alleviate the convergence problem.
@@ -107,7 +45,7 @@ However, none of these two distributions adequately captures the main features o
 Therefore, this version of the likelihood was also discarded.
 
 
-The gamma likelihood with a logarithmic link (Figure \ref{fig:lognormal_ppc}) performs quite well on all three scenarios.
+The gamma likelihood with a logarithmic link (Figure X) performs quite well on all three scenarios.
 Only in the GB2 scenario the posterior predictive draws are flatter than the dependent variable.
 Despite its good performance, this model has two drawbacks when fitted to the survey data from Mexico.
 First, it takes longer to fit than the log-shifted model presented in this paper, which is likely to be a consequence of the long tails of the distribution.
@@ -118,32 +56,16 @@ A gamma likelihood with a softplus link function (not shown) produced extremely 
 Note that the gamma likelihood with a softplus link, as well as the skew-normal and exGaussian distribution, allow for an additive model.
 In contrast, distributions that use a log link assume a multiplicative model.
 
-An additional check is provided by a lognormal likelihood (Figure \ref{fig:lognormal_ppc}), which performs well in all three scenarios according to the posterior predictive check.
+An additional check is provided by a lognormal likelihood (Figure X), which performs well in all three scenarios according to the posterior predictive check.
 Nevertheless, the logarithm of a lognormal variable should be normally distributed, which is rarely the case for income data.
 Therefore, it is not deemed to be a viable alternative.
-\begin{figure}[t]
-    \centering
-    \begin{subfigure}{0.32\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/gamma_log/2d_logscale_smp}
-        \caption{logscale}
-    \end{subfigure}
-    \begin{subfigure}{0.32\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/gamma_log/2d_gb2_smp}
-        \caption{GB2}
-    \end{subfigure}
-    \begin{subfigure}{0.32\textwidth}
-        \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/gamma_log/2d_pareto_smp}
-        \caption{Pareto}
-    \end{subfigure}
-    \label{fig:gamma_2d}
-    \caption[Posterior predictive check with test statistics for gamma likelihood]{Posterior predictive check with test statistics for gamma likelihood with logarithmic link for the logscale, GB2 and Pareto scenarios. The top row shows the meand and the standard deviation, the middle row the median and the IQR and the bottom row the 10\% and 90\% quantiles. The black dot represents the value for the dependent variable, while each one of the blue dots represents the respective summary statistic calculated for each one of the 2000 draws from the Markov chain.}
-\end{figure}
 
-As the gamma likelihood with a logarithmic link provided the best fit among the skewed distributions, additional posterior predictive checks are shown in Figure \ref{fig:gamma_2d}.
+
+As the gamma likelihood with a logarithmic link provided the best fit among the skewed distributions, additional posterior predictive checks are shown in Figure X.
 The two main parameters fitted in a gamma likelihood are the shape and the scale, which directly impact the expected value an the variance.
 Thus, it is not suprising that this model performed well in capturing the mean and the standard deviation (top row).
 Note the correlation between mean and standard deviation, due to the fact that the coefficient of variation ($\mu / \sigma^2$) is always equal to the shape parameter of the gamma distribution.
-The second and third rows of Figure \ref{fig:gamma_2d} uncover more details on the fitting process, because summary statistics such as quantiles are ancillary do not depend directly on the distribution parameters.
+The second and third rows of Figure X uncover more details on the fitting process, because summary statistics such as quantiles are ancillary do not depend directly on the distribution parameters.
 In the logscale scenario, which is multiplicative, the model does a good job in capturing the median, the IQR, as well as the 10\% and 90\% quantiles.
 In the other two scenarios, the data median is represented well only in the GB2 scenario.
 In the Pareto case, the median from the data is somewhat higher than in most of the Monte Carlo simulations.
@@ -151,7 +73,7 @@ The estimates for the other test statistics (IQR, 10\% and 90\% quantiles) diver
 The 90\% quantile in the dependent variable is lower than in the simulated estimates.
 On the other hand, the 10\% quantile is higher than most Monte Carlo simulations.
 This shows the model has some trouble with regions further away from the median, which is especially clear in the IQR that is larger in the simulations than in the dependent variables.
-The fat right tail in the simulations can also be seen in Figure \ref{fig:gamma_ppc}.
+The fat right tail in the simulations can also be seen in Figure X.
 When estimating FGT estimators, it is less relevant whether quantiles above the median can be approximated well, as all observations above 60\% of the median are ignored.
 Therefore, it is most important to estimate the median accurately and this is provided by the gamma likelihood with log link.
 
@@ -167,4 +89,4 @@ However, the heavy right tail might lead to a long model estimation time.
 The skew-normal likelihood does not seem to be able to capture the skewness of typical income data, due to its limited maximum skewness.
 The exGaussian distribution might be more adequate in this context, but this question is beyond the scope of this paper.
 
-
+PICTURES: In-text: skew normal/ exgaussian. Appendix: logscale, gamma log.

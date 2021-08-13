@@ -72,6 +72,8 @@ create_graphs(sim_data, lognormal_fit, scenarios,
               graph_path = file.path("notebooks", "skewed_likelihoods", "graphs"), 
               name = "lognormal", from_brms = TRUE)
 
+pp_check(lognormal_fit$pareto$smp, type = "dens_overlay", nsamples = 100)
+
 # Pareto smp with very high R-square. Does not capture distribution
 skewnormal_fit <- iteration_loop(brm_models, 
                                  family = skew_normal())
@@ -79,6 +81,13 @@ create_graphs(sim_data, skewnormal_fit, scenarios,
               graph_path = file.path("notebooks", "skewed_likelihoods", "graphs"), 
               name = "skewnormal", from_brms = TRUE)
 
+pp_check(skewnormal_fit$logscale$smp, type = "dens_overlay", nsamples = 100) %>% 
+  ggsave(file.path("notebooks", "skewed_likelihoods", 
+                   "graphs", "single_graphs", "skewnormal_logscale.png"), 
+         plot = ., 
+         height = 6, 
+         width = 8, 
+         unit = "cm")
 
 # Fitting problems. No model with small R-hat
 exgaussian_fit <- 
@@ -90,6 +99,15 @@ exgaussian_fit <-
 create_graphs(sim_data, exgaussian_fit, scenarios, 
               graph_path = file.path("notebooks", "skewed_likelihoods", "graphs"), 
               name = "exgaussian", from_brms = TRUE)
+
+pp_check(exgaussian_fit$logscale$smp, type ="dens_overlay", nsamples = 100)%>% 
+  ggsave(file.path("notebooks", "skewed_likelihoods", 
+                   "graphs", "single_graphs", "exgaussian_logscale.png"), 
+         plot = ., 
+         height = 6, 
+         width = 8, 
+         unit = "cm")
+
 
 # Check Stan code for Gamma likelihood
 make_stancode(reg_formula, 

@@ -20,7 +20,7 @@ graph_list <- function(y,
   result <- list()
 
   result$dens <- ppc_dens_overlay(y, 
-                                  y_pred[1:n_pred, ], size = 0.2) + xlim(c(0, 0.6 * max(y)))
+                                  y_pred[1:n_pred, ], size = 0.2) + xlim(c(0, 0.7 * max(y)))
   
   result$median_2d <- ppc_stat_2d(y, 
                                   y_pred, 

@@ -1,0 +1,58 @@
+\chapter{Appendix: Additional Posterior Predictive Checks for Skewed Likelihoods}
+
+This appendix contains the posterior predictive checks for two models: one with a gamma likelihood and a logarithmic link, and another one with a logscale distribution.
+The results for the gamma likelihood are shown in Figure \ref{fig:ppc_gamma_log}.
+The density plots in the first column show that the model can approximate the dependent variable well.
+Only in the GB2 scenario there is some divergence around the mode.
+In the middle column, the median from the predictions is in a range close to the dependent variable.
+However, the IQR is too high for the predictions in the GB2 scenario and somewhat high in the Pareto scenario compared to the data.
+It is not surprising to see in the third column that the model captures the mean and standard deviation better than the log-shift model \ref{eq:trafo_hb}, as the mean in the original scale is directly used to parametrize the likelihood.
+As the gamma distribution hat a fixed ratio between expected value and variance, it follows that the standard deviation is also well approximated.
+Surprisingly, the results for the lognormal distribution in Figure \ref{fig:ppc_lognormal} are very similar to the results for the gamma likelihood: some divergence around the mode in the GB2 scenario, a somewhat high IQR for the prediction in the last two scenarios and also a mean and standard deviation that are well captured by the model.
+
+These results suggest that both likelihoods work in a very similar way.
+On the one hand, both likelihoods imply a multiplicative model through the use of the log link.
+On the other hand, this might be related to the fact that both distributions have two parameters and also that they both have clear theoretical restrictions: the logarithm of a lognormal distribution must be normal and the ratio between expected value and variance is equal to the scale parameter in the gamma distribution.
+Although both distributions provide good results, these theoretical restrictions are problematic, because they place strong assumptions on the dependent variable.
+It is up to the researcher to decide, whether these assumptions are acceptable.
+
+
+\begin{figure}[t]
+    \begin{subfigure}{\textwidth}
+        \includegraphics[width=\linewidth]{./graphics/skewed_likelihood/gamma_log/logscale_smp_gamma_log}
+        \caption{Log-scale}
+    \end{subfigure}
+    \newline
+    \begin{subfigure}{\textwidth}
+        \includegraphics[width=\linewidth]{./graphics/skewed_likelihood/gamma_log/gb2_smp_gamma_log}
+        \caption{GB2}
+    \end{subfigure}
+    \newline
+    \begin{subfigure}{\textwidth}
+        \includegraphics[width=\linewidth]{./graphics/skewed_likelihood/gamma_log/pareto_smp_gamma_log}
+        \caption{Pareto}
+    \end{subfigure}
+    \caption[Posterior predictive check for the gamma likelihood in all three simulation scenarios.]{Posterior predictive check for the gamma likelihood with logarithmic link in all three simulation scenarios. \textit{Left:} density of the dependent variable (black) against the  density of a 100 backtransformed predictions (light blue). \textit{Middle:} scatterplot of IQR against median for 1000 samples. \textit{Right:} scatterplot of standard deviation against mean for 1000 samples. In the middle and right columns, the dark point represents the respective values for the dependent variable in the original data set.}
+    \label{fig:ppc_gamma_log}
+\end{figure}
+
+
+
+\begin{figure}[t]
+    \begin{subfigure}{\textwidth}
+        \includegraphics[width=\linewidth]{./graphics/skewed_likelihood/lognormal/logscale_smp_lognormal}
+        \caption{Log-scale}
+    \end{subfigure}
+    \newline
+    \begin{subfigure}{\textwidth}
+        \includegraphics[width=\linewidth]{./graphics/skewed_likelihood/lognormal/gb2_smp_lognormal}
+        \caption{GB2}
+    \end{subfigure}
+    \newline
+    \begin{subfigure}{\textwidth}
+        \includegraphics[width=\linewidth]{./graphics/skewed_likelihood/lognormal/pareto_smp_lognormal}
+        \caption{Pareto}
+    \end{subfigure}
+    \caption[Posterior predictive check for the lognormal likelihood in all three simulation scenarios.]{Posterior predictive check for the lognormal likelihood in all three simulation scenarios. \textit{Left:} density of the dependent variable (black) against the  density of a 100 backtransformed predictions (light blue). \textit{Middle:} scatterplot of IQR against median for 1000 samples. \textit{Right:} scatterplot of standard deviation against mean for 1000 samples. In the middle and right columns, the dark point represents the respective values for the dependent variable in the original data set.}
+    \label{fig:ppc_lognormal}
+\end{figure}
