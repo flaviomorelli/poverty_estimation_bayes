@@ -73,21 +73,68 @@ indicator_kde_graph(hcr_pop$pareto$pop,
 
 bad_model <- cmdstan_model(file.path("model", "stan", "simulations", 
                                      "log_shift_wide_skewness.model.stan"))
-bad_fit <- bad_model$sample(sim_data$gb2$smp_stan, 
+
+bad_fit_logscale <- bad_model$sample(sim_data$logscale$smp_stan, 
+                                parallel_chains = 4,
+                                iter_warmup = 1200,
+                                iter_sampling = 300)
+
+bad_fit_gb2 <- bad_model$sample(sim_data$gb2$smp_stan, 
                             parallel_chains = 4,
+                            iter_warmup = 1200,
                             iter_sampling = 300)
-bad_fit_skewness <- bad_fit$draws() %>% mcmc_dens(pars = "s") + xlab("")
+
+bad_fit_pareto <- bad_model$sample(sim_data$pareto$smp_stan, 
+                                parallel_chains = 4,
+                                iter_warmup = 1200,
+                                iter_sampling = 300)
+
+bad_fit_skewness <- bad_fit_gb2$draws() %>% mcmc_dens(pars = "s") + xlab("")
+
+tight_model <- cmdstan_model(file.path("model", "stan", "simulations", 
+                                     "log_shift_tight_skewness.model.stan"))
+tight_fit_logscale <- tight_model$sample(sim_data$logscale$smp_stan, 
+                                      parallel_chains = 4,
+                                      iter_warmup = 1200,
+                                      iter_sampling = 300)
+
+tight_fit_gb2 <- tight_model$sample(sim_data$gb2$smp_stan, 
+                            parallel_chains = 4,
+                            iter_warmup = 1200,
+                            iter_sampling = 300)
+
+tight_fit_pareto <- tight_model$sample(sim_data$pareto$smp_stan, 
+                                      parallel_chains = 4,
+                                      iter_warmup = 1200,
+                                      iter_sampling = 300)
+
+tight_skewness <- tight_fit_gb2$draws() %>% mcmc_dens(pars = "s") + xlab("")
+
 ggsave(file.path("notebooks", "simulation_study", "bad_skewness.png"), 
          plot = bad_fit_skewness, 
          width = 8,
          height = 7, 
          units = "cm")
 
-gb2_skewness <- fit$gb2$smp$draws() %>% mcmc_dens(pars = "s") + xlab("")
-ggsave(file.path("notebooks", "simulation_study", "gb2_skewness.png"), 
-       plot = gb2skewness, 
+ggsave(file.path("notebooks", "simulation_study", "tight_skewness.png"), 
+       plot = tight_skewness, 
        width = 8,
        height = 7, 
        units = "cm")
 
-loo::loo_compare(bad_fit$loo(), fit$gb2$smp$loo())
+gb2_skewness <- fit$gb2$smp$draws() %>% mcmc_dens(pars = "s") + xlab("")
+ggsave(file.path("notebooks", "simulation_study", "gb2_skewness.png"), 
+       plot = gb2_skewness, 
+       width = 8,
+       height = 7, 
+       units = "cm")
+
+loo::loo_compare(tight_fit_logscale$loo(), 
+                 fit$logscale$smp$loo())
+
+loo::loo_compare(tight_fit_gb2$loo(), 
+                 fit$gb2$smp$loo())
+
+loo::loo_compare(tight_fit_pareto$loo(), 
+                 fit$pareto$smp$loo())
+

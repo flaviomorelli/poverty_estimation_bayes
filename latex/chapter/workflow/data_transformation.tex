@@ -60,15 +60,6 @@ where $y^* = \log(y + \lambda)$ is the transformed dependent variable. Thus, the
 While it is not necessary to formulate a prior directly $\lambda$, it still recommended to define the lower bound of $\lambda$ as $-\min(y)$ in the programming framework as a safety check, as to avoid negative values inside the logarithm function.
 In practice, the Markov chain steers clear of regions too close to the minimum for $\lambda$ after warmup iterations.
 
-The hyperparameter $\delta$ controls the deviation from the zero skewness constraint.
-Values around $10^{-3}$ worked well in simulation experiments and the posterior values for $S$ are usually very close to zero, but far beyond the implied 95\% prior region of $S \pm 2 \cdot 10^{-3}$.
-Nevertheless, there are two potential problems to be aware of.
-If $\delta$ is too small, then skewness might be reduced too much.
-This would be equivalent to overfitting the skewness of the training data, which by no means reflects the skewness for out-of-sample data.
-However, if $\delta$ is too large, then many unrealistic values for $\lambda$ will be allowed, which might lead to poorly mixing Markov chains with an $\hat R$ higher than the recommended 1.01.
-By plotting the posterior density of $S$ and using Bayesian diagnostic tools such as $\hat R$ or posterior predictive checks, it is possible to assess whether $\delta$ is too small or too large.
-
-(EXAMPLES PLOTS for too large/small $\delta$?)
 
 
 Because of the transformation, the Jacobian of the likelihood is adjusted by the multiplicative factor $(y_{di} + \lambda)^{-1}$, derived in appendix \ref{appendix:jacobian}. Together with the prior on skewness, this leads to a reformulation of model \ref{eq:mod_hb} as follows:
@@ -96,6 +87,57 @@ Nevertheless, it can cause problems when examining the samples from the posterio
 Therefore, all sample that are above the data maximum are taken as missing and are imputed.
 The imputation procedure is explained in detail in appendix \ref{ch:imputation}.
 
+
+
+The hyperparameter $\delta$ controls the deviation from the zero skewness constraint.
+Values around $10^{-2}$ worked well in simulation experiments and the posterior values for $S(y^*)$ are usually very close to zero.
+Nevertheless, there are two potential problems to be aware of.
+If $\delta$ is too small, then skewness might be reduced too much.
+This would be equivalent to overfitting the skewness of the training data, which by no means reflects the skewness for out-of-sample data.
+However, if $\delta$ is too large, then many unrealistic values for $\lambda$ will be allowed, which might lead to poorly mixing Markov chains with an $\hat R$ higher than the recommended 1.01.
+By plotting the posterior density of $S(y^*)$ and using Bayesian diagnostic tools such as posterior checks, it is possible to assess whether $\delta$ is too small or too large.
+
+
+\begin{figure}[t]
+    \centering
+    \begin{subfigure}{0.32\linewidth}
+        \includegraphics[width=\textwidth]{./graphics/log_shift/bad_skewness}
+        \caption{$S(y^*) \sim \mathcal N (0, 0.1)$}
+    \end{subfigure}
+    \begin{subfigure}{0.32\linewidth}
+        \includegraphics[width=\textwidth]{./graphics/log_shift/mid_skewness}
+        \caption{$S(y^*) \sim \mathcal N (0, 0.01)$}
+    \end{subfigure}
+    \begin{subfigure}{0.32\linewidth}
+        \includegraphics[width=\textwidth]{./graphics/log_shift/gb2_skewness}
+        \caption{$S(y^*) \sim \mathcal N (0, 0.001)$}
+    \end{subfigure}
+
+    \caption[Marginal posterior distribution of skewness for different values of $\delta$.]{Marginal posterior distribution of skewness $S(y^*)$ for different values of $\delta$ in the GB2 scenario: 0.1, 0.01 and 0.001. Note the different scaling of the x-axes.}
+    \label{fig:bad_skewness}
+\end{figure}
+
+Figure \ref{fig:bad_skewness} shows the density plots of $S(y^*)$ for the GB2 scenario.
+The other scenarios displayed similar results.
+For $\delta = 0.1$, the mode of the posterior is below zero, which indicates that there is a systematic bias towards negative skewness.
+This is problematic when using a symmetric likelihood.
+On the other extreme, $\delta = 0.001$ produces an extremely tight distribution around zero.
+The range of posterior values for $\lambda$ is very small in this specification, which increases the risk of overfitting the training data.
+The middle density graph ($\delta = 0.01$) is a compromise between the two extreme scenarios.
+The posterior distribution for $S(y^*)$ is clearly centered around zero, but the posterior is not as tight as with $\delta = 0.001$.
+The standard deviation of the shift parameter $\lambda$ is around an order of magnitude larger than in the model with the tighter prior, which allows more possible models and prevents overfitting.
+Moreover, the elpd$_{\text{loo}}$ paints
+
+
+
+\subsubsection{Posterior predictive checks with simulated data}
+The results from fitting the modified model to the log-shift distribution are presented in Figure \ref{fig:ppc_logshift}.
+In the first column, the density of the dependent variable is overlaid with the densities from 100 sample from the posterior predictive distribution.
+From this virst visual check, it is clear that the model is able to fit the log-scale and GB2 scenarios reasonably well.
+The Pareto scenario is still quite close, but the prediction from the model are slightly lower than the dependent variable.
+This is an indication that the Pareto scenario contains elements that are particularly challenging to capture.
+
+
 \begin{figure}
     \begin{subfigure}{\textwidth}
         \includegraphics[width=\linewidth]{./graphics/log_shift/logscale_smp_}
@@ -115,23 +157,17 @@ The imputation procedure is explained in detail in appendix \ref{ch:imputation}.
     \label{fig:ppc_logshift}
 \end{figure}
 
-\subsubsection{Posterior predictive checks with simulated data}
-The results from fitting the modified model to the log-shift distribution are presented in Figure \ref{fig:ppc_logshift}.
-In the first column, the density of the dependent variable is overlaid with the densities from 100 sample from the posterior predictive distribution.
-From this virst visual check, it is clear that the model is able to fit the log-scale and GB2 scenarios reasonably well.
-The Pareto scenario is still quite close, but the prediction from the model are slightly lower than the dependent variable.
-This is an indication that the Pareto scenario contains elements that are particularly challenging to capture.
-
 The other two columns show two pairs of descriptive statistics as scatterplots: IQR against median and standard deviation against the mean.
 The scatterplots also display the respective descriptive statistic value for the dependent variable.
 In the log-scale and GB2 scenarios, the median of the simulations is in a similar range to the median of the dependent variable.
 In contrast, the predictions from the model have a median that is 400 units lower than the dependent variable of the Pareto scenario.
-This would mean that the simulated poverty lines (ca. 60\% of 11.900) are systematically lower than the poverty line from the data (ca. 60\% of 12.400) – approximately by 4\%.
+This would mean that the simulated poverty lines (ca. 60\% of 11.900) are systematically lower than the poverty line from the data (ca. 60\% of 12.300) – approximately by 3\%.
 Thus, certain poverty indicators are likely to be underestimated.
 On the other hand, all samples from the posterior predictive distribution in the three scenarios are in a plausible range compared to the IQR of the dependent variable.
 The mean and the standard deviation are presented as an additional check, but they are somewhat less trustworthy due to their lack of robustness.
-Both the mean and the standard deviation seem to be lower in the simulation than in the dependent variable.
-An noteworthy pattern is that in all three scenarios there is a positive association between the mean an the standard deviation.
-Although the probability density for the backtransformation is not available, this is a clear indication that the mean of the implied distribution is coupled to the variance in the backtransformed scale.
+In the logscale scenario, both the mean and the standard deviation are captured well, whereas in the GB2 scenario the mean and standard deviation of the predictions is a little lower than the dependent variable.
+The standard deviation Pareto scenario is modelled well, but the mean of the dependent variable is higher than the predictions.
+A noteworthy pattern is that in all three scenarios there is a positive association between the mean an the standard deviation.
+Although the probability density for the backtransformation is not available in its analytical form, this is a clear indication that the mean of the implied distribution is coupled to the variance in the backtransformed scale.
 The next section explores the performance of models with skewed likelihoods.
 

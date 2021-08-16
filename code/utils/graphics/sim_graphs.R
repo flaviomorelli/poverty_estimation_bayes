@@ -25,11 +25,16 @@ graph_list <- function(y,
   result$median_2d <- ppc_stat_2d(y, 
                                   y_pred, 
                                   stat = c("median", "IQR"), 
-                                  alpha = alpha)
+                                  alpha = alpha) +
+                      scale_x_continuous(breaks = scales::pretty_breaks(n = 3)) +
+                      scale_y_continuous(breaks = scales::pretty_breaks(n = 3))
   
   result$mean_2d <- ppc_stat_2d(y, 
               y_pred, 
-              stat = c("mean", "sd"), alpha = alpha)
+              stat = c("mean", "sd"), alpha = alpha)  +
+              scale_x_continuous(breaks = scales::pretty_breaks(n = 3)) +
+              scale_y_continuous(breaks = scales::pretty_breaks(n = 3))
+  
   
   return(result)
 } 

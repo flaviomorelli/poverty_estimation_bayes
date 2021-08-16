@@ -1,1 +1,37 @@
 \subsection{Initial model comparison}
+
+In principle, it is possible to keep developing the two alternative models in parallel and then compare them at the end of the workflow, but this implies exploring additional dimension of complexity in the model space.
+Therefore, one of both alternatives should be chosen based on the flexibility and limitations of each approach.
+
+The log-shift scenario has two main disadvantages.
+By using a log-shift transformation, the user does not exactly now the analytical form of the density in the backtransformed scale.
+Moreover, the medians of the posterior predicitve samples in the Pareto scenario are relatively close to the data, but still systematically lower.
+Another problem is represented by the very extreme prediction that can arise due to backtransforming samples from the heavy-tailed Student's $t$-distribution.
+
+With respect to the skewed likelihoods, two similar distributions performed well in all three scenarios: the lognormal and the gamma with a log link.
+However, these two distribution have theoretical limitations.
+On the one hand, the logarithm of a lognormal variable has to be be normally distributed, which is rarely the case for income data.
+For this reason, it is not deemed to be a realistic alternative.
+On the other hand, a gamma distribution has a constant coefficient of variation, which depends on the shape parameter.
+Additionally, the logarithm of a gamma distribution is either left-skewed or symmetric, which might not necessarily be realistic for income data.
+
+Whereas the gamma and lognormal distributions only have two parameters (shape/rate or mean/variance, respectively), the main advantage of the log-shift model \ref{eq:trafo_hb} is that it offers more flexibility due to the additional parameters.
+The Student's $t$-distribution is not only parametrized in terms of mean and scale, but also of degrees of freedom.
+Besides, the log-shift distribution adds another parameter to the likelihood through the transformed dependent variable.
+This flexibility does not come at a high cost of interpretability that characterizes more complex distributions such as the generalized beta.
+This was shown in the choice of priors for model \ref{eq:trafo_hb}.
+While the less than ideal performance in the Pareto scenario is problematic, there are two factors which should be considered.
+First, although the prior parametrization was taken mostly from \cite{morelli_hierarchical_2021},
+this can be improved through the use of prior predictive checks (see chapter \ref{ch:coef_var_spec}).
+Second, in this scenario the degrees of freedom were below two, which is not ideal, due to the fact that the Student's $t$-distribution has an infinite variance for $\nu \le 2$ and an undefined variance for $\nu \le 1$.
+This extreme behavior might cause problems in the Pareto scenario.
+There are two simple solutions to this problem.
+Either $\nu$ is set to a constant (e.g., a value between 2 and 3) when the posterior of $\nu$ is clearly below 2, or the model is reparametrized so that $\nu$ does not take values below zero.
+
+
+In light of this discussion, the log-shift model \ref{eq:trafo_hb} is chosen for the rest of the present paper, as it provides a good balance between interpretability, ease of parametrization and flexibility.
+Additionally, it extends the literature on data-driven transformation in the line of \cite{rojas_perilla_data_2020} to the Bayesian paradigm.
+This does not mean that the use of skewed likelihoods is an inferior approach, only that its use with income data is left for future research.
+A feature of the gamma likelihood that can be useful is that its mean can be parametrized in the original scale even when using a log link as done in the \code{brms} package.
+This is particularly relevant, if benchmarking \citep{pfeffermann_new_2013} should be included as an integral module of the Bayesian model.
+
