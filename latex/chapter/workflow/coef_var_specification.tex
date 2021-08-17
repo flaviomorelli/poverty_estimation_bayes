@@ -1,58 +1,96 @@
 \section{Specification of coefficient and variance priors}
 \label{ch:coef_var_spec}
 
-After deciding that the likelihood should include a shift term and selecting the subset of covariates with the best predictive power, the next step will focus on the plausibility of the priors introduced in model XY from (Morelli 2021).
+After choosing the Student's $t$-likelihood with a log-shift transformation and selecting the subset of covariates with the best predictive power, the next step reevaluates the plausibility of the priors introduced in model \ref{eq:trafo_hb} – the extension from the model in \cite{morelli_hierarchical_2021}.
+This section presents the first iterative improvement of the model.
+For this modification of the model (step 7 in the workflow in Chapter \ref{ch:workflow}), prior predictive checks are done with the covariates from simulation scenarios to avoid using the data multiple times.
 
-Section XY showed that even with a shift term in the logarithmic transformation, the coefficients can be interpreted as the approximate percentage change of the dependent variable in the original scale.
+Appendix \ref{appendix:coeff} shows that even with a shift term in the logarithmic transformation, the coefficients can be interpreted as the approximate percentage change of the dependent variable in the original scale.
 This approximation holds mostly for coefficients between -0.3 and 0.3.
-However, a change of around 30\% in the original scale for each additional unit is itself very high and this fact can be included in the prior distribution.
+However, a change of around 30\% in the original scale for each additional unit is itself very high and this observation can be included in the prior distribution.
 Moreover, note that through the use of the logarithmic transform the covariates have a multiplicative effect on the original scale.
 Thus, somewhat large coefficients in the logarithmic scale can have a huge impact when backtransforming to the original scale.
-
-There are two main ways to define priors on coefficients, either by assuming that the coefficient priors are independent or by using a joint prior such as a horseshoe prior.
-In this section, two independent priors are proposed for the coefficients, which are then compared with the joint prior (ja, wirklich?). However, in this case there are relatively speaking few variables and a horseshoe prior might make more sense with more variables (?)
-The comparison will be done with prior predictive checks based on the variables from the selected variables of the MCS survey.
 For the independent priors, two different types of distribution can be considered, either a normal distribution or a heavy-tailed distribution such as the Student's $t$ with 3 degrees of freedom.
-In this case, a distribution with heavier tails is not as desirable, because even if most of the probability mass is contained in the interval between -0.3 and 0.3, the prior would allow more extreme values.
-This can be avoided by choosing a Gaussian distribution, which does not have as much probability mass on extreme values.
+In this case, a prior distribution with heavy tails is not as desirable, because even if most of the probability mass is contained in the interval between -0.3 and 0.3, the prior would allow more extreme values than a thinner-tailed distribution.
+This can be avoided by choosing a Gaussian distribution, which does not place as much probability mass on extreme values.
 The coefficient prior is parametrized to have a mean of zero and a standard deviation of 0.2, which implies that the 5\% and 95\% quantiles are around -0.3 and 0.3 respectively.
+This model specification assumes independent priors for all coefficients, but joint priors such as the horseshoe prior from the previous section can also be used.
+However, the horseshoe prior works best with a large number of covariates, which is not the case in the present paper.
+Moreover, it can be hard for a Hamiltonian Monte Carlo algorithm to fit a model with a horseshoe prior due to the heavy tail of the Half-Cauchy distribution \citep{betancourt_conceptual_2017}.
+Therefore, the use of joint priors for the coefficients is left for future research and the simpler assumption of independent coefficient priors is kept.
+To ensure that the samples from the prior predictive distribution are in a realistic range, the prior for the intercept is set to a relatively $\mathcal N (4, 3)$.
+In the final model, the intercept is fit to the data and the prior can be less informative, e.g., $\mathcal N(0, 5)$.
 
-Another key element of the models is how the priors are defined for the standard deviations at the unit-level ($\sigma_e$) and area-level ($\sigma_u$).
+Another key element of the models is how the priors are defined for the standard deviations at the unit-level ($\sigma_e$) and area-level ($\sigma_u$), as these have a large impact on the implied dispersion in the dependent variable.
 As the likelihood is a generalized Student's $t$-distribution, the parameter $\sigma_e$ cannot be interpreted directly as the standard deviation of the distribution.
 Given a random variable $Y$ that follows this distribution, the variance is given by $Var(Y) = \sigma_e^2 \frac{\nu}{\nu - 2}$.
-To reason more easily about the unit-level variancem a new parameter $\sigma = \sqrt{Var(Y)}$ is introduced so that $\sigma_e = \sigma \sqrt{\frac{\nu - 2}{\nu}}$.
-In line with model XY, the distribution $\sigma \sim Ga(2, 0.75)$ is still used.
-The effect of the prior on $\sigma$ and $\sigma_u$ will be analyzed as part of the prior predictive checks.
+To reason more easily about the unit-level variance a new parameter $\sigma = \sqrt{Var(Y)}$ is introduced so that $\sigma_e = \sigma \sqrt{\frac{\nu - 2}{\nu}}$.
+The effect of different values for the rate parameter of the gamma prior on $\sigma$ and $\sigma_e$ is explored in the prior predictive checks.
 
-For the prior predictive checks, the shift term is dropped. The shift term depends on the dependent variable so it is not possible to sample from its prior distribution.
+\begin{figure}
+
+    \begin{subfigure}{\linewidth}
+        \centering
+        \includegraphics[width=0.72\textwidth]{./graphics/prior_predictive_checks/prior_check_gb2_start}
+        \caption{Scale prior: $Ga(2, 0.75)$}
+        \label{fig:ppc_start}
+    \end{subfigure}
+
+
+    \begin{subfigure}{\linewidth}
+        \centering
+        \includegraphics[width=0.72\textwidth]{./graphics/prior_predictive_checks/prior_check_gb2_tight}
+        \caption{Scale prior: $Ga(2, 7)$}
+        \label{fig:ppc_tight}
+    \end{subfigure}
+    \caption[Prior predictive checks for scale parameters in the GB2 scenario.]{Prior predictive checks for scale parameters $\sigma$ and $\sigma_u$ in the GB2 scenario. In the scatterplots, the logarithm dependent variable is plotted against the corresponding sample from the prior predictive distribution. Note the different scaling of the x-axes.}
+    \label{fig:prior_pred_variance}
+\end{figure}
+
+For the prior predictive checks, the shift term is dropped.
+The shift term depends on the dependent variable so it is not possible to sample from its prior distribution.
 Besides, it amounts to an additive constant in the backtransformed scale ($e^{y^*} - \lambda$). The impact of the exponential function is therefore much larger than the effect of the shift term $\lambda$.
 The range of Mexican income data is in the tens of thousands, which is also captured in the simulation scenarios.
-Therefore, the prior predictive simulations should not be above 12 in the logarithmic scale (which corresponds to around 160000 pesos in the original scale).
-Conversely, as the original data has almost not observations below 1, the values in the logarithmic scale should not go far below zero.
+Therefore, the prior predictive simulations should not be much higher than 12 in the logarithmic scale (which corresponds to around 160000 pesos in the original scale).
+Conversely, as the real data has almost not observations below 1, the values in the logarithmic scale should not go far below zero.
 Finally, note that the degrees of freedom in the Student's $t$-distribution can lead to very extreme simulations when $\nu$ is low.
-As a consequence, the prior for $\nu$ is changed to $Ga(2, 1)$ for the prior predictive check only to get lower values.
-The minimum value for $\nu$ is 2, so that the variance of the distribution is still finite.
+As a consequence, the prior for $\nu$ is changed to $Ga(2, 2)$ \textit{only} for the prior predictive check to focus on the impact of lower values.
+The model is reparametrized so that the minimum value for $\nu$ is 2. This ensures that the variance of the distribution is still finite.
 The assumption here is that if the prior predictive simulations are not too extreme for low degrees of freedom, they will also be in a reasonable range for high values of $\nu$, for which the likelihood has thinner tails.
 
-The results for the starting model in XY can be seen in Figure XY.
-The scale is much larger for the prior predictive draws, which is especially problematic in the logarithmic scale.
 
-The priors for the variance parameters are tightened to $Ga(2, 10)$.
-This yields more realistic results.
+The results for the prior predictive check in the GB2 scenario can be seen in Figure \ref{fig:prior_pred_variance}.
+Other scenarios produced very similar results.
+The prior predictive checks are shown in form of scatterplots, where the dependent variable is plotted against samples from the prior predictive distributions.
+These samples do not have to fit perfectly the dependent variable, but they should be in a realistic range.
+The data is shown in the logarithmic scale.
+The aim is to determine which value of the rate parameter is best for both scale parameters $\sigma$ and $\sigma_u$.
+Figure \ref{fig:ppc_start} shows the scatterplots for a rate parameter value equal to 0.75, while Figure \ref{fig:ppc_tight} displays the results for a tighter rate value of 7.
+Note the different scaling of the x-axes.
+For a rate parameter of 0.75, there are samples that are extremely high, above 50 in the logarithmic scale.
+On the other hand, a rate parameter of 7, which implies a much tighter prior is much more realistic – especially, because only very few samples are much higher than 10 and even samples with higher values are not as high as in the first specification.
+Prior predictive checks with an very wide scale prior can be found in appendix \ref{appendix:wide_prior}.
 
-The results for prior predictive checks for even variances can be found in appendix XY.
+After the prior predictive check, it is possible to conclude that the tighter scale prior provides the most realistic results, while still allowing for a few higher than expected but not extreme predictions.
+Model \ref{eq:trafo_hb} can thus be reformulated as:
+\begin{equation}
+    \begin{split}
+        p(\log(y_{di} + \lambda) |\boldsymbol \beta, u_d, \sigma_e, \nu)   =        \text{Student}&(\log(y_{di} + \lambda)| \boldsymbol{x'}_{di} \boldsymbol \beta + u_d,\ \sigma_e\ , \nu)\cdot (y_{di} + \lambda)^{-1}, \\
+        u_d | \sigma_u & \sim \mathcal N(0, \sigma_u),\ d = 1, ..., D \\
+        \beta_0 \sim \mathcal N (0, 5),\\
+        \beta_k & \sim \mathcal N(0, 0.2),\ k = 1, ..., K\\
+        \tilde \nu & \sim Ga(2, 0.1), \\
+        \nu & = \tilde \nu + 2,\\
+        \sigma_u & \sim Ga(2, 7), \\
+        \sigma & \sim Ga(2, 7), \\
+        \sigma_e & = \sigma \sqrt{\frac{\nu - 2}{\nu}},\\
+        S(\log(y_{di} + \lambda)) & \sim \mathcal N(0, 0.01)\\
+    \end{split}
+    \label{eq:trafo_coef_var}
+\end{equation}
+where $\ d = 1, ..., D,\ i = 1, ..., N_d$. The parameter $\sigma$ is now explicitly included into the model and a new parameter $\tilde \nu$ is introduced to enforce that $\nu$ does not take values below 2. The intercept is now explicitly included into the model as $\beta_0$.
 
-\begin{figure}
-    \includegraphics[width=\textwidth]{./graphics/prior_predictive_checks/prior_check_pareto_start}
-    \label{fig:ppc_start}
-    \caption{Prior predictive check.}
-\end{figure}
 
-\begin{figure}
-    \includegraphics[width=\textwidth]{./graphics/prior_predictive_checks/prior_check_pareto_tight}
-    \label{fig:ppc_tight}
-    \caption{Prior predictive check.}
-\end{figure}
 
 
 

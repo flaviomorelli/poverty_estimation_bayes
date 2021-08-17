@@ -5,21 +5,19 @@ source(file.path("dataloader", "data_cleaning.R"))
 
 job::job(
   {log_fit_student <- brm(
-    log(ictpc_corr) ~ jsector + jsexo + jexp + jedad +
+    log(ictpc + 1) ~ jsector + jsexo + jexp + jedad +
       id_men + trabinusual + pcocup + pcpering + ingresoext +
       pcmuj + pcalfab + actcom_pc + bienes_pc + pob_ind + rururb + (1|mun), 
     data = mcs %>% filter(pcalfab <= 100, pcmuj <= 100), 
     family = student(), 
-    prior = prior(normal(0, 0.25), class = "b"), 
-    iter = 2000, 
-    warmup = 1450, 
+    prior = prior(normal(0, 0.5), class = "b"), 
+    iter = 1800, 
+    warmup = 1500, 
     chains = 4,
     control = list(adapt_delta = 0.9),
     cores = 4)
   })
 # Not relevant: jexp, jedad, jsexo, pcocup, pcpering, pc_muj, pcalfab
-
-
 
 pp_check(log_fit_student, type = "dens_overlay", nsamples = 50)
 
@@ -28,10 +26,10 @@ job::job(
     log_fit_student,
     family = student(), 
     prior = set_prior(horseshoe(df = 1, par_ratio = 0.2)), 
-    iter = 1750, 
+    iter = 1800, 
     warmup = 1500, 
     chains = 4,
-    control = list(adapt_delta = 0.999),
+    control = list(adapt_delta = 0.999, max_treedepth = 13),
     cores = 4)
 })
 
@@ -60,7 +58,7 @@ job::job(
   {log_fit_smallest <-  update(log_fit_student_hs, 
                               formula. = ~ . - jexp - jedad - jsexo - 
                                 pcocup - pcpering - pcmuj - pcalfab,
-                              control = list(adapt_delta = 0.999),
+                              control = list(adapt_delta = 0.999, max_treedepth = 13),
                               chains = 4,
                               cores = 4)
   })

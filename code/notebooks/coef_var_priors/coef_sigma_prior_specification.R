@@ -20,7 +20,7 @@ prior_scatter <- function(scenario, type, data, samples){
   y <- sim_data[[scenario]][[str_c(type, "_stan")]][["y"]]
   y_pred <- as_draws_matrix(samples[[scenario]][[type]]$draws("y_pred"))
   return(ppc_scatter(log(y), 
-              log(y_pred[1:16, ]), 
+              log(y_pred[1:9, ]), 
               alpha = 0.2, size = 1) +
     theme_minimal()
     )

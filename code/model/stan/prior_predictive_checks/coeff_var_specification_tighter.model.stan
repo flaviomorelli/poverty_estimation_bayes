@@ -29,9 +29,9 @@ data {
 
 generated quantities{
   real intercept = normal_rng(4, 3);
-  real sigma = gamma_rng(2, 10);
-  real sigma_u = gamma_rng(2, 10);
-  real nu_raw = gamma_rng(2, 1);
+  real sigma = gamma_rng(2, 7);
+  real sigma_u = gamma_rng(2, 7);
+  real nu_raw = gamma_rng(2, 2);
   real nu = nu_raw + 2.01;
   real sigma_e = sigma * sqrt(nu - 2 / nu);
   vector[K] beta;
