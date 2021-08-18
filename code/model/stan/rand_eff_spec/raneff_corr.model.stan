@@ -31,24 +31,24 @@ parameters {
 }
 transformed parameters{
   vector[N] log_y = log(y + lambda);
-  real s = skewness(log_y) * 1000;
+  real s = skewness(log_y);
   real sigma_e = sigma * sqrt(nu - 2 / nu);
   matrix[D, D] L_Sigma = diag_pre_multiply(rep_vector(sigma_u, D), L_Omega);
   vector[D] u = L_Sigma * u_tilde;
 }
 
 model {
-  intercept ~ normal(4, 3);
+  intercept ~ normal(0, 5);
   beta ~ normal(0, 0.2);
-  sigma ~ gamma(2, 10);
+  sigma ~ gamma(2, 7);
   
-  sigma_u ~ gamma(2, 10);
+  sigma_u ~ gamma(2, 7);
   u_tilde ~ std_normal();
   L_Omega ~ lkj_corr_cholesky(5);
   
   // Shape parameters
   nu ~ gamma(2, 0.1);
-  s ~ normal(0, 1); 
+  s ~ normal(0, 0.01); 
   
   // Likelihood
   vector[N] mu;

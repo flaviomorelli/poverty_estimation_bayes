@@ -77,7 +77,7 @@ Model \ref{eq:trafo_hb} can thus be reformulated as:
     \begin{split}
         p(\log(y_{di} + \lambda) |\boldsymbol \beta, u_d, \sigma_e, \nu)   =        \text{Student}&(\log(y_{di} + \lambda)| \boldsymbol{x'}_{di} \boldsymbol \beta + u_d,\ \sigma_e\ , \nu)\cdot (y_{di} + \lambda)^{-1}, \\
         u_d | \sigma_u & \sim \mathcal N(0, \sigma_u),\ d = 1, ..., D \\
-        \beta_0 \sim \mathcal N (0, 5),\\
+        \beta_0 & \sim \mathcal N (0, 5),\\
         \beta_k & \sim \mathcal N(0, 0.2),\ k = 1, ..., K\\
         \tilde \nu & \sim Ga(2, 0.1), \\
         \nu & = \tilde \nu + 2,\\

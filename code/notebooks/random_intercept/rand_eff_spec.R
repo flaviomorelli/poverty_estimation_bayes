@@ -8,6 +8,12 @@ library(loo)
 source(file.path("dataloader", "data_cleaning.R"))
 rm(census, census_one_hot, mcs, mcs_stan)
 
+# Are there out-of-sample areas?
+mcs %>% group_by(strat_idx) %>% count %>% View
+
+# Print quantiles for number of observations 
+mcs %>% group_by(strat_idx) %>% count %>% .[["n"]] %>% quantile
+
 model <- cmdstan_model(file.path("model", "stan", "rand_eff_spec", 
                                  "raneff_spec.model.stan"))
 

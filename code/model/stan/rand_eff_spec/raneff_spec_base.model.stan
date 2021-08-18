@@ -33,13 +33,13 @@ parameters {
 }
 transformed parameters{
   vector[N] log_y = log(y + lambda);
-  real s = skewness(log_y) * 1000;
+  real s = skewness(log_y);
   vector[D] u = u_tilde * sigma_u;
   real sigma_e = sigma * sqrt(nu - 2 / nu);
 }
 
 model {
-  intercept ~ normal(4, 3);
+  intercept ~ normal(0, 5);
   beta ~ normal(0, 0.2);
   sigma ~ gamma(2, 7);
   
@@ -48,7 +48,7 @@ model {
   
   // Shape parameters
   nu ~ gamma(2, 0.1);
-  s ~ normal(0, 1); 
+  s ~ normal(0, 0.01); 
   
   // Likelihood
   vector[N] mu;

@@ -15,6 +15,8 @@ However, the simpler LKJ prior (SOURCE) will be used in this paper.
 The resulting model will be compared with the model that assumes independence from the previous section.
 A comparison between all possible priors that capture area correlation is beyond the scope of this paper and left for future research.
 
+\subsection{LKJ prior}
+
 Let $\Sigma$ be a $D \times D$ covariance matrix, so that $u \sim \mathcal{N}(\boldsymbol{0}, \Sigma)$, where $\boldsymbol 0$ and $u$ are $D$-dimensional vectors.
 Therefore, the density of $u$ can be written as:
 \begin{gather*}
@@ -54,6 +56,19 @@ In such cases, an autoregressive or a random walk prior on $u_d$ such as in RUE/
 
 \includegraphics[width=\textwidth]{./graphics/rand_intercept/corr_plot}
 \includegraphics[width=\textwidth]{./graphics/rand_intercept/dens_corr_plot}
+
+\subsection{SAR prior}
+The spatial correlation (SAR) prior as described in (DATTA) is defined on a precision matrix $\Omega$.
+The starting point is the $D\times D$ proximity matrix $W$, which contains information on how close two strata are.
+If $w_d, d = 1, ..., D$ is the sum of row $d$ of matrix $M$ ($w_d = \displaystyle \sum_{i = 1}^D w_{di}$), then the $D \times D$ matrix $L$ is defined as $L = \text{diag}\{w_d\}_{d=1}^D$, which is used to calculate the row-normalized matrix $\tilde W = L^{-1}W$.
+The SAR prior in the context of model \ref{eq:trafo_coef_var} is then given by
+\begin{gather*}
+    \Omega(\rho) = (I_D - \rho \tilde W)'(\rho \tilde W), ~~ \rho \in (-1, 1),\\
+    u \sim \mathcal N(\boldsymbol{0}_D, \sigma_u^2 \Omega^{-1}),\\
+    \rho \sim \mathcal N(0, 0.4)
+\end{gather*}
+where $\boldsymbol{0}_D$ is a $D$-dimensional zero vector.
+
 
 
 

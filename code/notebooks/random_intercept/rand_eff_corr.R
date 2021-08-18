@@ -7,11 +7,18 @@ library(posterior)
 source(file.path("dataloader", "data_cleaning.R"))
 rm(census, census_one_hot, mcs, mcs_stan)
 
+to_binary <- function(x) str_sub(paste(rev(as.integer(intToBits(x))), collapse=""), start = -5)
+binary_vector <- function(x) str_split(to_binary(x), "", simplify = TRUE)
+hamming_distance <- function(x, y) sum(x != y)
+
 base_model <- cmdstan_model(file.path("model", "stan", "rand_eff_spec", 
-                                      "raneff_spec.model.stan"))
+                                      "raneff_spec_base.model.stan"))
 
 corr_model <- cmdstan_model(file.path("model", "stan", "rand_eff_spec", 
                                  "raneff_corr.model.stan"))
+
+sar_model <- cmdstan_model(file.path("model", "stan", "rand_eff_spec", 
+                                 "raneff_corr_sar.model.stan"))
 
 rw_model <- cmdstan_model(file.path("model", "stan", "rand_eff_spec", 
                                  "raneff_corr_rw.model.stan"))
@@ -29,7 +36,7 @@ slope_rstan <- rstan::stan(file.path("model", "stan", "rand_eff_spec",
 base_draws <- base_model$sample(mcs_one_hot_strat, 
                            chains = 4, 
                            iter_warmup = 1000, 
-                           iter_sampling = 250,  
+                           iter_sampling = 300,  
                            parallel_chains = 4,
                            adapt_delta = 0.9, 
                            seed = 123)
@@ -37,13 +44,40 @@ base_draws <- base_model$sample(mcs_one_hot_strat,
 lkj_draws <- corr_model$sample(mcs_one_hot_strat, 
              chains = 4, 
              iter_warmup = 1000, 
-             iter_sampling = 250,  
+             iter_sampling = 300,  
              parallel_chains = 4,
              adapt_delta = 0.9, 
              seed = 123)
 
 lkj_draws$draws("u") %>% mcmc_dens()
-rw_draws$draws("u") %>% mcmc_dens()
+
+# Calculate distance matrix for standard errorseigen
+W <- matrix(nrow = 32, ncol = 32)
+for(i in 1:32){
+  for(j in 1:32){
+    W[i, j] <- hamming_distance(binary_vector(i), binary_vector(j))
+  }
+}
+
+L <- diag(apply(W, MARGIN = 1, FUN = sum))
+
+W_tilde <- solve(L) %*% W
+
+mcs_one_hot_strat$W_tilde <- W_tilde
+
+
+sar_draws <- sar_model$sample(mcs_one_hot_strat, 
+             chains = 4, 
+             iter_warmup = 1000, 
+             iter_sampling = 300,  
+             parallel_chains = 4,
+             adapt_delta = 0.9, 
+             seed = 123)
+
+sar_draws$draws("rho") %>%  mcmc_dens_chains()
+
+
+rw_draws$draws("u") %>% mcmc_dens_chains()
 
 rw_draws <- rw_model$sample(mcs_one_hot_strat, 
              chains = 4, 
@@ -66,13 +100,15 @@ loo_base <- base_draws$loo()
 
 loo_lkj <- lkj_draws$loo()
 
+loo_sar <- sar_draws$loo()
+
 loo_rw <- rw_draws$loo()
 
 loo_slope <- slope_draws$loo()
 
-loo_compare(loo_base, loo_lkj, loo_rw)
+loo::loo_compare(loo_base, loo_lkj, loo_sar)
 
-to_binary <- function(x) str_sub(paste(rev(as.integer(intToBits(x))), collapse=""), start = -5)
+
 Omega_plot_df <- function(Omega, group){
   Omega %>%
     as_tibble() %>%
@@ -99,26 +135,35 @@ Omega_grouped_df <- function(mcmc_draws, D, size = 4){
   return(result)
 }
 
-
 Omega_plot_grouped <- Omega_grouped_df(lkj_draws, 32, 4)
+Omega_plot_grouped_sar <- Omega_grouped_df(sar_draws, 32, 9)
 
-corr_plot <- ggplot(Omega_plot_grouped, aes(X_bin, 
-                               Y_bin, 
-                               fill= corr)) + 
+
+
+corr_plot <- function(Omega){ 
+  ggplot(Omega, aes(X_bin, 
+                   Y_bin, 
+                   fill= corr)) + 
   geom_tile() + 
   theme_void() + 
   theme(axis.text.x = element_text(angle = 90, size = 4),
         axis.text.y = element_text(size = 4)) +
   theme(strip.text.x = element_blank()) + 
-  facet_wrap(vars(group), nrow = 2) +
+  facet_wrap(vars(group), nrow = 3) +
   scale_fill_gradient2(na.value = "#FFFFFF")
+  }
 
-dens_corr_plot <- ggplot(Omega_plot_grouped, aes(corr, colour = factor(group))) + 
+dens_corr_plot <- function(Omega) {
+  ggplot(Omega, aes(corr, colour = factor(group))) + 
   geom_density() + 
   theme_minimal() + 
   # theme(axis.text.x = element_text(angle = 90, size = 8),
   #       axis.text.y = element_text(size = 8)) +
   theme(strip.text.x = element_blank())
+  }
+
+corr_plot(Omega_plot_grouped_sar)
+dens_corr_plot(Omega_plot_grouped_sar)
 
 graph_path <- file.path("notebooks", "random_intercept", "graphs")
 

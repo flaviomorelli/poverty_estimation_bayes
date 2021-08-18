@@ -1,6 +1,5 @@
 # start <- proc.time()
 
-# TODO dummies for categorical variables
 
 sector_lookup <- function(sector){
   if(is.na(sector))
@@ -210,7 +209,6 @@ mcs_one_hot_strat <- list(N = nrow(mcs_one_hot),
                         X = X, 
                         domain = domain)
 rm(X, domain)
-
 
 
 message("Cleaning the workspace...")
