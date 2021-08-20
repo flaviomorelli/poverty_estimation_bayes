@@ -9,50 +9,49 @@ source(file.path("dataloader", "data_cleaning.R"))
 rm(census, census_one_hot, mcs, mcs_stan)
 
 # Are there out-of-sample areas?
-mcs %>% group_by(strat_idx) %>% count %>% View
+mcs_one_hot %>% group_by(strat_idx) %>% count 
 
 # Print quantiles for number of observations 
-mcs %>% group_by(strat_idx) %>% count %>% .[["n"]] %>% quantile
+mcs_one_hot %>% group_by(strat_idx) %>% count %>% .[["n"]] %>% quantile
 
 model <- cmdstan_model(file.path("model", "stan", "rand_eff_spec", 
                                  "raneff_spec.model.stan"))
 
-# model$variational(mcs_one_hot_mun, iter = 20000)
-
 mun_draws <- model$sample(mcs_one_hot_mun, 
                           chains = 4, 
-                          iter_warmup = 1000,
-                          iter_sampling = 500,
-                          parallel_chains = 4,
-                          max_treedepth = 13, 
-                          adapt_delta = 0.85)
+                          iter_warmup = 1200,
+                          iter_sampling = 300,
+                          parallel_chains = 4)
 
 # model$variational(mcs_one_hot_strat, iter = 20000)
 
 strat_draws <- model$sample(mcs_one_hot_strat, 
                           chains = 4, 
-                          iter_warmup = 1000, 
-                          iter_sampling = 500,
-                          parallel_chains = 4,
-                          max_treedepth = 13, 
-                          adapt_delta = 0.85)
+                          iter_warmup = 1200, 
+                          iter_sampling = 300,
+                          parallel_chains = 4)
+                         
 
 loo_mun <- mun_draws$loo()
 # Estimate    SE
-# elpd_loo -14892.4  50.8
-# p_loo        30.6   0.7
-# looic     29784.7 101.6
+# elpd_loo -14833.2  54.3
+# p_loo        42.9   1.2
+# looic     29666.3 108.7
+# ------
+# Monte Carlo SE of elpd_loo is 0.2.
 
 loo_strat <- strat_draws$loo()
 # Estimate    SE
-# elpd_loo -14855.5  50.7
-# p_loo        30.1   0.8
-# looic     29711.1 101.3
+# elpd_loo -14799.1  54.4
+# p_loo        41.2   1.3
+# looic     29598.3 108.8
+# ------
+# Monte Carlo SE of elpd_loo is 0.2.
 
 loo_compare(loo_mun, loo_strat)
 
 # elpd_diff se_diff
 # model2   0.0       0.0  
-# model1 -36.8      11.3  
+# model1 -34.8      12.8  
 
 mun_draws$draws("s") %>% mcmc_dens()

@@ -1,26 +1,46 @@
 # FGT functions
 
-poverty_line <- function(x) 0.6 * median(x)
+poverty_line <- function(x, ...) 0.6 * median(x)
 
-hcr <- function(y, group, t) as.matrix(by(y, group, 
+weighted_poverty_line <- function(x, w) 0.6 * laeken::weightedMedian(x, w)
+
+hcr <- function(y, group, t, ...) as.matrix(by(y, group,
                                           function(x) mean(x <= t)))
 
-pgap <- function(y, group, t) as.matrix(by(y, group, 
+pgap <- function(y, group, t, ...) as.matrix(by(y, group,
                                           function(x) mean(((t-x)/t) * (x <= t))))
 
-fgt <- function(y_pred, group_id, n_groups, type = "hcr"){
-  if(!(type %in% c("hcr", "pgap"))) 
-    stop(stringr::str_c("`type` argument has to be `hcr` or `pgap`! Passed: ", type))
+weighted_hcr <- function(y, group, t, w) as.matrix(
+                                         by(data.frame(y = y, w = w), group,
+                                             function(df) weighted.mean(df$y <= t, df$w)))
+
+weighted_pgap <- function(y, group, t, w) as.matrix(
+                                           by(data.frame(y, w), group,
+                                           function(df) weighted.mean(((t-df[["y"]])/t) * (df[["y"]] <= t), 
+                                                                             df[["w"]])))
+
+fgt <- function(y_pred, group_id, n_groups, type = "hcr", w = NULL){
+  if(!(type %in% c("hcr", "pgap", "weighted_hcr", "weighted_pgap"))) 
+    stop(stringr::str_c("`type` argument has to be `hcr`, `pgap`, `weighted_hcr`, `weighted_pgap`! Passed: ", type))
   
   result <- matrix(nrow = n_groups, 
                    ncol = ncol(y_pred))
   
   # List with indicator functions
   indicator <- list(hcr = hcr, 
-                    pgap = pgap)
+                    pgap = pgap,
+                    weighted_hcr = weighted_hcr,
+                    weighted_pgap = weighted_pgap)
+  
+  poverty <- list(hcr = poverty_line, 
+                  pgap = poverty_line,
+                  weighted_hcr = weighted_poverty_line,
+                  weighted_pgap = weighted_poverty_line)
+  
   for(i in 1:ncol(y_pred)){
-    t <- poverty_line(y_pred[ , i])
-    result[ , i] <- indicator[[type]](y_pred[ ,i], group_id, t)
+    message(str_c("Iteration :",  i))
+    t <- poverty[[type]](y_pred[ , i], w)
+    result[ , i] <- indicator[[type]](as.numeric(y_pred[ ,i]), group_id, t, w)
   }
   return(result)
 }

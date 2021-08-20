@@ -1,5 +1,5 @@
 # start <- proc.time()
-
+source(file.path("ops", "binary_functions.R"))
 
 sector_lookup <- function(sector){
   if(is.na(sector))
@@ -139,7 +139,7 @@ mcs <- mcs_hog %>%
 
 mcs_one_hot <- mcs %>% 
   dplyr::select(jsector, id_men, trabinusual, pcpering, ingresoext,
-         actcom_pc, bienes_pc, pob_ind, rururb, mun,
+         actcom_pc, bienes_pc, pob_ind, jexp, jedad, pcocup, rururb, mun,
          ic_rezedu, ic_asalud, ic_cv, ic_sbv, strat_idx, ictpc) %>% 
   dplyr::mutate(across(c("id_men", "trabinusual", "ingresoext", "pob_ind"), as.factor)) %>% 
   recipes::recipe(formula = ~ ., data = .) %>% 
@@ -165,14 +165,18 @@ census <- census_hog %>%
 
 census_one_hot <- census %>% 
   dplyr::select(jsector, id_men, trabinusual, pcpering, ingresoext,
-                actcom_pc, bienes_pc, pob_ind, rururb, mun,
-                ic_rezedu, ic_asalud, ic_cv, ic_sbv, strat_idx) %>% 
+                actcom_pc, bienes_pc, pob_ind, jexp, jedad, pcocup, rururb, mun,
+                ic_rezedu, ic_asalud, ic_cv, ic_sbv, strat_idx, factor) %>% 
   dplyr::mutate(across(c("id_men", "trabinusual", "ingresoext", "pob_ind"), as.factor)) %>% 
   recipes::recipe(formula = ~ ., data = .) %>% 
   recipes::step_dummy(all_of(c("jsector", "id_men", "trabinusual", 
                                "ingresoext", "pob_ind", "rururb"))) %>% 
   recipes::step_center(all_of(c("pcpering", "actcom_pc", "bienes_pc"))) %>% 
   recipes::prep() %>% recipes::juice()
+
+census_one_hot <- census_one_hot[complete.cases(census_one_hot), ]
+
+
 
 message("Creating MCS lists for Stan...")
 X <- mcs %>% select(jsector, jsexo, jexp, jedad,
@@ -202,14 +206,36 @@ rm(X, domain)
 X <- mcs_one_hot %>% 
   select(-c(mun, ic_rezedu, ic_asalud, ic_sbv, ic_cv, strat_idx, rururb_Rural, ictpc))
 domain <- strtoi(mcs_one_hot$strat_idx, base = 2) + 1
+
+# Calculate distance matrix for SAR prior
+W <- matrix(nrow = 32, ncol = 32)
+for(i in 1:32){
+  for(j in 1:32){
+    W[i, j] <- hamming_distance(binary_vector(i), binary_vector(j))
+  }
+}
+
+L <- diag(apply(W, MARGIN = 1, FUN = sum))
+
+W_tilde <- solve(L) %*% W
 mcs_one_hot_strat <- list(N = nrow(mcs_one_hot),
                         K = ncol(X), 
                         D = max(domain), 
                         y = mcs_one_hot$ictpc + 1, 
                         X = X, 
+                        W_tilde = W_tilde,
                         domain = domain)
 rm(X, domain)
+X <- census_one_hot %>% 
+  select(-c(mun, ic_rezedu, ic_asalud, ic_sbv, ic_cv, strat_idx, rururb_Rural, factor))
 
+domain <- (strtoi(census_one_hot$strat_idx, base = 2) + 1)
+census_one_hot_strat <- list(N_pred = nrow(census_one_hot),
+                          X_pred = X, 
+                          factor = census_one_hot$factor, 
+                          mun = census_one_hot$mun, 
+                          domain_pred = domain)
+rm(X, domain)
 
 message("Cleaning the workspace...")
 rm(mcs_hog_raw, mcs_hog,
@@ -217,7 +243,7 @@ rm(mcs_hog_raw, mcs_hog,
    census_hog_raw, census_hog,
    census_per_raw, census_per,
    clean_hog, sector_lookup, 
-   ic_lookup)
+   ic_lookup, i, j, W, L, W_tilde)
 
 message("Mexico data loaded!")
 

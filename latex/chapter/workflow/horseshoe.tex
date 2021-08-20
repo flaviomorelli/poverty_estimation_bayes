@@ -6,7 +6,9 @@ The ideal solution would be to estimate models with all possible variable combin
 However, this solution is not feasible computationally due to the very large number of possible models.
 Another common approach is to use shrinkage methods like the Lasso \citep{tibshirani_regression_1996} to determine which variables can be left out without significantly compromising the predictive power of the model.
 If a coefficient is shrunk to zero, it is a sign that the respective variable might be removed.
-In this section, the regularized horseshoe prior \citep{piironen_sparsity_2017}, which follows a similar shrinkage principle to the Lasso or the ridge, is presented and then used to select relevant variables. The selection is done by comparing the elpd$_{\text{loo}}$ of models with different groups of less meaningful variables removed. An alternative to the horseshoe prior is to use projective prediction approach developed by \cite{piironen_projective_2020}.
+In this section, the regularized horseshoe prior \citep{piironen_sparsity_2017}, which follows a similar shrinkage principle to the Lasso or the ridge, is presented and then used to select relevant variables.
+This section shows how priors can be used inside a Bayesian workflow to do variable selection.
+The selection is done by comparing the elpd$_{\text{loo}}$ of models with different groups of less meaningful variables removed. An alternative to the horseshoe prior is to use projective prediction approach developed by \cite{piironen_projective_2020}.
 Unfortunately, this only works with distributions from the exponential family, which does not include the Student's $t$-distribution used in this paper.
 Therefore, the focus is on the regularized horseshoe prior.
 
@@ -80,12 +82,12 @@ This can be clearly seen in the backtransformation ($e^\eta - \lambda$, with $\e
 The original horseshoe prior does not take into account categorical variables.
 In this case, if any of the categories has a clear effect on the dependent variable, the whole variable is considered to be relevant.
 
-Parameters? Coefficient plots?
-
-After estimating the full model with the horseshoe prior, the following variables presented in section XY were found to have very small effects: job experience of head of household, gender of head of household, presence of minors under the age of 16, percentage of working household members, percentage of women in household and percentage of literate members of household.
+After estimating the full model with the horseshoe prior, the following variables presented in section \ref{ch:mexican_data} have either very small effects or effects that are not clearly positive or negative: job experience of head of household, gender of head of household, presence of minors under the age of 16, percentage of working household members, percentage of women in household and percentage of literate members of household.
+The density plots of the coefficients can be found in Figure \ref{fig:hs_dens} in appendix \ref{appendix:horseshoe_plot}.
 A reduced model without these six variables but with the same prior and likelihood specification as the full model was estimated in a second step, but the difference in elpd$_{\text{loo}}$ is -17.8 to the full model with a standard error for the difference of 7.3.
-The difference is therefore more than twice as large as its standard error.
+The difference is therefore more than twice as large as its standard error, so it reduce the predictive power of the model.
 A second model with only gender of head of household, percentage of women in household and percentage of literate members of household removed is indistinguishable from the full model with an elpd$_{\text{loo}}$ difference of -2.7 and a difference standard error of 4.2.
+Therefore, the variables selected in the second model are used for the rest of the paper.
 
 Before moving to the next section, two issues need to be addresses.
 First, the effectiveness of the horseshoe prior depends crucially on the number of variables included in the full model.
@@ -96,6 +98,6 @@ Therefore, the shrinkage of the regularized horseshoe is not much different from
 In any case, this section showed that it is possible to select variables using the horseshoe prior and that its shrinkage properties are particularly useful in high-dimensional data sets.
 
 Finally, finding an adequate subset of variables is a field of active research in the context of Bayesian workflow.
-It is very likely that in the near future there will be new tools to do this step of the workflow, especially concerning the projective predictive method (Piironen, Vehtari) to distributions outside the exponential family.
-Actually, projective predictive distribution is better, but at the moment of writing only available for the exponential family \citep{piironen_sparsity_2017}.
-As the $t$-distribution is one of the likelihoods used in this paper, no projective predicitve methods will be used in this paper.
+It is very likely that in the near future there will be new tools to do this step of the workflow, especially concerning the projective predictive method to distributions outside the exponential family.
+Projective predictive distribution provides a clear selection of variables that keeps the predictive power of the full model, but at the moment of writing only available for the exponential family \citep{piironen_sparsity_2017}.
+As the $t$-distribution is one of the likelihoods used in this paper, no projective predicitve methods are used in this paper.

@@ -16,9 +16,6 @@ data {
   matrix[N, K] X;
   int domain[N];
 }
-transformed data{
-  vector[N] y_dep = log(y);
-}
 
 parameters {
   real intercept;

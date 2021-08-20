@@ -16,13 +16,10 @@ data {
   matrix[N, K] X;
   int domain[N];
 }
-transformed data{
-  vector[N] y_dep = log(y);
-}
 
 parameters {
   real intercept;
-  real<lower=2> nu;
+  real<lower=0> nu_raw;
   real<lower=-min(y) + 0.1> lambda;
   
   real<lower=0> sigma;
@@ -33,13 +30,14 @@ parameters {
 }
 transformed parameters{
   vector[N] log_y = log(y + lambda);
-  real s = skewness(log_y) * 1000;
+  real s = skewness(log_y);
   vector[D] u = u_tilde * sigma_u;
+  real nu = nu_raw + 2;
   real sigma_e = sigma * sqrt(nu - 2 / nu);
 }
 
 model {
-  intercept ~ normal(4, 3);
+  intercept ~ normal(0, 5);
   beta ~ normal(0, 0.2);
   sigma ~ gamma(2, 7);
   
@@ -47,8 +45,8 @@ model {
   u_tilde ~ std_normal();
   
   // Shape parameters
-  nu ~ gamma(2, 0.1);
-  s ~ normal(0, 1); 
+  nu_raw ~ gamma(2, 0.1);
+  s ~ normal(0, 0.01); 
   
   // Likelihood
   vector[N] mu;

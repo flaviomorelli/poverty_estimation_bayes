@@ -19,8 +19,8 @@ data {
 
 parameters {
   real intercept;
-  real<lower=2> nu;
-  real<lower=-min(y) + 0.1> lambda;
+  real<lower=0> nu_raw;
+  real<lower=-min(y)> lambda;
   
   real<lower=0> sigma;
   real<lower=0> sigma_u;
@@ -32,6 +32,7 @@ parameters {
 transformed parameters{
   vector[N] log_y = log(y + lambda);
   real s = skewness(log_y);
+  real nu = nu_raw + 2;
   real sigma_e = sigma * sqrt(nu - 2 / nu);
   matrix[D, D] L_Sigma = diag_pre_multiply(rep_vector(sigma_u, D), L_Omega);
   vector[D] u = L_Sigma * u_tilde;
@@ -47,7 +48,7 @@ model {
   L_Omega ~ lkj_corr_cholesky(5);
   
   // Shape parameters
-  nu ~ gamma(2, 0.1);
+  nu_raw ~ gamma(2, 0.1);
   s ~ normal(0, 0.01); 
   
   // Likelihood
@@ -69,6 +70,5 @@ generated quantities{
                         sigma_e)
                         - log_y[n];
   }
-  
 }
 

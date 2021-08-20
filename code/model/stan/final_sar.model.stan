@@ -10,13 +10,16 @@ functions{
 
 data {
   int<lower=0> N;
+  int<lower=0> N_pred;
   int<lower=0> K;
   int<lower=0> D;
   
   vector<lower=0>[N] y;
   matrix[N, K] X;
+  matrix[N_pred, K] X_pred;
   matrix[D, D] W_tilde;
   int domain[N];
+  int domain_pred[N_pred];
 }
 
 parameters {
@@ -65,11 +68,18 @@ model {
 
 generated quantities{
   vector[N] log_lik;
+  vector[N_pred] y_pred;
   for (n in 1:N) {
     log_lik[n] = student_t_lpdf(log_y[n] |nu,
                         intercept + X[n] * beta + u[domain[n]],
                         sigma_e)
                         - log_y[n];
+  }
+  
+  
+  for(n in 1:N_pred){
+    y_pred[n] = exp(student_t_rng(nu, 
+                  intercept + X_pred[n] * beta + u[domain_pred[n]], sigma_e)) - lambda;
   }
   
 }

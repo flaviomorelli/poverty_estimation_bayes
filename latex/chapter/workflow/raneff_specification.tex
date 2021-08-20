@@ -26,9 +26,10 @@ The variable \code{rururb} is no longer used as a regressor in this specificatio
 This definition of the domain results in samples sizes between 2 and 368 with a median of 37.
 No domains are out-of-sample.
 
-The results from PSIS-LOO using model \ref{eq:trafo_coef_var} show that the models are almost indistinguishable and that the alternative definition of the random effect might perform slightly better. The difference in elpd$_{\text{loo}}$ is X with a standard error for the difference of Y.
-Even if the models are not substantially different in predictive terms, there is one substantial advantage of using the alternative specification: there are no out-of-sample domains.
+The results from PSIS-LOO using model \ref{eq:trafo_coef_var} show that the stratified specification is clearly better. The elpd$_{\text{loo}}$ for this specification is around 34.8 higher than the when municipalities as the domains. The standard error for the difference in elpd$_{\text{loo}}$ between both specifications is 12.8, which is around one third of the difference itself.
+Even if the models were not substantially different in predictive terms, there is one substantial advantage of using the alternative specification: there are no out-of-sample domains.
 This reduces drastically the uncertainty in the predictions for out-of-sample municipalities.
+Therefore, the stratified specification of the domain is used in the rest of this paper.
 
 Note that there are some limitations to this approach.
 First, the stratified structure is only an approximation.
