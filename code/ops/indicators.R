@@ -4,8 +4,7 @@ poverty_line <- function(x, ...) 0.6 * median(x)
 
 weighted_poverty_line <- function(x, w) 0.6 * laeken::weightedMedian(x, w)
 
-hcr <- function(y, group, t, ...) as.matrix(by(y, group,
-                                          function(x) mean(x <= t)))
+hcr <- function(y, group, t, ...) as.matrix(by(y, group, function(x) mean(x <= t)))
 
 pgap <- function(y, group, t, ...) as.matrix(by(y, group,
                                           function(x) mean(((t-x)/t) * (x <= t))))
@@ -38,7 +37,7 @@ fgt <- function(y_pred, group_id, n_groups, type = "hcr", w = NULL){
                   weighted_pgap = weighted_poverty_line)
   
   for(i in 1:ncol(y_pred)){
-    message(str_c("Iteration :",  i))
+    if(i %% 50 == 0) message(str_c("Iteration :",  i))
     t <- poverty[[type]](y_pred[ , i], w)
     result[ , i] <- indicator[[type]](as.numeric(y_pred[ ,i]), group_id, t, w)
   }

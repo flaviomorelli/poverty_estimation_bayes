@@ -1,0 +1,74 @@
+\section{Comparison EBP and Bayesian model}
+
+This section presents a comparison between the final HB model from section XY and the EBP with Box-Cox transformation.
+The EBP indicators were generated with the package \code{emdi} (QUELLE) with the Wild bootstrap option.
+
+
+\begin{figure}
+    \begin{subfigure}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/ebp_hb_comparison/hcr_logscale_ind}
+        \caption{HCR log-scale}
+    \end{subfigure}
+    \begin{subfigure}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/ebp_hb_comparison/hcr_gb2_ind}
+        \caption{HCR GB2}
+    \end{subfigure}
+    \begin{subfigure}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/ebp_hb_comparison/hcr_pareto_ind}
+        \caption{HCR Pareto}
+    \end{subfigure}
+
+    \begin{subfigure}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/ebp_hb_comparison/hcr_logscale_rmse}
+        \caption{RMSE HCR log-scale}
+    \end{subfigure}
+    \begin{subfigure}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/ebp_hb_comparison/hcr_gb2_rmse}
+        \caption{RMSE HCR GB2}
+    \end{subfigure}
+    \begin{subfigure}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/ebp_hb_comparison/hcr_pareto_rmse}
+        \caption{RMSE HCR Pareto}
+    \end{subfigure}
+
+    \begin{subfigure}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/ebp_hb_comparison/pgap_logscale_ind}
+        \caption{PGAP log-scale}
+    \end{subfigure}
+    \begin{subfigure}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/ebp_hb_comparison/pgap_gb2_ind}
+        \caption{PGAP GB2}
+    \end{subfigure}
+    \begin{subfigure}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/ebp_hb_comparison/pgap_pareto_ind}
+        \caption{PGAP Pareto}
+    \end{subfigure}
+
+    \begin{subfigure}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/ebp_hb_comparison/pgap_logscale_rmse}
+        \caption{RMSE PGAP log-scale}
+    \end{subfigure}
+    \begin{subfigure}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/ebp_hb_comparison/pgap_gb2_rmse}
+        \caption{RMSE PGAP GB2}
+    \end{subfigure}
+    \begin{subfigure}{0.31\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{./graphics/ebp_hb_comparison/pgap_pareto_rmse}
+        \caption{RMSE PGAP Pareto}
+    \end{subfigure}
+    \caption[Comparison of EBP and HB approaches with simulated data.]{Comparison of the Box-Cox EBP and the HB approach developed in this paper. Each row shows scatterplots for all three simulation scenarios of the EBP against the HB approach. The \textit{first row} shows the comparison between the HCR estimates, while the \textit{second row} the comparison of the corresponding RMSE estimates. The \textit{third row} presents the PGAP estimates and the \textit{fourth row} the RMSE of the PGAP estimates.}
+    \label{fig:ebp_hb_comparison}
+\end{figure}
+

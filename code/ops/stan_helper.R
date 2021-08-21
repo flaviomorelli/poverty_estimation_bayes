@@ -54,7 +54,7 @@ scenario_fit <- function(data, model, scenario, chains = 2,
 }
 
 
-scenario_pred <- function(data, gq_model, model_fit, scenario, type = "std"){
+scenario_pred <- function(data, gq_model, model_fit, scenario, regressors, type = "std"){
   pop <-  data[[scenario]][["pop_stan"]] 
   if(type == "std")
     smp <-  data[[scenario]][["smp_stan"]]
@@ -67,32 +67,35 @@ scenario_pred <- function(data, gq_model, model_fit, scenario, type = "std"){
            model_fit, 
            pop = pop,
            smp = smp, 
+           regressors = regressors, #define whether sample or pop regression
            type = type) 
 }
 
 
-scenario_pred_list <- function(data, gq_model, gq_miss_model, fit_list, scenarios){
+scenario_pred_list <- function(data, gq_model, gq_miss_model, fit_list, scenarios, regressors = "smp"){
   result <- list()
   for(scenario in scenarios){
     result[[scenario]][["smp"]] <- scenario_pred(data, 
                                                  gq_model, 
                                                  fit_list[[scenario]][["smp"]], 
                                                  scenario, 
+                                                 regressors = regressors, 
                                                  type = "std")
     
     result[[scenario]][["smp_miss"]] <- scenario_pred(data, 
                                                  gq_miss_model, 
                                                  fit_list[[scenario]][["smp_miss"]], 
                                                  scenario, 
+                                                 regressors = regressors, 
                                                  type = "missing")
   }
   return(result)
 }
 
 
-get_pred <- function(model, fit, pop, smp, type = "std", impute = TRUE){
+get_pred <- function(model, fit, pop, smp, regressors, type = "std", impute = TRUE){
   if(type == "std")
-    y_pred <- get_pred_std(model, fit, pop, smp)
+    y_pred <- get_pred_std(model, fit, pop, smp, regressors)
   else if(type == "missing")
     y_pred <- get_pred_miss(model, fit, pop, smp)
   else
@@ -111,15 +114,17 @@ get_pred <- function(model, fit, pop, smp, type = "std", impute = TRUE){
 }
 
 
-get_pred_std <- function(model, fit, pop, smp){
-  posterior::as_draws_matrix(
+get_pred_std <- function(model, fit, pop, smp, regressors){
+  if(regressors == "smp") data = smp
+  else data = pop
+  return(posterior::as_draws_matrix(
     model$generate_quantities(
       fit, 
-      data = smp, 
+      data = pop, 
       seed = seed, 
-      parallel_chains = 2
+      parallel_chains = 4
     )$draws() 
-  )
+  ))
 }
 
 
@@ -129,7 +134,7 @@ get_pred_miss <- function(model, fit, pop, smp){
       fit, 
       data = pop_data_miss(pop, smp), 
       seed = seed, 
-      parallel_chains = 2
+      parallel_chains = 4
     )$draws("y_pred") 
   )
 }

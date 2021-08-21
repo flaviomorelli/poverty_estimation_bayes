@@ -16,6 +16,7 @@ mexico@data[["CVE_MUN"]] <- mexico@data[["CVE_MUN"]] %>%
 guerrero_obs <- mexico@data[["CVE_ENT"]] == "12"
 guerrero_df <- fortify(mexico[guerrero_obs, ], region = "CVE_MUN")
 
+# Generating indicators
 sar_model <- cmdstan_model(file.path("model", "stan", 
                                      "final_sar.model.stan"))
 
@@ -35,18 +36,11 @@ hb_output <- read_cmdstan_csv(hb_fit$output_files(),
 hb_pred <- hb_output$post_warmup_draws %>% as_draws_matrix()
 write.csv(hb_pred, file.path("data", "predictions", "hb_pred.csv"))
 
-weighted_hcr(as.numeric(t(hb_pred)[, 1]) %>% unlist, 
-             factor(census_one_hot_strat$mun), 
-             1000, 
-             census_one_hot_strat$factor)
-
 hb_hcr <- fgt(t(hb_pred), 
     census_one_hot_strat$mun, 
     max(census_one_hot_strat$mun), 
     type = "weighted_hcr", 
     w = census_one_hot_strat$factor)
-
-apply(hb_hcr, MARGIN = 1, sd)
 
 write.csv(hb_hcr, file.path("data", "predictions", "hb_hcr.csv"))
 
@@ -71,10 +65,77 @@ ebp_indicators <- emdi::ebp(
   boot_type = "wild"
 )
 
-write.csv(ebp_indicators$ind, file.path("data", "predictions", "ebo_ind.csv"))
-write.csv(sqrt(ebp_indicators$MSE[, 2:11]), file.path("data", "predictions", "ebo_rmse.csv"))
+write.csv(ebp_indicators$ind, file.path("data", "predictions", "ebp_ind.csv"))
+write.csv(sqrt(ebp_indicators$MSE[, 2:11]), file.path("data", "predictions", "ebp_rmse.csv"))
 
-ggplot(data = guerrero_df) +
-  geom_polygon(aes(long, lat, group = group), color = "black") +
-  theme_void() 
+# Loading stored indicators
+hb_hcr <- read_csv(file.path("data", "predictions", "hb_hcr.csv") ) %>% select(-X1)
+hb_pgap <- read_csv(file.path("data", "predictions", "hb_pgap.csv"))%>% select(-X1)
+ebp_ind <- read_csv(file.path("data", "predictions", "ebp_ind.csv")) %>% 
+  mutate(id = as.character(Domain)) %>% 
+  select(id, Head_Count, Poverty_Gap) %>% 
+  rename(ebp_hcr_mean = Head_Count, ebp_pgap_mean = Poverty_Gap)
+ebp_rmse <- read_csv(file.path("data", "predictions", "ebp_rmse.csv")) %>% 
+  mutate(id = as.character(X1)) %>% 
+  select(id, Head_Count, Poverty_Gap) %>% 
+  rename(ebp_hcr_rmse = Head_Count, ebp_pgap_rmse = Poverty_Gap)
 
+hcr <- data.frame(hb_hcr_mean = apply(hb_hcr, MARGIN = 1, mean),
+                  hb_hcr_sd = apply(hb_hcr, MARGIN = 1, sd)) %>% 
+  rowid_to_column(var = "id") %>% 
+  mutate(id = as.character(id))
+
+pgap <- data.frame(hb_pgap_mean = apply(hb_pgap, MARGIN = 1, mean),
+                   hb_pgap_sd = apply(hb_pgap, MARGIN = 1, sd))%>% 
+  rowid_to_column(var = "id") %>% 
+  mutate(id = as.character(id))
+
+guerrero_ind_df <- guerrero_df %>% 
+  inner_join(hcr, by = "id") %>% 
+  inner_join(pgap, by = "id") %>% 
+  inner_join(ebp_ind, by = "id") %>% 
+  inner_join(ebp_rmse, by = "id")
+
+# Generate plots
+
+guerrero_map <- function(data, variable, legend){
+  ggplot(data = data) +
+    geom_polygon(aes_string("long", "lat", group = "group", fill = variable)) +
+    theme_void() +
+    labs(fill = legend) +
+    scale_fill_gradient(low = "yellow", high = "red") +
+    theme(legend.title = element_text(size = 14),
+          legend.text = element_text(size = 14))
+}
+
+hb_hcr_mean_plot <- guerrero_map(guerrero_ind_df, "hb_hcr_mean", "HCR")
+hb_hcr_sd_plot <- guerrero_map(guerrero_ind_df, "hb_hcr_sd", "S.D. HCR")
+hb_pgap_mean_plot <- guerrero_map(guerrero_ind_df, "hb_pgap_mean", "PGAP")
+hb_pgap_sd_plot <- guerrero_map(guerrero_ind_df, "hb_pgap_sd", "S.D. PGAP")
+hb_hcr_cv_plot <- guerrero_map(guerrero_ind_df, "hb_hcr_sd/hb_hcr_mean", "CV HCR")
+hb_pgap_cv_plot <- guerrero_map(guerrero_ind_df, "hb_pgap_sd/hb_pgap_mean", "CV PGAP")
+
+ebp_hcr_mean_plot <- guerrero_map(guerrero_ind_df, "ebp_hcr_mean", "HCR")
+ebp_hcr_rmse_plot <- guerrero_map(guerrero_ind_df, "ebp_hcr_rmse", "RMSE HCR")
+ebp_pgap_mean_plot <- guerrero_map(guerrero_ind_df, "ebp_pgap_mean", "PGAP")
+ebp_pgap_rmse_plot <- guerrero_map(guerrero_ind_df, "ebp_pgap_rmse", "RMSE PGAP")
+ebp_hcr_cv_plot <- guerrero_map(guerrero_ind_df, "ebp_hcr_rmse/ebp_hcr_mean", "CV HCR")
+ebp_pgap_cv_plot <- guerrero_map(guerrero_ind_df, "ebp_pgap_rmse/ebp_pgap_mean", "CV PGAP")
+
+save_plot <- purrr::partial(ggsave, width = 16, height = 9, unit = "cm")
+
+graph_path <- file.path("notebooks", "final_model_indicators")
+
+save_plot(filename = str_c(graph_path, "/hb_hcr_mean.png"), hb_hcr_mean_plot)
+save_plot(filename = str_c(graph_path, "/hb_hcr_sd.png"), hb_hcr_sd_plot)
+save_plot(filename = str_c(graph_path, "/hb_pgap_mean.png"), hb_pgap_mean_plot)
+save_plot(filename = str_c(graph_path, "/hb_pgap_sd.png"), hb_pgap_sd_plot)
+save_plot(filename = str_c(graph_path, "/hb_hcr_cv.png"), hb_hcr_cv_plot)
+save_plot(filename = str_c(graph_path, "/hb_pgap_cv.png"), hb_pgap_cv_plot)
+
+save_plot(filename = str_c(graph_path, "/ebp_hcr_mean.png"), ebp_hcr_mean_plot)
+save_plot(filename = str_c(graph_path, "/ebp_hcr_rmse.png"), ebp_hcr_rmse_plot)
+save_plot(filename = str_c(graph_path, "/ebp_pgap_mean.png"), ebp_pgap_mean_plot)
+save_plot(filename = str_c(graph_path, "/ebp_pgap_rmse.png"), ebp_pgap_rmse_plot)
+save_plot(filename = str_c(graph_path, "/ebp_hcr_cv.png"), ebp_hcr_cv_plot)
+save_plot(filename = str_c(graph_path, "/ebp_pgap_cv.png"), ebp_pgap_cv_plot)
