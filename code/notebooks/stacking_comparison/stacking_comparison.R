@@ -55,3 +55,21 @@ elpd_raneff_base <- loo_pointwise(raneff_base_fit)
 elpd_raneff_lkj <- loo_pointwise(raneff_lkj_fit)
 elpd_raneff_sar <- loo_pointwise(raneff_sar_fit)
 
+lpd_point <- cbind(mid_skewness = elpd_mid_skewness,
+                   tight_skewness = elpd_tight_skewness,
+                   wide_skewness = elpd_wide_skewness,
+                   raneff_base = elpd_raneff_base,
+                   raneff_lkj = elpd_raneff_lkj,
+                   raneff_sar = elpd_raneff_sar)
+
+loo::stacking_weights(lpd_point) #%>% as.matrix %>% t
+
+# Method: stacking
+# ------
+#   weight
+# model1 0.000 
+# model2 0.005 
+# model3 0.195 
+# model4 0.247 
+# model5 0.311 
+# model6 0.242 

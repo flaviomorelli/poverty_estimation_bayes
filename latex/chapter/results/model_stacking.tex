@@ -1,0 +1,40 @@
+\section{Comparison of Bayesian models with stacking weights}
+
+Model selection is a uncertain procedure, especially when there are multiple plausible models that are consistent with the data (MCELREATH?).
+While in section \ref{ch:area_corr} the SAR model was selected as the final model, it was also clear in Table \ref{tab:lkj_sar_base} that the model was indistinguishable from or only marginally better than the other two models.
+Stacking, which was discussed in section \ref{ch:bayesian_evaluation}, provides a method to combine predictions from multiple heterogeneous models.
+Weights are calculated jointly for all models based on their elpd$_{\text{loo}}$.
+A weighted average of the predictions from the different models can be estimated.
+The present paper does not investigate whether stacking provides better results than a single model.
+However, the weights provide valuable insights into the predictive power of the different models.
+First, stacking is relatively insensitive to similar models.
+This can be seen in the first three models, which are identical with the exception of the tightness of the prior on the skewness.
+The first three models share their weights in the sense that only the weight of the third model is non-zero.
+The last three entries in Table \ref{tab:stacking} correspond to the three models used to introduce area-level correlation: a base model with no correlation, the LKJ model and the SAR model.
+These three models offer a different picture: all of their weights are non-zero, which indicates that they are heterogenous, or else some of the weights would be equal to zero.
+Additionally, their weights (0.25, 0.31, 0.24) are in a very similar range.
+This indicates that they would contribute almost equally to a weighted average of predictions.
+This confirms the results in Table \ref{tab:lkj_sar_base} that showed a very similar elpd$_{\text{loo}}$ for all three models.
+
+% latex table generated in R 4.0.5 by xtable 1.8-4 package
+% Sun Aug 22 09:31:33 2021
+\begin{table}[ht]
+    \caption{Stacking weights of models in the workflow.}
+    \begin{center}
+        \begin{tabular}{rrrrrrr}
+          \hline
+         Mid skew. & Low skew. & High skew. & Base & LKJ & SAR \\
+          \hline
+         0.00 & 0.00 & 0.19 & 0.25 & 0.31 & 0.24 \\
+           \hline
+        \end{tabular}
+    \end{center}
+
+    \begin{adjustwidth}{45pt}{45pt}
+        \footnotesize{The first three models correspond to the three different priors on skewness from section \ref{ch:log_shift}. The \textit{Base} model corresponds to the model with no area-level correlation developed in section \ref{ch:coef_var_spec}. The \textit{LKJ} and \textit{SAR} models correspond to the models with area-level correlation from section \ref{ch:area_corr}. All models used the stratified random effect discussed in section \ref{ch:raneff}.}
+    \end{adjustwidth}
+    \label{tab:stacking}
+\end{table}
+
+In summary, the decision to use only one the SAR model is not necessarily the only possible one.
+It is likely that a combined prediction with methods such a stacking will outperform the predictions from a single model, but this question is left for future research.

@@ -1,30 +1,51 @@
 \chapter{Appendix: Additional Maps}
+\label{appendix:cv_maps}
 
-This appendix presents the graphs with the coefficients of variance.
-The indicators are very similar, which indicates that any bias of HCR and PGAP should be very similar.
-However, the effect of the dispersion inside the RMSE seems to be huge.
-Similar indicators excludes a bias problem!
+This appendix presents additional maps with the coefficients of variation (CV).
+For the HB model, the CV is defined as the standard deviation of the estimate over the estimate itself.
+In the EBP, the RMSE of the estimate is used instead of the standard deviation.
+The results are shown in Figure \ref{fig:cv_maps}.
+All estimates from the HB model have an acceptable CV (<0.1).
+A striking feature of this map is how different the patterns are in the HB and EBP.
+Regions that have a higher CV in the HB map compared to other regions show the opposite behavior in the EBP map.
+Also note that in general terms the CV of the EBP model has higher values, which is likely caused by the differences between RMSE and standard deviation.
 
-\begin{figure}
+
+\begin{figure}[h]
     \begin{subfigure}{0.49\linewidth}
         \centering
         \includegraphics[width=\textwidth]{./graphics/maps/hb_hcr_cv}
-        \caption{HB estimator}
+        \caption{HCR CV (HB)}
     \end{subfigure}
     \begin{subfigure}{0.49\linewidth}
         \centering
         \includegraphics[width=\textwidth]{./graphics/maps/ebp_hcr_cv}
-        \caption{EBP estimator}
+        \caption{HCR CV (EBP)}
     \end{subfigure}
 
     \begin{subfigure}{0.49\linewidth}
         \centering
         \includegraphics[width=\textwidth]{./graphics/maps/hb_pgap_cv}
-        \caption{HB estimator}
+        \caption{PGAP CV (HB)}
     \end{subfigure}
     \begin{subfigure}{0.49\linewidth}
         \centering
         \includegraphics[width=\textwidth]{./graphics/maps/ebp_pgap_cv}
-        \caption{EBP estimator}
+        \caption{PGAP CV (EBP)}
     \end{subfigure}
+    \caption{Coefficient of variation for the HCR and PGAP indicators.}
+    \label{fig:cv_maps}
+\end{figure}
+
+To better understand this pattern, it is useful to take a look at the out-of-sample map in Figure \ref{fig:guerrero_in}.
+The out-of-sample pattern matches the regions with the highest CV in the EBP model, which reflects a higher uncertainty.
+On the other hand, some regions that have the lowest CV in the HB model are out-of-sample.
+This is another indication that redefining the random effect to avoid out-of-sample areas greatly reduces uncertainty in the estimates.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{./graphics/maps/guerrero_in}
+       \caption{Map of Guerrero. Light gray areas are out of sample, dark areas in sample.}
+    \label{fig:guerrero_in}
 \end{figure}
