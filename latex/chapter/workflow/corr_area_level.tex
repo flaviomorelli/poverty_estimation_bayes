@@ -20,94 +20,106 @@ A comparison between all possible priors that capture area correlation is beyond
 
 \subsection{LKJ prior}
 
-Let $\Sigma$ be a $D \times D$ covariance matrix, so that $u \sim \mathcal{N}(\boldsymbol{0}, \Sigma)$, where $\boldsymbol 0$ and $u$ are $D$-dimensional vectors.
-Therefore, the density of $u$ can be written as:
+Let $\Sigma$ be a $D \times D$ covariance matrix, so that $u \sim \mathcal{N}(\boldsymbol{0}_D, \Sigma)$, where $\boldsymbol 0_D$ and $u$ are $D$-dimensional vectors.
+The density of $u$ can be written as:
 \begin{gather*}
     p(u|\Sigma) = (2\pi)^{-\frac D 2}\det(\Sigma)^{-\frac 1 2} e^{(-\frac 1 2 u'\Sigma^{-1} u)}.
 \end{gather*}
 The covariance matrix $\Sigma$ can be decomposed as $\Sigma = \text{diag}(\tau)\Omega\text{diag}(\tau)$, where $\tau$ is a $D$-dimensional vector of scale factor, $\text{diag}(\tau)$ is a $D \times D$ matrix with $\tau$ as its main diagonal and $\Omega$ is a $D \times D$ correlation matrix.
-Up to this point, the assumption has been that there is only one scale parameter $\sigma_u$ for all area-level effects $u_d$ and this assumption still holds.
-Because $\tau_d = \sqrt{\Sigma_{d, d}}$, the decomposition is simplified to $\Sigma = \sigma_u^2 \Omega$.
+Up to this point, the assumption has been that there is only one scale parameter $\sigma_u$ for all area-level effects $u_d$ and this assumption is still kept.
+Because $\tau_d = \sqrt{\Sigma_{d, d}}, d = 1, ..., D$, the decomposition is simplified to $\Sigma = \sigma_u^2 \Omega$.
 
-The standard deviation for the random effect $\sigma_u^2$, already has the prior $Ga(2, 10)$.
-However, the correlation between the single random effects is captured by defining a LKJ prior over the correlation matrix $\Omega$:
+The standard deviation for the random effect $\sigma_u^2$, already has the prior $Ga(2, 7)$.
+However, the correlation between domains is captured by defining a LKJ prior over the correlation matrix $\Omega$\footnote{In practice, it is common to use the Cholesky decomposition of $\Omega$ to avoid numerical issues when estimating the model.
+For clarity, the traditional matrix notation is kept in the paper, but note that the decomposition is used in the accompanying code.}:
 \begin{gather*}
     \Omega \sim \text{LKJ}(\eta), ~~ \eta \ge 1.
 \end{gather*}
-The LKJ correlation distribution implies that $p(\Sigma|\eta) \propto \det(\Sigma)^{\eta - 1}$ \citep[Chapter 1.13]{stan_development_team_stan_2021}.
-Note that the determinant of $\Sigma$ increases as the correlation between components decreases:
+The LKJ correlation distribution is defined so that $p(\Omega|\eta) \propto \det(\Omega)^{\eta - 1}$ \citep[Chapter 1.13]{stan_development_team_stan_2021}.
+Note that the determinant of $\Omega$ increases as the correlation between components decreases:
 an identity matrix has a determinant of 1, while a correlation matrix consisting only of ones (perfect correlation between components) has a determinant of 0.
 For $\eta = 1$, the LKJ prior is a uniform distribution over all possible correlation matrices.
-However, due to the fact that the function $f(x) = k^x$ for a fixed $k \in (0, 1)$ does not converge uniformly towards zero as $x \rightarrow \infty$, a higher $\eta$ puts more probability mass on matrices with a higher determinant, i.e., on matrices with a lower correlation between components.\footnote{In practice, it is common to use the Cholesky decomposition of $\Omega$ to avoid numerical issues when estimating the model.
-For clarity, the traditional matrix specification is kept in the paper, but note that the decomposition is used in the accompanying code.}
+However, due to the fact that the function $f(\eta) = k^{\eta-1}$ for a fixed $k \in (0, 1)$ does not converge uniformly towards zero as $\eta \rightarrow \infty$, a higher $\eta$ puts more probability mass on matrices with a higher determinant, i.e., on matrices with a lower correlation between components.
+In the model, $\eta$ is set to 5, which strongly favors matrices with determinants closer to 1, i.e., correlation matrices with a moderate correlation between domains.
+Figure \ref{fig:heatmap_lkj} shows four posterior draws for $\Omega$ as heatmaps.
+There are correlation values in the range from -0.5 to 0.5, which indicates that there is at least some correlation between areas.
+However, the heatmaps do not reveal any clear correlation pattern.
+This will be discussed more in detail in section \ref{ch:comparison_lkj_sar}.
+In the next step, the SAR prior is presented and included into the model as an alternative to the LKJ prior.
 
-The results from the model comparison can be seen in in Table XY.
-The model that allows for correlation between areas has a slightly better performance according to PSIS-LOO than the model with no correlation at all.
-However, it is important to remember that elpd$_{\text{LOO}}$ is just an approximation, because PSIS-LOO quantifies predictive power at the unit-level and not at the area-level, whereas the aim of the model is to generate prediction at the area-level.
-It is likely that the difference between the predictive power of both specifications would be clearer when using leave-one-group-out cross-validation.
-Unfortunately, this is still an area of active research and it is therefore beyond the scope of this paper.
-In any case, the slightly better performance of the model with the LKJ priors is taken as a sign that it captures correlations between strata that improve predictions.
-Eta parameter?
-
-Figure XY shows four posterior draws for Omega as heatmaps. In the plot, it is possible to see a very clear pattern, that is consistent among draws.
+%The results from the model comparison can be seen in in Table XY.
+%The model that allows for correlation between areas has a slightly better performance according to PSIS-LOO than the model with no correlation at all.
+%However, it is important to remember that elpd$_{\text{LOO}}$ is just an approximation, because PSIS-LOO quantifies predictive power at the unit-level and not at the area-level, whereas the aim of the model is to generate prediction at the area-level.
+%It is likely that the difference between the predictive power of both specifications would be clearer when using leave-one-group-out cross-validation.
+%Unfortunately, this is still an area of active research and it is therefore beyond the scope of this paper.
+%In any case, the slightly better performance of the model with the LKJ priors is taken as a sign that it captures correlations between strata that improve predictions.
+%Eta parameter?
 
 
 
-In the current model specification, the random intercept was redifined so that there are no out-of-sample areas.
-Nevertheless, the LKJ prior is not as useful when there are out-of-sample regions, as the correlation matrix is assumed to have as many dimensions as in the training set.
-In such cases, an autoregressive or a random walk prior on $u_d$ such as in \cite{gao_improving_2021} can be more appropriate, as it does not depend strictly on the dimensions of the correlation matrix.
+
+
+\subsection{SAR prior}
+The simultaneous autoregression (SAR) prior as described in \cite{chung_bayesian_2020} is defined on a precision matrix $\Omega$.
+The starting point is the $D\times D$ proximity matrix $W$, which contains information on how close two domains are.
+If $w_d, d = 1, ..., D$ is defined as the sum of row $d$ of matrix $W$ – i.e., $w_d = \displaystyle \sum_{i = 1}^D w_{di}$ –, then the $D \times D$ matrix $L$ is defined as $L = \text{diag}\{w_d\}_{d=1}^D$.
+Thus, it is possible to calculate the row-normalized matrix $\widetilde W = L^{-1}W$, in which all rows sum to 1.
+The SAR prior in the context of model \ref{eq:trafo_coef_var} is then given by
+\begin{gather*}
+    \Omega(\rho) = (I_D - \rho \widetilde W)'(I_D - \rho \widetilde W), ~~ \rho \in (-1, 1),\\
+    u \sim \mathcal N(\boldsymbol{0}_D, \sigma_u^2 \Omega^{-1}),\\
+    \rho \sim \mathcal U(-1, 1),
+\end{gather*}
+where $\boldsymbol{0}_D$ is a $D$-dimensional zero vector.
+Again, note that in this model $\Omega$ is \textit{precision} and not a \textit{correlation} matrix.
+Because the single strata used as domains are coded as a 5-digit binary string (see Section \ref{ch:raneff}), the distance matrix $W$ is defined using the Hamming distance.
+In short, the Hamming distance takes two strings of the same length and counts how many digits are different, e.g., 00111 and 10100 have a Hamming distance of 3.
+This also ensures that the distance of each stratum from itself is 0.
+The maximum distance in this case is 5, because each stratum is code with five binary digits.
+Note that when $\rho = 0$ the precision matrix $\Omega$ is equal to the identity matrix, which means that there is no correlation between the domains.
+As $\rho$ deviates from 0, the effect of the spatial increases.
+The uniform prior is chosen for $\rho$, because it is not possible to know how strong the correlation values are before fitting the model to the data.
+The limits $\rho \in (-1, 1)$ are needed so that $\Omega$ is positive definite.
+Similarly to the LKJ prior, Figure \ref{fig:heatmap_sar} shows four posterior draws for the correlation matrix.
+Here, the actual correlation matrix is depicted, \textit{not} the precision matrix $\Omega$.\footnote{$\Omega^{-1}$ is a covariance matrix, which is rescaled with the \code{cov2cor} function in \code{R}. The scaling parameter $\sigma^2_u$ is ignored in the rescaling as it is only a multiplicative constant of the covariance matrix.}
+The pattern created by the distance matrix is very clear and will be discussed more in detail in the next section.
+Finally, although the prior on $\rho$ is uniform, its posterior distribution (not shown) is right skewed, with 70\% of the probability mass between -1 and 0 and the rest between 0 and 1.
+It is not straightforward to interpret the effect of this parameter for large matrices, as the precision matrix $\Omega$ has to be inverted at a later stage.
+However, a clear deviation from 0 (as in this case) indicates area-level correlation.
 
 \begin{figure}
     \begin{subfigure}{\linewidth}
         \centering
         \includegraphics[width=0.85\textwidth]{./graphics/rand_intercept/lkj_corr_plot}
         \caption{LKJ(5) prior}
+        \label{fig:heatmap_lkj}
     \end{subfigure}
     \begin{subfigure}{\linewidth}
         \centering
         \includegraphics[width=0.85\textwidth]{./graphics/rand_intercept/sar_corr_plot}
         \caption{SAR prior}
+        \label{fig:heatmap_sar}
     \end{subfigure}
-    \caption[Correlation matrices for the LKJ and SAR priors.]{Four samples of the posterior correlation matrices for the models with LKJ and SAR priors. The coding of the domains in the axes is explained in section \ref{ch:raneff}.}
+    \caption[Correlation matrices for the LKJ and SAR priors.]{Four samples of the posterior correlation matrices for the models with LKJ and SAR priors. The domain coding in the axes is explained in section \ref{ch:raneff}.}
     \label{fig:corr_heatmap}
 \end{figure}
 
-
-\subsection{SAR prior}
-The simultaneous autoregression (SAR) prior as described in \cite{chung_bayesian_2020} is defined on a precision matrix $\Omega$.
-The starting point is the $D\times D$ proximity matrix $W$, which contains information on how close two strata are.
-If $w_d, d = 1, ..., D$ is the sum of row $d$ of matrix $M$ ($w_d = \displaystyle \sum_{i = 1}^D w_{di}$), then the $D \times D$ matrix $L$ is defined as $L = \text{diag}\{w_d\}_{d=1}^D$, which is used to calculate the row-normalized matrix $\tilde W = L^{-1}W$.
-The SAR prior in the context of model \ref{eq:trafo_coef_var} is then given by
-\begin{gather*}
-    \Omega(\rho) = (I_D - \rho \tilde W)'(I_D - \rho \tilde W), ~~ \rho \in (-1, 1),\\
-    u \sim \mathcal N(\boldsymbol{0}_D, \sigma_u^2 \Omega^{-1}),\\
-    \rho \sim \mathcal U(-1, 1)
-\end{gather*}
-where $\boldsymbol{0}_D$ is a $D$-dimensional zero vector.
-As the single strata are coded as a 5-digit binary string (Section \ref{ch:raneff}), the distance matrix $W$ is defined using the Hamming distance.
-In short, the Hamming distance takes two strings of the same length and counts how many digits are different, e.g., 00111 and 10100 have a Hamming distance of 3.
-This also ensure that the distance of each stratum from itself is 0.
-The maximum distance in this case is 5 as each stratum is marked with five binary digits.
-Note that when $\rho = 0$ the precision matrix $\Omega$ is equal to the identity matrix, which means that there is not correlation between the domains.
-As $\rho$ deviates from 0, the effect of the spatial increases.
-The uniform prior is chosen for $\rho$, because it is not straightforward to know which values are likely before fitting the model to the data.
-The limits $\rho \in (-1, 1)$ are needed so that $\Omega$ is still positive definite.
-The posterior distribution of $\rho$ is left skewed, with 70\% of the probability mass between -1 and 0 and the rest between 0 and 1.
-
 \subsection{Comparison of LKJ and SAR priors}
-The main difference with the LKJ prior is that the SAR prior uses actual information on how similar or close the domains are.
+\label{ch:comparison_lkj_sar}
+The main difference between both correlation priors is that the SAR prior uses actual information on how similar or close the domains are.
 In contrast, the LKJ prior is only a prior on the admissible correlation matrices.
-The difference becomes clear in Figure \ref{fig:corr_heatmap}, which show four posterior samples of the correlation matrices from the models with the LKJ and SAR priors.
-The axes display the respective strata combinations, whose notation as a 5-digit binary string (e.g., 01100) was explained in section .
+The difference becomes clear in Figure \ref{fig:corr_heatmap}, which shows four posterior samples of the correlation matrices from the models with the LKJ and SAR priors.
+The axes display the respective domains, whose notation as a 5-digit binary string (e.g., 01100) was explained in section \ref{ch:raneff}.
 The correlation matrices produced by the LKJ prior display a completely random pattern with respect to the correlations.
-On the othe side, with the SAR prior there is a clear structure in the correlation matrix stemming from the distance matrix $W$.
-Even though in Figure \ref{fig:corr_heatmap} the correlation values vary from sample to sample, there is a very clear symmetric visible for each sample, which is related to the way Hamming distance used to define $W$.
-The nature of the pattern can be further understood in Figure \ref{fig:corr_density}, which shows the distributions of the correlation values for each one of the sample in Figure \ref{fig:corr_heatmap}.
-The LKJ prior does not force any particular correlation pattern on the data, but it guarantees that the distribution of the correlations is roughly equal for each sample.
+On the othe side, with the SAR prior there is a clear structure in the correlation matrices stemming from the distance matrix $W$.
+Even though in Figure \ref{fig:corr_heatmap} the correlation values vary from sample to sample, there is a very clear symmetric visible for each sample, which is related to the way Hamming distance used to define $W$.\footnote{Figure \ref{fig:corr_heatmap} depicts only four posterior samples from more than 1000 MCMC samples. The correlation pattern in the SAR prior is present in all samples, but the range of correlation values from just four posterior samples is not representative.}
+The nature of the pattern can be further understood in Figure \ref{fig:corr_density}, which shows the distributions of the correlation values for each one of the posterior samples in Figure \ref{fig:corr_heatmap}.
+The LKJ prior does not force any particular correlation pattern on the data, but it guarantees that the distribution of the correlation values is roughly equal for each sample.
 With an increasing $\eta$, the LKJ prior puts more weight on correlation matrices closer to the identity matrix, which leads to tighter distributions for the correlation values.
 On the other hand, there is a much clearer pattern in the densities of the SAR prior specifications.
 The spikes in the densities are cause by the Hamming distance, which in the present paper has takes only six values, from 0 to 5.
 With continuous distances, the densities would be much smoother.
+Moreover, the correlation values densities do not overlap as in the LKJ prior.
 
 \begin{figure}
     \begin{subfigure}{0.49\linewidth}
@@ -118,12 +130,13 @@ With continuous distances, the densities would be much smoother.
         \includegraphics[width=0.85\textwidth]{./graphics/rand_intercept/sar_dens_plot}
         \caption{SAR prior}
     \end{subfigure}
-    \caption[Correlation density for the LKJ and SAR priors]{Correlation density for the four posterior samples of the LKJ and SAR priors shown in Figure \ref{fig:corr_density}. Each sample are displayed in different colors. The correlation in the SAR prior tends to be lower.}
+    \caption[Correlation density for the LKJ and SAR priors]{Correlation density for the four posterior samples of the LKJ and SAR priors shown in Figure \ref{fig:corr_density}. Each sample are displayed in a different color.}
     \label{fig:corr_density}
 \end{figure}
 
 
-The LKJ and SAR specification are compared with the model without domain-level correlation (base model) using PSIS-LOO.
+The LKJ and SAR specification are compared with model \ref{eq:trafo_coef_var} without domain-level correlation (base model) using PSIS-LOO.
+All models use the stratified random effect specification.
 The results are shown in Table \ref{tab:lkj_sar_base}.
 The elpd$_{\text{loo}}$ of the SAR model is slightly worse than the base model (-0.07), but the standard error of the difference (second column) is more than three times the estimated elpd$_{\text{loo}}$ difference itself (0.24).
 According to PSIS-LOO, the base and SAR models are undistinguishable.
@@ -151,7 +164,7 @@ Therefore, when looking at the larger picture, the differences between models se
 
 The main question at this point is why there is no clearer difference between these three specifications.
 There are two possible explanations.
-First, as some of the areas are quite small, it is difficult to capture correlations between areas.
+First, as some of the areas are quite small, it is difficult to indentify correlations between areas.
 It is possible that with more data the correlation could become more visible.
 Second, the PSIS-LOO quantifies leave-one-out cross-validation.
 However, leaving out only one observation might not make a large difference for the correlations are at the area-level.
@@ -162,6 +175,9 @@ Simulated data could have been used to check whether the diagnostic tools can ca
 Unfortunately, due to this limitations of the simulation scenarios from section \ref{ch:simulations} it is not possible to know the exact reason for the similarity between the three model specifications.
 A critical discussion of the simulations scenarios can be found in section \ref{ch:adequacy_simulations}.
 
+In the current model specification, the random intercept was redifined so that there are no out-of-sample areas.
+Nevertheless, the LKJ and SAR priors is not as useful when there are out-of-sample regions, as the correlation matrix is assumed to have as many dimensions as in the training set.
+In such cases, an autoregressive or a random walk prior on $u_d$ such as in \cite{gao_improving_2021} can be more appropriate, as it does not depend strictly on the dimensions of the correlation matrix.
 In any case, it is implausible that the area-level effects are completely independent.
 Therefore, the SAR specification is chosen as the final model.
 The estimated poverty indicators are presented in the next chapter and compared to the Box-Cox EBP from \cite{rojas_perilla_data_2020}.

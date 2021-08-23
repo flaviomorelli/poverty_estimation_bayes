@@ -45,7 +45,7 @@ However, the uncertainty of estimating the shift parameter is not taken into acc
 In practice, the empirical Bayes that minimizes skewness should be in the same range of the full Bayesian estimate, so it can be used as an additional check for the Bayesian model.
 
 Integrating the shift parameter $\lambda$ naively into the model might lead to estimation problems.
-Defining the prior directly on $\lambda$ is not straightforward, as each different distributions might lead to different result and with no further prior constraints the Markov chains might get stuck and not mix well.
+Defining the prior directly on $\lambda$ is not straightforward, as each different distributions might lead to different results and with no further prior constraints the Markov chains might get stuck and not mix well.
 As discussed in the previous section, minimizing the skewness of the transformed variable close to zero is likely to improve the performance of a symmetric likelihood distribution.
 In the Bayesian context, this can be done by including a very tight prior on skewness centered around zero
 \begin{equation*}

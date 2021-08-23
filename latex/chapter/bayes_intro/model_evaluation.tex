@@ -43,7 +43,19 @@ As Bayesian models produce a full distribution, it is also possible to check how
 However, these statistics should be ancillary in the sense that they should test something different than parameter fit.
 For example, while a linear model fits the mean and the variance quite well, this is not the case for a Poisson regression.
 Therefore, checking the mean and the variance in the Poisson case will reveal potential problems in the model \citep[Chapter 27.3]{stan_development_team_stan_2021}.
-A practical application of prior and posterior check will be shown in section X and section Y.
+A practical application of prior and posterior check will be shown in sections \ref{ch:initial} and \ref{ch:coef_var_spec}.
+
+Another tool that can be used to evaluate and compare models is stacking \citep{yao_using_2018}.
+The details of this method are highly technical and beyond the scope of this paper.
+Therefore, only a short summary is provided based on the explanation in \cite{gelman_bayesian_2020}.
+Cross-validation can be used to compare the performance of multiple models, but there is also uncertainty in model comparison.
+Choosing only one model discards the information contained in each one of the models.
+Stacking makes it possible to combine inferences from different models using weight that minimize the cross-validation error.
+In a nutshell, if there are two models and the first one outperforms the second one 70\% of the time, then the weights should be roughly 0.7 and 0.3.
+Moreover, stacking is robust to multiple similar models.
+If there is a group of three nearly identical models, the weights of two models will be almost zero while the third one gets a weight that represents the whole group of models.
+In this sense, stacking is also a measure of model heterogeneity.
+Further details can be found in \cite{yao_using_2018}.
 
 
 

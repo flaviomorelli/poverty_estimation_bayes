@@ -1,36 +1,33 @@
 \chapter{Discussion}
 
-After presenting the results, it is necessary to evaluate them critically and also to revisit certain steps of the workflow that can be improved.
+After presenting the results, it is necessary to evaluate them critically and also to revisit certain steps of the workflow that could potentially be improved.
 In the first section, the Bayesian and EBP are compared in their advantages and disadvantages.
 The second section discusses whether a Bayesian workflow is useful in the context of survey statistics and more specifically of small area estimation.
-Lastly, the simulation scenarios are evaluated with respect to their limitations and extensions for future research are proposed.
+Lastly, the simulation scenarios are evaluated with respect to their limitations and extensions to these scenarios are proposed.
 
 
 \section{Critical evaluation of the Bayesian approach against the EBP}
 
 The first criterion to evaluate both models is the quality of the estimated indicators.
-The two models – EBP and HB – have major differences:
+The two models – EBP and HB – are very different:
 they are from differing paradigms (frequentist and Bayesian), they use different transformations (Box-Cox and Log-Shift) and they use a different definition of the random effect when fitting the model.
-It is therefore suprising that the estimates are so almost identical.
-On the one hand, this is a sign that the estimates of both models are reliable, if to very different methods reach a similar conclusion.
-On the other hand, this also shows that in the end, modelling decision such as covariate choice or functional form have a larger impact on the estimates than the type of transformation or the specification of the random effect.
-A future project could also include estimated from a skewed distribution such as the gamma with log link and check whether the indicators change substantially.
-As the EBP and HB models use different uncertainty measures and have different random effect specification, it is more difficult to compare them with respect to estimate uncertainty.
+It is therefore suprising that the estimates are almost identical.
+On the one hand, this is a sign that the estimates of both models are robust, as very different approaches reach a similar conclusion.
+On the other hand, this also shows that, ultimately, modelling decisions such as covariate choice or functional form (i.e., choosing a linear model) have a larger impact on the estimates than the type of transformation or the specification of the random effect.
+Future research could also include estimates from a skewed distribution such as the gamma with log link and check whether the indicators change substantially.
+As the EBP and HB models use different uncertainty measures and have different random effect specifications, it is more difficult to compare them with respect to estimate uncertainty.
 Nevertheless, avoiding out-of-sample regions by redefining the random effect was shown to reduce estimate uncertainty drastically and it is plausible that it would have the same effect on the EBP.
 
 An additional dimension to be considered is ease of use.
 The \code{emdi} package already provides a series of implemented models out of the box.
-In contrast, the models developed in this paper were all coded using \code{Stan}, which requires more specialized knowledge on how Bayesian models are computed, which can be overwhelming for the user.
-Many modelling decisions such as prior choice can be automatized in a package like \code{brms} that could also take care of calculating the relevant socio-economic indicators.
+In contrast, the models developed in this paper were all coded using \code{Stan}, which requires more specialized knowledge on how Bayesian models are computed.
+This can be overwhelming for some users.
+Many modelling decisions such as prior choice and estimation of FGT-indicators from backtransformed samples from the posterior predictive distribution can be automatized in a package like \code{brms}.
 Moreover, it is important to keep in mind computation time.
-The EBP model took around 8 minutes to fit \textit{and} produce various socio-economic indicators.
+The EBP model took around 8 minutes to fit \textit{and} produce various socio-economic indicators such as HCR and PGAP.
 The final Bayesian model with the SAR prior also takes around 8 minutes to fit, but an additional 5 to 10 minutes are needed to calculate the indicators, depending on the number of Monte Carlo samples.
-This is not a huge difference, but it is still worth it to keep it in mind.
-Moreover, the \code{Stan} code was optimized for speed and slight changes can lead to a large increase in computational time.
-
-
-Sth about transformations?
-
+While this still is an acceptable and realistic time, it is important to underline that Bayesian models usually take longer to estimate and that model complexity can have a huge impact in this respect.
+Moreover, the \code{Stan} code was optimized for speed by taking full advantage of vectorization and slight changes can lead to a large increase in computational time.
 
 \section{Using a Bayesian workflow for SAE}
 
@@ -39,44 +36,44 @@ A key advantage of using a Bayesian workflow is that any model changes can be pr
 There is a variety of tools that can be used to check model assumptions (prior predictive checks), model fit (posterior predictive checks), or predictive power (PSIS-LOO and stacking).
 Moreover, as the model parameters are distributions and not point estimates it is always possible to look at each parameter independently to check if the values are realistic and also to better understand how the model works.
 This can be done both for unidimensional parameters such as standard deviation and multidimensional parameters such as correlation matrices (e.g., Figure \ref{fig:corr_heatmap}).
-In summary, there are tools to understand how the model works and the iterative development of the model allows for new insights into the problem at hand, which makes the uncertainty in model choice very clear.
+In summary, there are tools to understand how the model works and the iterative development of the model allows for new insights into the problem at hand and makes the uncertainty in model choice visible.
 This transparency is well-suited for survey statistics – a field which often provides information for policy decision-makers.
 
 Nevertheless, there are still disadvantages in using a Bayesian workflow.
 As Bayesian statistics has become more widespread only in the last few years, there are still some tools that need development.
-Variable selection is one of those areas, as the horseshoe prior is still not ideal for this task due to the lack of a clear selection criterium and due to its tendency to create computation problems.
+Variable selection is one of those areas, as the horseshoe prior is still not ideal for this task due to the lack of a clear selection criterium and due to its tendency to create computation problems like HMC divergences.
 A better alternative would be the projective prediction approach from \cite{piironen_projective_2020}, but which at the time of writing only works for a few likelihoods from the exponential family.
 This is an area of active research and new developments are to be expected in the following years.
 Another difficult aspect of Bayesian workflow is prior choice, especially for groups of similar parameters such as regression coefficients.
 While prior predictive checks are useful to determine the impact of prior choice, there might be too many possibilities to be considered.
-A current area of research is joint priors such as R2D2 (SOURCE), which affects multiple parameters simultaneously.
-Joint priors are simpler to parametrize and are user-friendly.
-They can also have advantages in avoiding overfitting.
+A current area of research is joint priors such as the r2-d2 \citep{zhang_bayesian_2020} or even the regularized horseshoe \citep{piironen_sparsity_2017}, which affects multiple parameters simultaneously.
+Joint priors are simpler to parametrize and are therefore more user-friendly.
+They can also have advantages in avoiding overfitting, as are usually controlled by parameters such as $R^2$ or number of relevant parameters.
 Lastly, as \cite{gelman_bayesian_2020} point out, iterative model fitting might cause problems with respect to inference validity.
-Again this is an area of current research.
+Again, this is an area of current research.
 
 \section{Adequacy of simulation scenarios}
 \label{ch:adequacy_simulations}
 
 The use of simulated data is a central part of Bayesian workflow according to \cite{gelman_bayesian_2020}.
 However, it is also a time-consuming step.
-In general, it is hard to create a scenario or multiple scenarios that capture the main features of the data, while at the same time not defining overly complicated models or generating so many scenarios that it is a burden for the researcher to work with them.
+In general, it is hard to create a scenario or multiple scenarios that capture the main features of the data, while at the same time not defining overly complicated scnearios or generating so many scenarios that it is a burden for the researcher to work with them.
 
 The models used in this paper are an extension of the models in \cite{rojas_perilla_data_2020}, mainly through the addition of correlated covariates.
 Nevertheless, there are some critical aspects that can be reconsidered.
 First, there might be room for improving the assumed distributions in the scenarios.
-On th one hand, the GB2 and Pareto scenarios add a skewed error term to covariates and random effects that are normal.
+On the one hand, the GB2 and Pareto scenarios add a skewed error term to covariates and random effects that are normal.
 The result is a relatively symmetric distribution with a long right tail.
 To make both scenarios more realistic, the distributions of the regressors could be more varied, so as to avoid a strong symmetry before adding the error term.
 On the other hand, the log-scale scenario assumes normality in the logarithmic scale.
 While this is a good sanity check for the results, it is unlikely to reflect the difficulty of fitting real-world data.
-A simple modification to avoid this strong assumption, would be again to change the normal distribution of the regressors to a heavier tailed Student's $t$ whith different the degrees of freedom for each covariate.
+A simple modification to avoid this strong assumption, would be again to change the normal distribution of the regressors to a heavier tailed Student's $t$ with different the degrees of freedom for each covariate.
 Second, a majority of variables found in a survey or a census are categorical.
 Neither \cite{rojas_perilla_data_2020} nor the present paper include categorical variables in the simulations.
 Therefore, there are probably some blind spots in the analysis of this paper, regarding difficulties that might arise from the use of categorical covariates.
 Third, the area-level effects are assumed to be independent – an unrealistic assumption.
-Many different ways of including correlation were already mentioned in Chapter X: an LKJ prior, an autoregressive prior (SAR, IAR, ICAR, etc.) or using a random walk between areas.
-While choosing any one of those procedures can place a strong assumption on the simulations, it should at least help the researcher to show, whether the model can capture correlations at the area level.
+Many different ways of including correlation were already mentioned in section \ref{ch:area_corr}: an LKJ prior, an SAR prior or using a random walk between areas.
+While choosing any one of those procedures can place a strong assumption on the simulations, it should at least help the researcher to show, whether the model can capture correlations at the area level even with small areas.
 Finally, this paper ignored the issue of problematic regressors.
 The correlation between covariates is moderate, only 0.2.
 Fitting a model that does not overfit is more challenging with a higher correlation between regressors and also with covariates that are highly correlated with the dependent variable.
@@ -86,6 +83,10 @@ At the same time, it is crucial not to overcomplicate the models and not to have
 In this paper, the GB2 and the Pareto scenarios are both additive and generate dependent variables that are similar in shape.
 To simplify model analysis, it might be easier to limit the scenarios to one multiplicative scenario and one additive scenario, either with a GB2 or a Pareto error.
 
-Sampling: in and out-of-sample
+One last aspect to take into account is the sampling procedure used with the simulated data.
+In this paper, the survey data set was created by sampling from the simulated population with no out-of-sample domains.
+However, there are cases where many domains are out-of-sample.
+For example, in many states of the Mexican data set, there no observations for 50\%-70\% of domains in the survey.
+This is an area of future research, especially when comparing the differences between EBP and an HB model with informative priors.
 
-LOGSCALE is MOST REALISTIC! WHAT TYPE OF SKEWNESS DO WE HAVE?
+
