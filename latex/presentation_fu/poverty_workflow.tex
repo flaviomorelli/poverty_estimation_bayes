@@ -1,0 +1,132 @@
+\documentclass{beamer}
+\usetheme{Pittsburgh}
+\usepackage{outlines}
+\usepackage{listings} % Format code
+
+\usepackage{tikz}
+\usepackage{subcaption}
+\usetikzlibrary{arrows, shapes, positioning}
+
+\usepackage{algorithm2e}
+\RestyleAlgo{ruled}
+
+
+\usepackage{graphicx}
+\graphicspath{ {./graphics/} }
+
+\usepackage[nosectionbib]{apacite}
+\bibliographystyle{apacite}
+
+\usepackage[english]{babel}
+
+
+\setbeamertemplate{caption}[numbered] % number tables
+
+
+ % Change font of bibliography
+% \renewcommand{\bibfont}{\scriptsize}
+
+
+% Change font size of inline citations
+\let\realcite\cite
+\renewcommand*{\cite}[1]{{\footnotesize\realcite{#1}}}
+
+% Beamer Settings
+
+% Format the frame title
+\setbeamertemplate{frametitle}[default][center]
+\addtolength{\headsep}{0.6cm}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+%\usefonttheme{serif}
+
+
+\title{Bayesian Workflow for Poverty Estimation }
+\author{Flavio Morelli}
+\begin{document}
+
+	\begin{frame}[plain]
+	    \maketitle
+	\end{frame}
+
+
+
+	% Set counter for sections
+	\setcounter{secnumdepth}{1}
+
+	\AtBeginSection[]
+	{
+		\renewcommand\refname{}
+	\begin{frame}<beamer>
+		\frametitle{Contents}
+		\tableofcontents[currentsection]
+	\end{frame}
+	}
+
+	% Add page numbers
+	\addtobeamertemplate{navigation symbols}{}{%
+		\usebeamerfont{footline}%
+		\usebeamercolor[fg]{footline}%
+		\hspace{1em}%
+		\insertframenumber/\inserttotalframenumber
+	}
+
+	%\input{./chapters/preface}
+
+	\begin{frame}{Contents}
+		\tableofcontents
+	\end{frame}
+
+	\section{Introduction}
+	\input{./chapters/introduction}
+
+    \section{Data}
+    \input{./chapters/data}
+
+    \section{Bayesian Workflow}
+    \input{./chapters/workflow}
+
+%	\section{Frequentist and Bayesian Fay-Herriot}
+%	\input{./chapters/model}
+
+%	\section{Data: Oaxaca}
+%	\input{./chapters/data}
+
+%	\section{Results}
+%	\input{./chapters/results}
+
+%	\section{Estimating variational approximations}
+%	\input{./chapters/estimation}
+%
+%	\section{Example with PyMC3}
+%	\input{./chapters/example}
+%
+%	\section{Evaluating variational approximations}
+%	\input{./chapters/evaluation}
+
+%\section{Variational approximation of the posterior}
+%\input{./chapters/variational_approx}
+
+%	\section{Alternative distance measures}
+%	\input{./chapters/alternatives_kl}
+
+%	\section{Summary}
+%	\input{./chapters/summary}
+
+	%\section{Bibliography}
+	\begin{frame}[allowframebreaks]
+
+		\frametitle{Bibliography}
+
+
+		{\footnotesize
+		\bibliography{./Literature/references}
+		}
+
+	\end{frame}
+
+
+
+\end{document}

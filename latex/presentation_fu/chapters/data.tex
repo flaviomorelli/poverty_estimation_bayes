@@ -1,0 +1,61 @@
+\begin{frame}{Simulations}
+    \begin{itemize}
+        \item Fake data is useful to benchmark the model
+        \item Avoids using data multiple times
+        \item Helps distinguish between modelling and computational problems
+        \item Three scenarios: log-scale, GB2, Pareto \cite{rojas_perilla_data_2020}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Simulations: Log-scale scenario}
+        \vspace{-1cm}
+\begin{equation}
+    \begin{split}
+        u_d & \sim \mathcal N(0, 0.4), ~~ d = 1,...,D,\\
+        \varepsilon_{di} & \sim \mathcal{N}(0, 0.3), i = 1,...,N,\\
+        \mu_{dk} & \sim \mathcal{U}(2, 3), k = 1,...,K,\\
+        \Sigma_{mn} = &\begin{cases} 1, ~~ m = n \\ \rho,  ~~ \text{otherwise}  \end{cases},
+        m = 1,...,K, n = 1,...,K,\\
+        \boldsymbol x_{di}  &\sim \text{MvNormal} (\boldsymbol \mu_{d}, \Sigma) ,
+        ~~ \boldsymbol \mu_{d} = (\mu_{d1}, ..., \mu_{dK}),\\
+        y_{di} & = \exp(5 + 0.1 \cdot \boldsymbol x_{di}  + u_d + \varepsilon_{di}),\\
+    \end{split}
+    \label{eq:log_scenario}
+\end{equation}
+
+\end{frame}
+
+\begin{frame}{Simulations: GB2 scenario}
+    \vspace{-1cm}
+    \begin{equation}
+        \begin{split}
+            u_d & \sim \mathcal N(0, 500), ~~ d = 1,...,D,\\
+            \varepsilon_{di} & \sim \mathcal{GB}2(2.5, 18, 1.46, 1700), i = 1,...,N,\\
+            \mu_{dk} & \sim \mathcal{U}(-1, 1), k = 1,...,K,\\
+            \boldsymbol x_{di}  &\sim \text{MvNormal} (\boldsymbol \mu_{d}, \Sigma) ,
+            ~~ \boldsymbol \mu_{d} = (\mu_{d1}, ..., \mu_{dK}),\\
+            \tilde{\varepsilon}_{di} & = \varepsilon_{di} - \bar \varepsilon,  \\
+            y_{di} & = 9000 - 250 \cdot \boldsymbol x_{di} + u_d + \tilde \varepsilon_{di}, \\
+        \end{split}
+        \label{eq:gb2_scenario}
+    \end{equation}
+
+\end{frame}
+
+\begin{frame}{Simulations: Pareto scenario}
+    \vspace{-1cm}
+    \begin{equation}
+        \begin{split}
+            u_d & \sim \mathcal N(0, 500), ~~ d = 1,...,D,\\
+            \varepsilon_{di} & \sim \text{Pareto}(3, 2000), i = 1,...,N,\\
+            \mu_{dk} & \sim \mathcal{U}(-3, 3), k = 1,...,K,\\
+            \boldsymbol x_{di}  &\sim \text{MvNormal} (\boldsymbol \mu_{d}, \Sigma) ,
+            ~~ \boldsymbol \mu_{d} = (\mu_{d1}, ..., \mu_{dK}),\\
+            \tilde{\varepsilon}_{di} & = \varepsilon_{di} - \bar \varepsilon,  \\
+            y_{di} & = 12000 - 350 \cdot \boldsymbol x_{di}    + u_d + \tilde \varepsilon_{di}.\\
+        \end{split}
+        \label{eq:pareto_scenario}
+    \end{equation}
+
+\end{frame}
+

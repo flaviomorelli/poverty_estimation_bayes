@@ -1,0 +1,169 @@
+% Introduction
+\begin{frame}{Motivation}
+
+
+\end{frame}
+
+
+\begin{frame}{Terminology: Bayes' theorem}
+    \begin{center}
+        $p(\theta|y) = \displaystyle \frac{p(\theta, y)}{p(y)} = \displaystyle \frac{p(y|\theta) \cdot p(\theta)}{\int_\Theta p(y|\theta) \cdot p(\theta) d\theta}$\\
+    \end{center}
+
+\end{frame}
+
+% BAYESIAN MODEL
+\begin{frame}{Terminology: Bayes' theorem}
+    \begin{center}
+        $p(\theta|y) = \displaystyle \frac{p(\theta, y)}{p(y)} = \displaystyle \frac{p(y|\theta) \cdot p(\theta)}{\int_\Theta p(y|\theta) \cdot p(\theta) d\theta}$\\
+    \end{center}
+
+    \begin{itemize}
+
+
+        \item
+        $\theta \in \Theta$: a parameter or vector of parameters (e.g. the probability in a binomial distribution) in the parameter space $\Theta$
+
+        \item
+        $y$: data
+
+        \item
+        $p(\theta|y)$: posterior
+
+        \item
+        $p(y|\theta)$: likelihood function that captures how we are modeling our data stochastically (e.g. $y$ is a binomial variable)
+
+        \item
+        $p(\theta)$: prior knowledge about the parameters (e.g. a probability can only be between 0 and 1)
+
+
+
+    \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Terminology: Bayes' theorem}
+    \begin{center}
+        $p(\theta|y) = \displaystyle \frac{p(\theta, y)}{p(y)} = \displaystyle \frac{p(y|\theta) \cdot p(\theta)}{\int_\Theta p(y|\theta) \cdot p(\theta) d\theta}$\\
+    \end{center}
+
+    \begin{itemize}
+
+        \item
+        $p(y) = \int_\Theta p(y|\theta) \cdot p(\theta) d\theta$: the marginal likelihood or evidence
+
+        \item
+        $p(y)$ is a constant that normalizes the expression so that the posterior integrates to one.
+
+        \item
+        Problem: $p(y)$ is \textbf{intractable} even for very simple models, and this makes it very hard to calculate the posterior
+
+        \item
+        Bayesian computation methods get around this intractability by different means
+
+
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}{SAE: Original HB model}
+    \vspace{-1cm}
+    Original HB model by Molina , Nanram Rao
+    \begin{equation*}
+        \label{eq:hb_rao}
+        \begin{split}
+            y_{di} |\boldsymbol \beta, u_d, \sigma_e & \sim \mathcal N(\boldsymbol{x'}_{di} \boldsymbol{\beta}+ u_d, \sigma_e), \\
+            u_d | \sigma_u & \sim \mathcal N(0, \sigma_u), \\
+            p(\boldsymbol \beta, \sigma_u, \sigma_e) & = p(\boldsymbol \beta) p(\sigma_u)p(\sigma_e) \propto p(\sigma_u)p(\sigma_e).
+        \end{split}
+    \end{equation*}
+    Issues with the model:
+    \begin{itemize}
+        \item Sticks to the assumption of normal errors
+        \item Flat priors on most parameters
+        \item Parametrized to avoid MCMC
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{SAE: Modified HB model}
+    From Morelli 2021
+    \begin{equation*}
+        \begin{split}
+            y_{di} |\boldsymbol \beta, u_d, \sigma_e & \sim
+            \text{Student}(\boldsymbol{x'}_{di} \boldsymbol \beta + u_d,\ \sigma_e\ , \nu), \\
+            u_d | \sigma_u & \sim \mathcal N(0, \sigma_u),\  \\
+            \beta_k & \sim \mathcal N(\mu_k, \sigma_k),\\
+            \sigma_u & \sim Ga(2, a), \\
+            \sigma_e & \sim Ga(2, b), \\
+            \nu & \sim Ga(2, 0.1). \\
+        \end{split}
+        \label{eq:mod_hb}
+    \end{equation*}
+    Differences with Molina model:
+    \begin{itemize}
+        \item Likelihood is a Student's $t$-distribution
+        \item All priors are proper distributions
+        \item Very hard to estimate without MCMC!
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Poverty Indicators: FGT}
+    \vspace{-2cm}
+    \begin{gather*}
+        F_d(\alpha, t) = \displaystyle \frac 1 {N_d} \sum_{i=1}^{N_d}\left( \frac{t - y_{di}}{t} \right)^\alpha I (y_{di} \le t),
+        \hspace{1cm}\alpha = 0, 1, 2.
+    \end{gather*}
+
+    \begin{itemize}
+        \item FGT-indicators \cite{foster_class_1984}
+        \item $t$ is the poverty line set at 60\% of median income of the state
+        \item $y_{di}$ is the income of the $i$-th person in municipality $d$
+        \item $I(\cdot)$ is the indicator function
+        \item $\alpha = 0$ is the head count ratio (HCR)
+        \item $\alpha = 1$ is the poverty gap (PGAP)
+        \item $\alpha = 2$ is the poverty severity
+        \item Hard to estimate with regression only
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+    \vspace{-0.5cm}
+    \centering
+    \scalebox{.7}{
+
+    \scriptsize
+    \begin{algorithm*}[H]
+        \caption{Estimate FGT-indicators with HB model}
+        \KwIn{A model $p(\theta, y)$, some data $y$ and $\alpha \in \{0, 1, 2\} $}
+        \KwOut{$\hat F_d^{HB}, \hat \sigma^{HB}_d,$ for $d = 1, ..., D$}
+        \For{$s \in \{1,...,S\}$}{
+
+            \For{$d \in \{1,...,D\}$}{
+                $\tilde y_d^{(s)}|y = (\tilde y_{d1}^{(s)}, ..., \tilde y_{dN_d}^{(s)})'$\;
+                Sample $\boldsymbol {\hat \beta^{(s)}}, \hat u_d^{(s)}, \hat \sigma_e^{(s)}, \hat \sigma_u^{(s)}, \hat \nu^{(s)}$ from $p(\beta, u_d, \sigma_e, \sigma_u, \nu|y)$\;
+                \eIf{$d$ is in-sample}{
+                    Sample $\tilde y^{(s)}_d|y$ from  $\text{Student}(\boldsymbol{x'}_{d} \boldsymbol {\hat \beta^{(s)}} + \hat u_d^{(s)}, \hat \sigma_e^{(s)}, \hat \nu^{(s)})$
+                }{\If{$d$ is out-of-sample}{
+                        Sample $\tilde u_d^{(s)}$ from $\mathcal N(0, \hat \sigma_u^{(s)})$\;
+                        Sample $\tilde y^{(s)}_d|y$ from $\text{Student} (\boldsymbol{x'}_{d} \boldsymbol {\hat \beta^{(s)}} + \tilde u_d^{(s)}, \hat \sigma_e^{(s)}, \hat \nu^{(s)})$
+                    }
+                }
+            }
+            $\tilde y ^{(s)} = (y ^{(s)}_1,..., y ^{(s)}_D)'$\;
+            $t^{(s)} = 0.6 \cdot median(\tilde y ^{(s)})$\;
+            \For{$d \in \{1,...,D\}$}{
+                $F^{(s)}_d(\alpha, t^{(s)}) = \displaystyle \frac 1 {N_d} \sum_{i=1}^{N_d}\left( \frac{t^{(s)} - \tilde y_{di}}{t^{(s)}} \right)^\alpha I (\tilde y_{di} \le t^{(s)})$
+            }
+        }
+
+        \For{$d \in \{1,...,D\}$}{
+            % Mean estimator
+            $\hat F_d^{HB} = \displaystyle \frac 1 S \sum_{s = 1}^S F_d^{(s)}$\;
+            % Std. deviation
+            $\hat \sigma^{HB}_d = \displaystyle \sqrt{ \frac{1}{S-1}  \sum_{s = 1}^S \left( F_d^{(s)} - \hat F_d^{HB} \right)^2}$
+        }
+    \end{algorithm*}}
+\end{frame}
+
