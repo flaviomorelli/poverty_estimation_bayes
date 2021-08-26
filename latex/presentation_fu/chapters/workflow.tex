@@ -41,7 +41,7 @@
         \begin{column}{0.32\textwidth}
             \includegraphics[width=\linewidth]{../graphics/log_shift/gb2_skewness}
 
-            $S(y^*) \sim \mathcal N (0, 0.01)$
+            $S(y^*) \sim \mathcal N (0, 0.001)$
         \end{column}
 
     \end{columns}
@@ -99,4 +99,59 @@
         \end{column}
     \end{columns}
 
+\end{frame}
+
+\begin{frame}
+    \vspace{-0.5cm}
+    \scriptsize{The gamma log link had the best results of all the skewed likelihoods}
+    \centering
+    \includegraphics[width=0.8\linewidth]{../graphics/skewed_likelihood/gamma_log/logscale_smp_gamma_log}
+
+    \scriptsize{Posterior predictive check for log-scale scenario}
+
+    \includegraphics[width=0.8\linewidth]{../graphics/skewed_likelihood/gamma_log/gb2_smp_gamma_log}
+
+    \scriptsize{Posterior predictive check for GB2 scenario}
+
+    \includegraphics[width=0.8\linewidth]{../graphics/skewed_likelihood/gamma_log/pareto_smp_gamma_log}
+
+    \scriptsize{Posterior predictive check for Pareto scenario}
+
+\end{frame}
+
+\begin{frame}{Defining priors on coefficients}
+    \begin{itemize}
+        \item In the log-shift model, coefficient are approximately percentage changes
+        \item A change of more than 30\% for an additional unit seems excessive
+        \item Coefficient prior is set to $\beta_k \sim \mathcal N(0, 0.2)$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Defining priors on scale parameters}
+    \begin{itemize}
+        \item $\sigma_e$ is not the standard deviation for a Student distribution
+        \item The variance is defined as $\sigma^2 = \sigma_e^2\frac {\nu} {\nu -2}$
+        \item $\sigma_e$ is redefined as $\sigma_e = \sigma \sqrt{\frac{\nu -2}{\nu}}$
+        \item The gamma prior $Ga(2, a)$ is now placed on $\sigma_u$ and $\sigma$
+        \item The rate parameter $a$ is determined with prior predictive checks
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Prior predictive checks: scale prior}
+
+    \centering
+    Original scale prior: $Ga(2, 0.75)$
+    \includegraphics[width=0.8\linewidth]{../graphics/prior_predictive_checks/prior_check_gb2_start}
+\end{frame}
+
+\begin{frame}{Prior predictive checks: scale prior}
+    \centering
+    Tight scale prior: $Ga(2, 7)$
+    \includegraphics[width=0.8\linewidth]{../graphics/prior_predictive_checks/prior_check_gb2_wide}
+\end{frame}
+
+\begin{frame}{Prior predictive checks: scale prior}
+    \centering
+    Tight scale prior: $Ga(2, 0.7)$
+    \includegraphics[width=0.8\linewidth]{../graphics/prior_predictive_checks/prior_check_gb2_tight}
 \end{frame}

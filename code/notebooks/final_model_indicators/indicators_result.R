@@ -35,11 +35,15 @@ hb_output <- read_cmdstan_csv(hb_fit$output_files(),
 
 hb_pred <- hb_output$post_warmup_draws %>% as_draws_matrix()
 write.csv(hb_pred, file.path("data", "predictions", "hb_pred.csv"))
+# Load stored predictions
+hb_pred <- data.table::fread(file = file.path("data", "predictions", "hb_pred.csv")) %>% 
+  as.matrix %>% .[ , -1]
+
 
 hb_hcr <- fgt(t(hb_pred), 
     census_one_hot_strat$mun, 
     max(census_one_hot_strat$mun), 
-    type = "weighted_hcr", 
+    type = "hcr", 
     w = census_one_hot_strat$factor)
 
 write.csv(hb_hcr, file.path("data", "predictions", "hb_hcr.csv"))
@@ -47,7 +51,7 @@ write.csv(hb_hcr, file.path("data", "predictions", "hb_hcr.csv"))
 hb_pgap <- fgt(t(hb_pred), 
     census_one_hot_strat$mun, 
     max(census_one_hot_strat$mun), 
-    type = "weighted_pgap", 
+    type = "pgap", 
     w = census_one_hot_strat$factor)
 
 write.csv(hb_pgap, file.path("data", "predictions", "hb_pgap.csv"))
