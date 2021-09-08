@@ -19,7 +19,8 @@
 *.gz
 *.log
 *.bib
-
+*.nav
+*.snm
 
 code/data/
 code/.Rproj.user/
