@@ -1,6 +1,8 @@
 \beamer@slide {eq:hb_rao}{8}
 \beamer@slide {eq:mod_hb}{9}
-\beamer@slide {eq:log_scenario}{14}
-\beamer@slide {eq:gb2_scenario}{15}
-\beamer@slide {eq:pareto_scenario}{16}
-\beamer@slide {eq:trafo_hb}{19}
+\beamer@slide {eq:log_scenario}{15}
+\beamer@slide {eq:gb2_scenario}{16}
+\beamer@slide {eq:pareto_scenario}{17}
+\beamer@slide {eq:trafo_hb}{21}
+\beamer@slide {eq:trafo_coef_var}{32}
+\beamer@slide {tab:lkj_sar_base}{41}
