@@ -2,23 +2,24 @@
 \label{ch:indicators}
 
 The aim of this paper is to calculate poverty indicators based on income data.
-There are other measures of income that take other dimensions into account (SOURCE), but which are not relevant for the present paper.
 This section gives a formal definition of poverty indicators and describes how to estimate them from an HB model.
-The two main indicators used are the head count ratio (HCR) and poverty gap (PGAP), which
+The two main indicators in this paper are the head count ratio (HCR) and poverty gap (PGAP), which
 are based on the Foster-Greer-Thorbecke indicators \citep{foster_class_1984}:
 \begin{gather*}
     F_d(\alpha, t) = \displaystyle \frac 1 {N_d} \sum_{i=1}^{N_d}\left( \frac{t - y_{di}}{t} \right)^\alpha I (y_{di} \le t),
     \hspace{1cm}\alpha = 0, 1, 2,
 \end{gather*}
 where $t$ is the poverty line (60\% of median income), $y_{di}$ is the income for the $i$-th household in area $d$ and $I(\cdot)$ is the indicator function.
-For $\alpha = 0$, then $F_d$ is the HCR – i.e., the proportion of households below the poverty line in area $d$.
+If $\alpha = 0$, then $F_d$ is the HCR – i.e., the proportion of households below the poverty line in area $d$.
 On the other hand, $F_d$ quantifies poverty intensity (PGAP) when $\alpha = 1$, i.e. it measures by how much poor people are below the poverty line on average.
 $\alpha = 2$ defines poverty severity, which will not be considered in this paper.
 
 Based on model \ref{eq:mod_hb}, it is possible to generate synthetic income data form the posterior predictive distribution.
 The poverty indicators are based on theses synthetic income simulations.
 This is procedure is similar to \cite{rojas_perilla_data_2020}, but in a Bayesian context.
-The HB estimator for the poverty indicator $F_d$ is given by the following algorithm, where $S$ denotes the total number of MCMC samples: \\
+The HB estimator for the poverty indicator $F_d$ is given by the following algorithm, where $S$ denotes the total number of MCMC samples:
+
+\newpage
 
 \begin{algorithm}
     \caption{Estimate FGT-indicators with HB model}
@@ -40,7 +41,7 @@ The HB estimator for the poverty indicator $F_d$ is given by the following algor
     $\tilde y ^{(s)} = (y ^{(s)}_1,..., y ^{(s)}_D)'$\;
     $t^{(s)} = 0.6 \cdot median(\tilde y ^{(s)})$\;
         \For{$d \in \{1,...,D\}$}{
-        $F^{(s)}_d(\alpha, t^{(s)}) = \displaystyle \frac 1 {N_d} \sum_{i=1}^{N_d}\left( \frac{t^{(s)} - \tilde y_{di}}{t^{(s)}} \right)^\alpha I (\tilde y_{di} \le t^{(s)})$
+        $F^{(s)}_d(\alpha, t^{(s)}) = \displaystyle \frac 1 {N_d} \sum_{i=1}^{N_d}\left( \frac{t^{(s)} - \tilde y_{di}^{(s)}}{t^{(s)}} \right)^\alpha I (\tilde y_{di}^{(s)} \le t^{(s)})$
         }
     }
 
@@ -52,16 +53,18 @@ The HB estimator for the poverty indicator $F_d$ is given by the following algor
     }
 \end{algorithm}
 
-For clarity, the simulated income $\tilde y_d|y^{(s)}$ from the posterior predictive distributions is displayed at the area-level to avoid an additional loop at the unit-level.
+
+For clarity, the simulated income $\tilde y_d^{(s)}|y$ from the posterior predictive distributions is displayed at the area-level to avoid an additional loop at the unit-level.
 Strictly speaking, $\tilde y_d|y^{(s)} = (\tilde y_{d1}^{(s)}, ..., \tilde y_{dN_d}^{(s)})'$ is a vector of size $N_d$, where each component is sampled independently from the corresponding Student's $t$-distribution.
 Moreover, the poverty line $t^{(s)}$ is based on $\tilde y^{(s)} = (y^{(s)}_1|y, ..., y^{(s)}_d|y)$ – the generated income for $all$ areas –, not just for the income of area $d$ given by $\tilde y_d^{(s)}$. Therefore, there is only one poverty line for each MCMC sample $s$.
 
 There are two limitations to the algorithm presented in this section.
-First, it is valid for only model \ref{eq:mod_hb}.
-Choosing another likelihood or priors is likely change the number and meaning of parameters included in $\theta$.
-However, the algorithm provides a blueprint that can be adapted to the corresponding model.
+First, it is valid only for model \ref{eq:mod_hb}.
+Choosing another likelihood or priors is likely to change the number and meaning of parameters included in $\theta$.
+Nevertheless, the algorithm provides a blueprint that can be adapted to the corresponding model.
 Second, it does not take into consideration whether the dependent variable is transformed.
 The assumption is that $\tilde y^{(s)}$ is already in the desired scale.
-In such cases, it should be straightforward to add an additional step that applies the backtransformation to the simulations before calculating the FGT-indicators.
+In such cases, it is straightforward to add an additional step that applies the backtransformation to the simulations before calculating the FGT-indicators.
+For brevity, this is not included in the algorithm.
 
-After the discussion about poverty indicators and their estimation with Bayesian models in this section, the next chapter describes in detail the challenges faced when modelling income data and presents the data set that will be used throught the paper.
+After the discussion on poverty indicators and their estimation with Bayesian models, the next chapter describes in detail the challenges faced when modelling income data and presents the data set and simulated scenarios that will be used throught the paper.

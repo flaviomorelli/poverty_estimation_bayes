@@ -1,9 +1,9 @@
 \section{Specification of coefficient and variance priors}
 \label{ch:coef_var_spec}
 
-After choosing the Student's $t$-likelihood with a log-shift transformation and selecting the subset of covariates with the best predictive power, the next step reevaluates the plausibility of the priors introduced in model \ref{eq:trafo_hb} – the extension from the model in \cite{morelli_hierarchical_2021}.
+After choosing the Student's $t$-likelihood with a log-shift transformation, the next step reevaluates the plausibility of the priors introduced in model \ref{eq:trafo_hb} – the extension from the model in \cite{morelli_hierarchical_2021}.
 This section presents the first iterative improvement of the model.
-For this modification of the model (step 7 in the workflow in Chapter \ref{ch:workflow}), prior predictive checks are done with the covariates from simulation scenarios to avoid using the data multiple times.
+For this modification of the model (step 6 in the workflow), prior predictive checks are done with the simulation scenarios to avoid using the data multiple times.
 
 Appendix \ref{appendix:coeff} shows that even with a shift term in the logarithmic transformation, the coefficients can be interpreted as the approximate percentage change of the dependent variable in the original scale.
 This approximation holds mostly for coefficients between -0.3 and 0.3.
@@ -14,10 +14,6 @@ For the independent priors, two different types of distribution can be considere
 In this case, a prior distribution with heavy tails is not as desirable, because even if most of the probability mass is contained in the interval between -0.3 and 0.3, the prior would allow more extreme values than a thinner-tailed distribution.
 This can be avoided by choosing a Gaussian distribution, which does not place as much probability mass on extreme values.
 The coefficient prior is parametrized to have a mean of zero and a standard deviation of 0.2, which implies that the 5\% and 95\% quantiles are around -0.3 and 0.3 respectively.
-This model specification assumes independent priors for all coefficients, but joint priors such as the horseshoe prior from the previous section can also be used.
-However, the horseshoe prior works best with a large number of covariates, which is not the case in the present paper.
-Moreover, it can be hard for a Hamiltonian Monte Carlo algorithm to fit a model with a horseshoe prior due to the heavy tail of the Half-Cauchy distribution \citep{betancourt_conceptual_2017}.
-Therefore, the use of joint priors for the coefficients is left for future research and the simpler assumption of independent coefficient priors is kept.
 To ensure that the samples from the prior predictive distribution are in a realistic range, the prior for the intercept is set to a relatively $\mathcal N (4, 3)$.
 In the final model, the intercept is fit to the data and the prior can be less informative, e.g., $\mathcal N(0, 5)$.
 
@@ -54,7 +50,7 @@ The range of Mexican income data is in the tens of thousands, which is also capt
 Therefore, the prior predictive simulations should not be much higher than 12 in the logarithmic scale (which corresponds to around 160000 pesos in the original scale).
 Conversely, as the real data has almost not observations below 1, the values in the logarithmic scale should not go far below zero.
 Finally, note that the degrees of freedom in the Student's $t$-distribution can lead to very extreme simulations when $\nu$ is low.
-As a consequence, the prior for $\nu$ is changed to $Ga(2, 2)$ \textit{only} for the prior predictive check to focus on the impact of lower values.
+As a consequence, the prior for $\nu$ is changed to $Ga(2, 2)$ \textit{only} for the prior predictive check to focus on the impact of heavier tails.
 The model is reparametrized so that the minimum value for $\nu$ is 2. This ensures that the variance of the distribution is still finite.
 The assumption here is that if the prior predictive simulations are not too extreme for low degrees of freedom, they will also be in a reasonable range for high values of $\nu$, for which the likelihood has thinner tails.
 
@@ -76,15 +72,15 @@ Model \ref{eq:trafo_hb} can thus be reformulated as:
 \begin{equation}
     \begin{split}
         p(\log(y_{di} + \lambda) |\boldsymbol \beta, u_d, \sigma_e, \nu)   =        \text{Student}&(\log(y_{di} + \lambda)| \boldsymbol{x'}_{di} \boldsymbol \beta + u_d,\ \sigma_e\ , \nu)\cdot (y_{di} + \lambda)^{-1}, \\
-        u_d | \sigma_u & \sim \mathcal N(0, \sigma_u),\ d = 1, ..., D \\
+        u_d | \sigma_u & \sim \mathcal N(0, \sigma_u),\ d = 1, ..., D, \\
         \beta_0 & \sim \mathcal N (0, 5),\\
-        \beta_k & \sim \mathcal N(0, 0.2),\ k = 1, ..., K\\
+        \beta_k & \sim \mathcal N(0, 0.2),\ k = 1, ..., K,\\
         \tilde \nu & \sim Ga(2, 0.1), \\
         \nu & = \tilde \nu + 2,\\
         \sigma_u & \sim Ga(2, 7), \\
         \sigma & \sim Ga(2, 7), \\
         \sigma_e & = \sigma \sqrt{\frac{\nu - 2}{\nu}},\\
-        S(\log(y_{di} + \lambda)) & \sim \mathcal N(0, 0.01)\\
+        S(\log(y_{di} + \lambda)) & \sim \mathcal N(0, 0.01),\\
     \end{split}
     \label{eq:trafo_coef_var}
 \end{equation}

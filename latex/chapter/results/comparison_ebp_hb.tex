@@ -1,10 +1,11 @@
 \section{RMSE of EBP and Bayesian model}
+\label{ch:rmse_hb}
 
 The main issue when comparing HB and EBP approaches is RMSE estimation.
 While \cite{rojas_perilla_data_2020} develop two bootstrapping algorithms to estimate the RMSE of the indicators, it is unclear whether a similar approach could work with a Bayesian model.
 \cite{molina_small_2014} use the standard deviation of the estimators to quantify prediction quality.
 However, the RMSE can only be approximated by the standard deviation when using flat priors \citep[Chapter 10.3.2]{rao_small_2015}.
-To avoid this problem, the simulated data from section \ref{ch:simulations} are used.
+To avoid this problem, the simulated data from section \ref{ch:simulations} are used to estimate the empitical RMSE of the HB estimates.
 This is straightforward, as both the population data set and the small area samples drawn from the population are available.
 First, the FGT indicators $F_d^{pop}$ are calculated for the population. With $S$ draws from the posterior predictive distribution, the FGT indicator $F_d^{(s)}, s = 1, ..., S,$ can be calculated for each sample $s$.
 The RMSE is given by
@@ -81,6 +82,7 @@ The RMSE is given by
 \end{figure}
 
 The results are presented in Figure \ref{fig:ebp_hb_comparison}.
+Note that in this chapter the model with no area-level correlation is used, as the simulation scenarios do not include spatial correlation, nor a distance measure for the SAR prior.
 The first and third rows show the HCR and PGAP estimates, with the corresponding RMSE in the second and fourth rows.
 The figures are presented as scatterplots of the EBP against the HB model where each one of the 50 domains in the simulated data is one observation.
 The 45-degree line shows the area where the values of the EBP and HB models are equal.
@@ -90,14 +92,14 @@ Only for the PGAP the estimates are slighlty higher for the HB model compared to
 
 
 The RMSE plots paint a different picture.
-While the RMSE of the HB is better than the EBP in some areas (above the 45-degree line), a most of the areas have a higher RMSE in the HB model.
-An exception is the PGAP for the GB2 scenario, in which most of the RMSE estimates seen to be lower in the HB model.
+While the RMSE of the HB is better than the EBP in some areas (above the 45-degree line), most of the areas have a higher RMSE in the HB model.
+An exception is the PGAP for the GB2 scenario, in which most of the RMSE estimates seem to be lower in the HB model, but this can be an artifact of randomness.
 This is hardly surprising, as the EBP is guaranteed to have the smallest possible RMSE of all estimators under certain conditions – i.e., it is approximately the \textit{best predictor} \citep{molina_small_2014}.
 Another pattern found in the RMSE graphs is the presence of outliers in the HB model (x-axis).
 While most RMSE estimates are in a limited region of the graph, there are a few observations in all RMSE scatterplots that are clearly higher than the rest.
 However, it is important to remember that this outliers might be artifacts that arise due to the different ways of estimating the RMSE.
-For the HB scenarios, it is calculated analytically using the simulated population, while the EBP uses a bootstrapping approach without the population.
-A possible solution to this problem would be to use the Monte Carlo samples of the EBP directly together with the the simulated population as a reference.
+For the HB scenarios, it is calculated analytically using the simulated population, while the EBP uses a bootstrapping estimate of the RMSE that does not take the simulated population into account.
+A possible solution to this problem would be to use the single Monte Carlo samples of the EBP directly together with the the simulated population as a reference, which at the moment of writing is not possible with \code{emdi}.
 Finally, the scenarios used included no area-level correlation.
 Further research is needed to evaluate how a comparison as in Figure \ref{fig:ebp_hb_comparison} would change with a higher correlation between domains.
 

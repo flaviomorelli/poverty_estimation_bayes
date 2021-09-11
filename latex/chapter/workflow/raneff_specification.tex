@@ -1,4 +1,4 @@
-\section{Specification of random effect}
+\section{Specification of the random effect}
 \label{ch:raneff}
 In applications of small area estimation methods, the random effect $u_d$ is usually defined in terms of the domain for which the indicators should be calculated.
 For example, \cite{rojas_perilla_data_2020} use a random effect at the municipality level in the model, as the poverty indicators of interest have to be calculated for each municipality.
@@ -31,10 +31,10 @@ Even if the models were not substantially different in predictive terms, there i
 This reduces drastically the uncertainty in the predictions for out-of-sample municipalities.
 Therefore, the stratified specification of the domain is used in the rest of this paper.
 
-Note that there are some limitations to this approach.
+There are some limitations to this approach.
 First, the stratified structure is only an approximation.
 Second, there are still other dimensions that are not taken into account that might still be problematic, e.g., the clustering that stems from structuring the sample process with PSUs.
 Third, this is an example that is limited to the data from Mexico.
-Other statistical insitutes might provide more detailed variables for the strata or none at all and depending on the survey design, the approach developed in this section might not even be applicable.
+Other statistical insitutes might provide more detailed variables for the strata or none at all and depending on the survey design the approach developed in this section might not even be applicable.
 Nevertheless, the main insight from this section is that for unit-level data the random effect does not have to follow the level at which indicators are estimated and that this improvements can be evaluated in a Bayesian workflow.
 Looking for alternatives specifications for the random effect might lead to better predicitive power and to less out-of-sample domains.

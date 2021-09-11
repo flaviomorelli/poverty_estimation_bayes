@@ -2,12 +2,11 @@
 \label{ch:design}
 
 Before presenting the methodology used in this paper, it is crucial to have a rough understanding of the survey design of the data.
-It should be noted that in the SAE literature, it is common to implicity assume that the observations are independent and to ignore the survey design \citep{rojas_perilla_data_2020} UND???.
-The following contains a high-level summary of this topic and more details can be found in \cite{inegi_modulo_2011}.
+The following contains a high-level summary of this topic and more details can be found in \cite{inegi_modulo_2011}, which will become relevant in section \ref{ch:raneff}.
 The MCS module of the ENIGH has a stratified, two-stage, clustered survey design.
 The main unit in the survey design is called the primary survey unit (PSU), which is a cluster of households.
 The exact definition of the context varies depending on the context:
-while in an urban setting the PSU is defined as a grouping of street blocks, in a rural context this definition is not feasible.
+while in an urban setting the PSU is defined as a grouping of street blocks, in a rural context such a definition is not possible.
 In general, each PSU can contain between 80 and 300 households.
 
 The stratification is done in multiple stages.
@@ -17,12 +16,13 @@ In each federal state, PSUs are stratified according to whether they are in a ru
 Note that the stratification \textit{does not} consider any municipal divisions.
 This fact will play a key role in chapter \ref{ch:raneff}.
 
-Two-stage sampling indicates that inside each stratum a number of PSUs is sampled and then, in a second stage, a fixed number of households inside the selected PSUs is sampled.
+Two-stage sampling indicates that inside each stratum multiple PSUs are sampled and then, in a second stage, a fixed number of households inside each selected PSU is sampled.
 This sampling strategy implies that the households are clustered depending on the PSU they are sampled from.
 There might be deviations from the sampling scheme presented in order to guarantee that certain global properties of the whole sample still hold – e.g., a balanced ratio between the number of women and man –, or that there is enough differentiation in a given area.
-The effect of nonresponse is taken into account in the survey weights, which in the present paper are used when calculating the FGT-estimators.
+The effect of nonresponse is taken into account in the survey weights.
+However, in this paper the weights are not taken into account when calculating the final poverty indicators.
 
-While the clustered structure arising from the two-stage sampling can be accounted for when building the model, this paper focuses instead on how to integrate the stratification into the model.
+While the clustered structure arising from two-stage sampling can be accounted for when building the model, this paper focuses instead on how to integrate the stratification into the model.
 Thus, the adequate consideration of the clustered structure in the model is left to future research.
 In the last section of this chapter, simulation scenarios that capture the main features of income data are introduced.
 

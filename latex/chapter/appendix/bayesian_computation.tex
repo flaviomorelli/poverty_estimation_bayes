@@ -1,4 +1,4 @@
-\chapter{Appendix: An Introduction to Bayesian computation}
+\chapter{Appendix: An Introduction to Bayesian Computation}
 
 \label{ch:computation}
 
@@ -6,7 +6,7 @@ A central challenge in Bayesian statistics is model estimation.
 The integral of the marginal likelihood $p(y) = \int p(\theta)p(y|\theta)d\theta$ is usually intractable.
 Analytical solutions exist only for a limited group models where prior and likelihood are conjugate distributions.
 A thorough review of Bayesian computation methods is beyond the scope of this paper.
-This section provides a short overview of algortihms and concepts that will be relevant in later parts of this paper.
+This section provides a short overview of algortihms and concepts relevant to this paper.
 The focus is on Markov Chain Monte Carlo (MCMC) and variational inference, but there are other alternatives such as Laplace Approximations \citep{gomez-rubio_bayesian_2020}.
 
 As the normalizing term $p(y)$ in Bayes' theorem is intractable, the posterior distribution has to be approximated.
@@ -48,6 +48,6 @@ However, variational inference is a useful tool to do a first check of the model
 Because it is faster, it also makes it possible to recognize potential problems sooner.
 Moreover, there are some types of models which would take a very long time to estimate using MCMC, e.g., topic models \citep{blei_latent_2003}.
 
-This short overview of MCMC and variational inference provides the necessary elements to understand some problems that arise when fitting Bayesian models.
-The next step is to discuss about how to evaluate the predictive quality of Bayesian models before combining all building blocks into a workflow.
+%This short overview of MCMC and variational inference provides the necessary elements to understand some problems that arise when fitting Bayesian models.
+%The next step is to discuss about how to evaluate the predictive quality of Bayesian models before combining all building blocks into a workflow.
 

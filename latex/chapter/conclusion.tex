@@ -1,3 +1,16 @@
 \chapter{Conclusion}
 
-This paper presented applied the Bayesian workflow from \cite{gelman_bayesian_2020} to the estimation of poverty indicators.
+This paper applied the Bayesian workflow from \cite{gelman_bayesian_2020} to the estimation of poverty indicators.
+The workflow developed in this paper showcases how a Bayesian model can be improved iteratively in the small area estimation context and how the model can be made more explainable by using different diagnostic tools.
+This explainability is particularly important for public policy decision-making.
+Nevertheless, there is still an open question regarding the systematic differences between the final EBP and HB estimates.
+Further research is needed to answer this question.
+A simple extension to the workflow would be to check the poverty estimates after each iterative improvement.
+This would allow a comparison of the HB results to other methods such as the EBP or a direct estimate after each step and identify at which point the results from the methods start diverging.
+Additionally, in the present paper only point estimates were taken into account.
+It is worthwhile to explore new ways of presenting the whole distribution of the estimates.
+
+A more complete workflow would also include estimates from other types of models – e.g., with skewed likelihoods.
+Moreover, due to the modular nature of Bayesian models it is possible to include benchmarking \citep{pfeffermann_new_2013} into the model itself.
+For example, the weighted average of expected values for each area can be defined to match a weighted average of direct estimates.
+This would guarantee that the results are in line with the unbiased direct estimator.

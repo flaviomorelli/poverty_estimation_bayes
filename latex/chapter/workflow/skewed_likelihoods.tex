@@ -5,21 +5,24 @@ In line with the Bayesian workflow proposed by \cite{gelman_bayesian_2020}, this
 The following skewed likelihoods were taken into account: gamma with logarithmic link, gamma with
 softplus link, lognormal, skew-normal and exponentially modified Gaussian (exGaussian).
 This variety goes beyond the distribution shape, but it also affects the assumed relation between dependent variable and predictors.
-The gamma with lo link and lognormal distributions imply a multiplicative model, whereas the rest assume that the predictors have an additive impact on the dependent variable.
+The gamma with a log link and lognormal distributions imply a multiplicative model, whereas the rest assume that the predictors have an additive impact on the dependent variable.
 
 \begin{figure}[h]
     \centering
     \begin{subfigure}{0.45\linewidth}
+        \centering
         \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/single_graphs/skewnormal_logscale}
         \caption{Skew-normal}
         \label{fig:logscale_skewnormal}
     \end{subfigure}
     \begin{subfigure}{0.45\linewidth}
+        \centering
         \includegraphics[width=\textwidth]{./graphics/skewed_likelihood/single_graphs/exgaussian_logscale}
+        \caption{(b) exGaussian}
         \label{fig:logscale_exgaussian}
     \end{subfigure}
 
-    \caption[Posterior predictive check for skew-normal and exGaussian likelihoods.]{Posterior predictive check for skew-normal and exGaussian likelihoods  in the log-scale scenario. The black line is the density of the dependent variable, while the blue lines represent 100 draws from the predictive posterior distribution. Neither the skew-normal nor the exGaussian likelihood provide an adequate approximation. Moreover, the chains in the exGaussian model have trouble mixing, which is clearly seen in the two diverging densities for posterior predictive samples.}
+    \caption[Posterior predictive check for skew-normal and exGaussian likelihoods.]{Posterior predictive check for skew-normal and exGaussian likelihoods  in the log-scale scenario. The black line is the density of the dependent variable, while the blue lines represent 100 draws from the predictive posterior distribution. Neither the skew-normal nor the exGaussian likelihood provide an adequate approximation. Moreover, the chains in the exGaussian model have trouble mixing, which is clearly seen in the two diverging densities of posterior predictive samples.}
     \label{fig:logscale_misfit}
 \end{figure}
 
@@ -57,5 +60,5 @@ Both the exponential and the chi-squared are special cases of the gamma distribu
 The half normal has very thin tails and a very low skewness that does not correspond with the long tails observed empirically in income data.
 Therefore, they are not taken into account as a likelihood
 
-In summary, based on the posterior predictive checks, only the lognormal likelihood and the gamma with log link worked well for all three scenarios. The next section briefly discusses the advantages and disadvantages of the two types of initial models considered: a model with a log-shift data-driven transformation or a model with a skewed likelihood.
+In summary, based on the posterior predictive checks, only the lognormal likelihood and the gamma with log link worked well for all three scenarios. The next section briefly discusses the advantages and disadvantages of the two types of initial models considered: a model with a log-shift data-driven transformation and a model with a skewed likelihood.
 

@@ -2,11 +2,11 @@
 \label{ch:log_shift}
 
 As discussed by \cite{rojas_perilla_data_2020}, data-driven transformations can change the distribution shape of the dependent variable so that it is more convenient to use simple methods such as a linear mixed model with a Gaussian error term.
-While \cite{rojas_perilla_data_2020} also includes a discussion of multiple data-driven transformations such as the Box-Cox or the Yeo-Johnson, the focus here lies on the log-shift transform, because it is closest to the conceptually simple logarithmic transform.
+While \cite{rojas_perilla_data_2020} includes a discussion of multiple data-driven transformations such as the Box-Cox or the Yeo-Johnson, the focus here lies on the log-shift transform, as it is the closest to the conceptually simple logarithmic transform.
 This section starts with a general discussion of the log-shift transform and then shows how to include the transform in the Bayesian model.
 
 \subsubsection{Log-shift transformation and skewness}
-A common transformation for income in economic applications is the natural logarithm of the form $\log(y + \lambda)$. However, there might still be some skewness left, which is exacerbated by very low incomes.
+A common transformation for income in economic applications is the natural logarithm. However, there might still be some skewness left, which is exacerbated by very low incomes.
 If there are a lot of units with incomes between zero, there will likely be a long tail to the in the left side of the transformed distribution.
 As \cite{rojas_perilla_data_2020} point out, it is possible to add a fixed term $s$ inside the logarithm so that $y+s \ge 1$ to avoid problems when $0 \le y \le 1$,
 but the transformed variable might still be highly skewed.
@@ -17,8 +17,8 @@ To bring the dependent variable closer to a normal distribution, \cite{rojas_per
 While effective, these transformations are piecewise functions, which adds an additional layer of complexity when backtransforming to the original scale.
 Another more simple data-driven transformation described by \cite{rojas_perilla_data_2020} is the log-shift defined as $y^* = \log(y + \lambda)$, where $y$ is the original variable and $\lambda$ is the shift term. Although $s$ and $\lambda$ fulfill similar purposes, they have different meanings: $s$ is a fixed term chosen in advance, whereas $\lambda$ is a parameter to be estimated.
 A key advantage is that the backtransformation is straighforward: $y = e^{y^*} - \lambda$.
-However, the transformed variable might still have considerable excess kurtosis, even though it might still be almost symmetric.
 By adjusting $\lambda$, it is possible to make the transformed variable more symmetric.
+However, as \cite{morelli_hierarchical_2021} points out, the transformed variable might still have considerable excess kurtosis, even when it is almost symmetric.
 \cite{rojas_perilla_data_2020} point out that minimizing skewness is just one approach to estimating $\lambda$.
 One can also aim to minimize the distance (e.g. Kolomogorov-Smirnov or Cramér-von Mises) to another distribution, usually the Gaussian.
 Their preferred approach is to maximize the REML of the model under data-transformations.
@@ -45,11 +45,11 @@ However, the uncertainty of estimating the shift parameter is not taken into acc
 In practice, the empirical Bayes that minimizes skewness should be in the same range of the full Bayesian estimate, so it can be used as an additional check for the Bayesian model.
 
 Integrating the shift parameter $\lambda$ naively into the model might lead to estimation problems.
-Defining the prior directly on $\lambda$ is not straightforward, as each different distributions might lead to different results and with no further prior constraints the Markov chains might get stuck and not mix well.
+Defining the prior directly on $\lambda$ is not straightforward, as each data set might lead to different results and with no further prior constraints the Markov chains might get stuck and not mix well.
 As discussed in the previous section, minimizing the skewness of the transformed variable close to zero is likely to improve the performance of a symmetric likelihood distribution.
 In the Bayesian context, this can be done by including a very tight prior on skewness centered around zero
 \begin{equation*}
-    S \sim \mathcal N(0, \delta).
+    S(y^*) \sim \mathcal N(0, \delta).
 \end{equation*}
 Here, $\delta > 0$ is a small positive constant and $S$ is skewness defined as
 \begin{equation*}
@@ -57,7 +57,7 @@ Here, $\delta > 0$ is a small positive constant and $S$ is skewness defined as
     {\left[ \frac{1}{N - 1} \sum^{N}_{i = 0} (y_i^* - \bar y^* )^2 \right]^{3/2}},
 \end{equation*}
 where $y^* = \log(y + \lambda)$ is the transformed dependent variable. Thus, the prior on $S$ indirectly defines a prior on $\lambda$.
-While it is not necessary to formulate a prior directly $\lambda$, it still recommended to define the lower bound of $\lambda$ as $-\min(y)$ in the programming framework as a safety check, as to avoid negative values inside the logarithm function.
+While it is not necessary to formulate a prior directly $\lambda$, it still recommended to define the lower bound of $\lambda$ as $-\min(y)$ in the programming framework as a safety check, to avoid negative values inside the logarithm function.
 In practice, the Markov chain steers clear of regions too close to the minimum for $\lambda$ after warmup iterations.
 
 
@@ -67,8 +67,8 @@ Because of the transformation, the Jacobian of the likelihood is adjusted by the
 \begin{equation}
     \begin{split}
         p(\log(y_{di} + \lambda) |\boldsymbol \beta, u_d, \sigma_e, \nu)   =        \text{Student}&(\log(y_{di} + \lambda)| \boldsymbol{x'}_{di} \boldsymbol \beta + u_d,\ \sigma_e\ , \nu)\cdot (y_{di} + \lambda)^{-1}, \\
-        u_d | \sigma_u & \sim \mathcal N(0, \sigma_u),\ d = 1, ..., D \\
-        \beta_k & \sim \mathcal N(\mu_k, \sigma_k),\ k = 1, ..., K\\
+        u_d | \sigma_u & \sim \mathcal N(0, \sigma_u),\ d = 1, ..., D, \\
+        \beta_k & \sim \mathcal N(0, 0.5),\ k = 1, ..., K,\\
         \sigma_u & \sim Ga(2, 0.75), \\
         \sigma_e & \sim Ga(2, 0.75), \\
         \nu & \sim Ga(2, 0.1), \\
@@ -77,6 +77,7 @@ Because of the transformation, the Jacobian of the likelihood is adjusted by the
     \label{eq:trafo_hb}
 \end{equation}
 where $\ d = 1, ..., D,\ i = 1, ..., N_d$. The transformation $\log(y_{di} + \lambda)$ is left explicitly in the model to remind the reader that the prior on skewness directly affects lambda.
+The prior parameterization of $\beta_k, \sigma_u$ and $\sigma_e$ are taken from \cite{morelli_hierarchical_2021}.
 
 After a log-shift transformation the regression coefficients can be interpreted as an approximate percentage change in the original scale.
 A detailed justification for this interpretation can be found in appendix \ref{appendix:coeff}.
@@ -93,7 +94,7 @@ The hyperparameter $\delta$ controls the deviation from the zero skewness constr
 Values around $10^{-2}$ worked well in simulation experiments and the posterior values for $S(y^*)$ are usually very close to zero.
 Nevertheless, there are two potential problems to be aware of.
 If $\delta$ is too small, then skewness might be reduced too much.
-This would be equivalent to overfitting the skewness of the training data, which by no means reflects the skewness for out-of-sample data.
+This would be equivalent to overfitting the skewness of the training data, which by no means reflects the skewness of out-of-sample data.
 However, if $\delta$ is too large, then many unrealistic values for $\lambda$ will be allowed, which might lead to poorly mixing Markov chains with an $\hat R$ higher than the recommended 1.01.
 By plotting the posterior density of $S(y^*)$ and using Bayesian diagnostic tools such as posterior checks, it is possible to assess whether $\delta$ is too small or too large.
 
@@ -117,7 +118,7 @@ By plotting the posterior density of $S(y^*)$ and using Bayesian diagnostic tool
     \label{fig:bad_skewness}
 \end{figure}
 
-Figure \ref{fig:bad_skewness} shows the density plots of $S(y^*)$ for the GB2 scenario.
+Figure \ref{fig:bad_skewness} shows the posterior density plots of $S(y^*)$ for the GB2 scenario.
 The other scenarios displayed similar results.
 For $\delta = 0.1$, the mode of the posterior is below zero, which indicates that there is a systematic bias towards negative skewness.
 This is problematic when using a symmetric likelihood.
@@ -126,15 +127,15 @@ The range of posterior values for $\lambda$ is very small in this specification,
 The middle density graph ($\delta = 0.01$) is a compromise between the two extreme scenarios.
 The posterior distribution for $S(y^*)$ is clearly centered around zero, but the posterior is not as tight as with $\delta = 0.001$.
 The standard deviation of the shift parameter $\lambda$ is around an order of magnitude larger than in the model with the tighter prior, which allows more possible models and prevents overfitting.
-Moreover, the elpd$_{\text{loo}}$ paints
+Moreover, the elpd$_{\text{loo}}$ has the highest value with the prior $S(y^*) \sim \mathcal N(0, 0.01)$.
 
 
 
 \subsubsection{Posterior predictive checks with simulated data}
-The results from fitting the modified model to the log-shift distribution are presented in Figure \ref{fig:ppc_logshift}.
-In the first column, the density of the dependent variable is overlaid with the densities from 100 sample from the posterior predictive distribution.
-From this virst visual check, it is clear that the model is able to fit the log-scale and GB2 scenarios reasonably well.
-The Pareto scenario is still quite close, but the prediction from the model are slightly lower than the dependent variable.
+The results from fitting the modified model \ref{eq:trafo_hb} with the log-shift transformation are presented in Figure \ref{fig:ppc_logshift}.
+In the first column, the density of the dependent variable is overlaid with the densities from 100 samples from the posterior predictive distribution.
+From this vfrst visual check, it is clear that the model is able to fit the log-scale and GB2 scenarios reasonably well.
+The Pareto scenario is still quite close, but the predictions from the model are slightly lower than the dependent variable.
 This is an indication that the Pareto scenario contains elements that are particularly challenging to capture.
 
 
@@ -160,7 +161,7 @@ This is an indication that the Pareto scenario contains elements that are partic
 The other two columns show two pairs of descriptive statistics as scatterplots: IQR against median and standard deviation against the mean.
 The scatterplots also display the respective descriptive statistic value for the dependent variable.
 In the log-scale and GB2 scenarios, the median of the simulations is in a similar range to the median of the dependent variable.
-In contrast, the predictions from the model have a median that is 400 units lower than the dependent variable of the Pareto scenario.
+In contrast, the predictions from the model have a median that is around 400 units lower than the dependent variable of the Pareto scenario.
 This would mean that the simulated poverty lines (ca. 60\% of 11.900) are systematically lower than the poverty line from the data (ca. 60\% of 12.300) – approximately by 3\%.
 Thus, certain poverty indicators are likely to be underestimated.
 On the other hand, all samples from the posterior predictive distribution in the three scenarios are in a plausible range compared to the IQR of the dependent variable.
@@ -168,6 +169,6 @@ The mean and the standard deviation are presented as an additional check, but th
 In the logscale scenario, both the mean and the standard deviation are captured well, whereas in the GB2 scenario the mean and standard deviation of the predictions is a little lower than the dependent variable.
 The standard deviation Pareto scenario is modelled well, but the mean of the dependent variable is higher than the predictions.
 A noteworthy pattern is that in all three scenarios there is a positive association between the mean an the standard deviation.
-Although the probability density for the backtransformation is not available in its analytical form, this is a clear indication that the mean of the implied distribution is coupled to the variance in the backtransformed scale.
+Although the probability density for the backtransformation is not available in its analytical form, this is a clear indication that the mean of the implied distribution is coupled to the variance in the backtransformed scale – a pattern also found in distributions like the lognormal.
 The next section explores the performance of models with skewed likelihoods.
 
