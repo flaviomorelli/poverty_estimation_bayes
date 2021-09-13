@@ -236,7 +236,8 @@ benchmarking_df <- emdi_direct %>%
   inner_join(pgap, by = "id") %>% 
   inner_join(ebp_ind, by = "id") %>% 
   inner_join(mun_data, by = "id") %>% 
-  mutate(rel_pop_2 = pobtot / sum(pobtot))
+  # Only take into account in-sample estimates. Weights add to 1!
+  mutate(rel_pop_2 = pobtot / sum(pobtot)) 
 
 
 weighted.mean(benchmarking_df$Head_Count, w = benchmarking_df$rel_pop_2)

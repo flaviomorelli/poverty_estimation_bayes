@@ -63,7 +63,11 @@ On the other hand, poverty indicators are higher in the rural southeastern munic
 However, it is clear from the maps that the HB estimates are lower than the EBP for both the HCR and the PGAP.
 A more precise picture is given by Figure \ref{fig:diff}, which shows the difference between the EBP and the HB indicators for each municipality.
 The EBP indicators are all larger than the HB indicators, both for the HCR and the PGAP.
-Moreover, the pattern in the differences is similar for both indicators: if the difference is large for the HCR it is also large for the PGAP\footnote{This pattern does not change when taking the relative difference to account for the magnitude of the EBP indicator, i.e., (EBP - HB) / EBP}.
+Moreover, the pattern in the differences is similar for both indicators: if the difference is large for the HCR it is also large for the PGAP\footnote{This pattern does not change when taking the relative difference to account for the magnitude of the EBP indicator, i.e., ($\theta_d^{EBP} - \theta_d^{HB}) / \theta_d^{EBP}$.}.
+Additionally, the HB and EBP estimates were benchmarked agains the direct estimate as described by \cite{pfeffermann_new_2013}\footnote{If $w_d$ are weights given relative population size at the municipality level, then the benchmarked direct estimate $\sum_{d=1}^D w_d \hat \theta_d^{Dir} $ should be roughly equal to benchmarked estimate from an EBP or HB model $\sum_{d=1}^D w_d \hat \theta_d^{Model} $.
+Note that by definiton $\sum_{d=1}^D w_d = 1$.}.
+The benchmarked estimate for the EBP (HCR: 0.248, PGAP: 0.112) were closer to the benchmarked direct estimate (HCR: 0.280, PGAP: 0.130) than the benchmarked HB estimates (HCR: 0.151, PGAP: 0.059).
+As the EBP estimates are higher than the HB estimates, this result is not surprising.
 The reasons for this systematic deviation from the EBP are further considered in the discussion.
 
 \begin{figure}
@@ -75,7 +79,7 @@ The reasons for this systematic deviation from the EBP are further considered in
 
 The uncertainty maps (standard deviation and RMSE) provide a more detailed picture into estimate quality.
 Note that the HB uses the stratified random effect from section \ref{ch:raneff}, whereas the EBP uses the municipality as the random effect like in the original BHF specification.
-For the EBP, the uncertainty maps for the HCR and PGAP display a clear pattern of out-of-sample municipalities that have a higher RMSE\footnote{A map of the state of Guerrero with in and out-of-sample areas can be found in appendix \ref{appendix:cv_maps}}.
+For the EBP, the uncertainty maps for the HCR and PGAP display a clear pattern of out-of-sample municipalities that have a higher RMSE\footnote{A map of the state of Guerrero with in and out-of-sample areas can be found in appendix \ref{appendix:cv_maps}.}.
 This is not the case for the HB model, as the stratified random effect specification has no out-of-sample areas.
 Moreover, in the HB model some municipalities have a standard deviation that is just one tenth of their corresponding standard deviation in \cite{morelli_hierarchical_2021}, which is a drastic reduction in uncertainty.
 Additional maps of the coefficients of variation can be found in appendix \ref{appendix:cv_maps}.
