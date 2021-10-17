@@ -6,7 +6,7 @@ There are numerous ways to evaluate Bayesian models.
 Moreover, Bayesian inference provides two additional checking tools: prior and posterior predictive checks.
 The main idea is to generate numerous samples either from the prior predictive or posterior predictive distributions described in the previous section.
 Thus, it is possible to check how the model behaves before and after fitting the data and whether the generated samples are in a plausible range compared to the dependent variable.
-This section focuses on PSIS-LOO as a measure of predictive power and includes a brief discussion of prior and posterior predictive checks.
+This section focuses on Pareto smoothed importance sampling leave-one-out cross-validation (PSIS-LOO) as a measure of predictive power and includes a brief discussion of prior and posterior predictive checks \citep{vehtari_practical_2017}.
 
 Given some data $y$ and future observations $\tilde y_i, i = 1, ..., N$, where $N$ is the original sample size, the quality of the predictive distribution can be defined in terms of a utility function as a logarithmic score \citep{piironen_comparison_2017}
 \begin{gather*}
@@ -28,7 +28,7 @@ An unbiased estimate for the elpd is given by
 \end{gather}
 Here, $p(\tilde y_i| y_{-i})$ is the leave-one-out predictive distribution given $y_{-i}$, i.e. the data without the $i$-th observation.
 In practice, $\text{elpd}_{\text{loo}}$ is estimated efficiently by Pareto-smoothed importance sampling without having to refit the model $N$ times and is therefore referred to as PSIS-LOO.
-A higher PSIS-LOO indicates a model with a higher predictive power \citep{vehtari_practical_2017}.
+A higher $\text{elpd}_{\text{loo}}$ indicates a model with a higher predictive power \citep{vehtari_practical_2017}.
 Pareto smoothing is not only useful for the efficient estimation of elpd$_{\text{loo}}$, but it also provides a diagnostic to whether the estimated PSIS-LOO can be trusted.
 Specifically if the shape parameter $k$ of the Pareto distribution is higher than 0.7, then PSIS-LOO is not reliable \citep{vehtari_practical_2017}.
 Problems with very high $k$ values can be alleviated with the moment match method \cite{paananen_implicitly_2021}, but they can also indicate that the model does not deal well with outliers.
@@ -45,7 +45,7 @@ For example, while a linear model fits both the mean and the variance quite well
 Therefore, checking the mean and the variance in the Poisson case will reveal potential problems in the model \citep[Chapter 27.3]{stan_development_team_stan_2021}.
 A practical application of prior and posterior checks will be shown in sections \ref{ch:initial} and \ref{ch:coef_var_spec}.
 
-Another tool that can be used to evaluate and compare models is stacking \citep{yao_using_2018}.
+Another tool that can be used to evaluate and compare models is \textit{stacking} \citep{yao_using_2018}.
 The details of this method are highly technical and beyond the scope of this paper.
 Therefore, only a short summary is provided based on the explanation in \cite{gelman_bayesian_2020}.
 Cross-validation can be used to compare the performance of multiple models, but there is also uncertainty in model comparison.

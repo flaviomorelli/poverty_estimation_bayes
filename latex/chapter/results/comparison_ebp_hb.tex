@@ -77,7 +77,7 @@ The RMSE is given by
         \includegraphics[width=\textwidth]{./graphics/ebp_hb_comparison/pgap_pareto_rmse}
         \caption{RMSE PGAP Pareto}
     \end{subfigure}
-    \caption[Comparison of EBP and HB approaches with simulated data.]{Comparison of the Box-Cox EBP and the HB approach developed in this paper. Each row shows scatterplots for all three simulation scenarios of the EBP against the HB approach. The \textit{first row} shows the comparison between the HCR estimates, while the \textit{second row} the comparison of the corresponding RMSE estimates. The \textit{third row} presents the PGAP estimates and the \textit{fourth row} the RMSE of the PGAP estimates.}
+    \caption[Comparison of EBP and HB approaches with simulated data.]{Comparison of the Box-Cox EBP and the HB approach developed in this paper. Each row shows scatterplots for all three simulation scenarios of the EBP against the HB approach. The \textit{first row} shows the comparison between the HCR estimates, while the \textit{second row} shows the comparison of the corresponding RMSE estimates. The \textit{third row} presents the PGAP estimates and the \textit{fourth row} the RMSE of the PGAP estimates.}
     \label{fig:ebp_hb_comparison}
 \end{figure}
 
@@ -99,7 +99,7 @@ Another pattern found in the RMSE graphs is the presence of outliers in the HB m
 While most RMSE estimates are in a limited region of the graph, there are a few observations in all RMSE scatterplots that are clearly higher than the rest.
 However, it is important to remember that this outliers might be artifacts that arise due to the different ways of estimating the RMSE.
 For the HB scenarios, it is calculated analytically using the simulated population, while the EBP uses a bootstrapping estimate of the RMSE that does not take the simulated population into account.
-A possible solution to this problem would be to use the single Monte Carlo samples of the EBP directly together with the the simulated population as a reference, which at the moment of writing is not possible with \code{emdi}.
+A possible solution to this problem would be to use the single Monte Carlo samples of the EBP directly together with the simulated population as a reference, which at the moment of writing is not possible with \code{emdi}.
 Finally, the scenarios used included no area-level correlation.
 Further research is needed to evaluate how a comparison as in Figure \ref{fig:ebp_hb_comparison} would change with a higher correlation between domains.
 

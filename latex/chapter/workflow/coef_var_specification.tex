@@ -48,7 +48,7 @@ The shift term depends on the dependent variable so it is not possible to sample
 Besides, it amounts to an additive constant in the backtransformed scale ($e^{y^*} - \lambda$). The impact of the exponential function is therefore much larger than the effect of the shift term $\lambda$.
 The range of Mexican income data is in the tens of thousands, which is also captured in the simulation scenarios.
 Therefore, the prior predictive simulations should not be much higher than 12 in the logarithmic scale (which corresponds to around 160000 pesos in the original scale).
-Conversely, as the real data has almost not observations below 1, the values in the logarithmic scale should not go far below zero.
+Conversely, as the real data has almost no observations below 1, the values in the logarithmic scale should not go far below zero.
 Finally, note that the degrees of freedom in the Student's $t$-distribution can lead to very extreme simulations when $\nu$ is low.
 As a consequence, the prior for $\nu$ is changed to $Ga(2, 2)$ \textit{only} for the prior predictive check to focus on the impact of heavier tails.
 The model is reparametrized so that the minimum value for $\nu$ is 2. This ensures that the variance of the distribution is still finite.
@@ -65,7 +65,7 @@ Figure \ref{fig:ppc_start} shows the scatterplots for a rate parameter value equ
 Note the different scaling of the x-axes.
 For a rate parameter of 0.75, there are samples that are extremely high, above 50 in the logarithmic scale.
 On the other hand, a rate parameter of 7, which implies a much tighter prior is much more realistic – especially, because only very few samples are much higher than 10 and even samples with higher values are not as high as in the first specification.
-Prior predictive checks with an very wide scale prior can be found in appendix \ref{appendix:wide_prior}.
+Prior predictive checks with a very wide scale prior can be found in appendix \ref{appendix:wide_prior}.
 
 After the prior predictive check, it is possible to conclude that the tighter scale prior provides the most realistic results, while still allowing for a few higher than expected but not extreme predictions.
 Model \ref{eq:trafo_hb} can thus be reformulated as:

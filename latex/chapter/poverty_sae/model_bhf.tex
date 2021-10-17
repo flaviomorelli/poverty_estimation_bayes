@@ -10,7 +10,7 @@ Depending on the data available, there are two types of small area models.
 Area-level models such as the Fay-Herriot use aggregated data for each area to improve direct estimators.
 On the other hand, unit-level models need information at the individual or household level to generate predictions \citep[Chapter 1 and 2]{rao_small_2015}.
 
-\cite{molina_small_2014} formulate a Bayesian unit-level model, which is referred to as the Hierarchical Bayes (HB) model and is based on the BHF model \citep{battese_error_1988}:
+\cite{molina_small_2014} formulate a Bayesian unit-level model, which is referred to as the Hierarchical Bayes (HB) model and is based on the Battese-Harter-Fuller (BHF) model \citep{battese_error_1988}:
 \begin{equation}
     \label{eq:hb_rao}
 	\begin{split}
@@ -20,7 +20,7 @@ On the other hand, unit-level models need information at the individual or house
 	\end{split}
 \end{equation}
 The first distribution defines the likelihood and the last two lines define the prior, taking into account conditional dependencies.
-$D$ is the number of domains and $N_d$ is the number of observations for domain $d = 1, ..., D$. $y_{di}$ and $\boldsymbol{x}_{di}$ are respectively the dependent and independent variables for area $d$ and observation $i$ in that area.
+$D$ is the number of domains and $N_d$ is the number of observations for domain $d = 1, ..., D$, whereas $y_{di}$ and $\boldsymbol{x}_{di}$ are respectively the dependent and independent variables for area $d$ and observation $i$ in that area.
 $\boldsymbol \beta$ is a vector of regressor coefficients common to all areas.
 The effect for area $d$ is given by $u_d$ and the common variance parameter for all area effects is $\sigma_u$.
 The variance parameter at the individual level is given by $\sigma_e$.
@@ -32,7 +32,7 @@ By taking the normal distribution as the likelihood, the model faces the same li
 Moreover, the prior distributions in \cite{molina_small_2014} are non-informative (flat), i.e., they are proportional to a constant and not a proper distribution.
 This poses two problems.
 First, a Bayesian model with flat priors is not a generative model in the sense that it is not possible to simulate new observations from the prior predictive distribution.
-Second, it does not take advantage of the the extra control that priors provide over the model when modelling relation between parameters.
+Second, it does not take advantage of the extra control that priors provide over the model when modelling relation between parameters.
 Therefore, \cite{morelli_hierarchical_2021} reformulates the model \ref{eq:hb_rao} as follows with a Student's $t$-likelihood:
 \begin{equation}
 	\begin{split}
@@ -61,7 +61,7 @@ Thus, according to \ref{eq:mod_hb} the prior can in theory be set independently 
 The exact prior parameters for the coefficients will be discussed in the next sections based on the variables from the data set.
 
 
-\cite{molina_small_2014} also present a reparametrized version of model \ref{eq:hb_rao} with $\rho = \sigma_u(\sigma_u + \sigma_e)^{-1} $ to avoid using MCMC methods.
+\cite{molina_small_2014} also present a reparametrized version of model \ref{eq:hb_rao} with $\rho = \sigma_u(\sigma_u + \sigma_e)^{-1} $ to avoid using MCMC methods\footnote{An in-depth explanation of MCMC can be found in appendix \ref{ch:computation}.}.
 Avoiding MCMC should not be a major concern due to the many developments in the field of Bayesian computation since 2014.
 While the reparametrized model may simplify estimation under certain circumstances, it comes at the cost of model flexibility. It is not straightforward to imagine how their reparametrized version could be estimated without MCMC after changing the likelihood or prior distributions.
 Further information on Bayesian computation can be found in appendix \ref{ch:computation}.

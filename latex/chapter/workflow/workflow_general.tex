@@ -11,14 +11,14 @@ Flawed models are a necessary step towards improving the model and finding model
 At the same time, model improvement is not limited to finding the best model, but it also allows to better understand the models used; specifically, why they fail or lead to different results under certain conditions.
 There are several reasons for considering a workflow and not just plain inference.
 Bayesian computation is challenging and it is often necessary to iterate through simpler and alternative models, sometimes using faster but less precise approximation algorithms.
-Moreover, it might not be clear ahead of time which model adequate and how it can be modified or extended.
+Moreover, it might not be clear ahead of time which model is adequate and how it can be modified or extended.
 The relation between fitted models and data can be best understood by comparing inferences from different models.
 For example, it is possible to gain valuable insights by comparing a model to simpler or more complex models.
 Finally, there is uncertainty associated with model choice, as different models might lead to diverging but realistic results for the same application.
 
 The graphical representation of the workflow is included in Figure \ref{fig:gelman_wf}.
 The workflow contains many steps, but the authors emphasize that there are some steps that might be skipped or changed depending on the data and the use case.
-For this reason, \cite{gelman_bayesian_2020} argues that a workflow is more general than an example, but less clearly specified than a methodology.
+For this reason, \cite{gelman_bayesian_2020} argue that a workflow is more general than an example, but less clearly specified than a methodology.
 While the exact steps are likely to vary depending on the specific application, a workflow provides a framework to develop statistical models.
 Note that this workflow is mostly focused on data modeling.
 Other steps such as data collection are not taken into account.
@@ -48,7 +48,7 @@ Moreover, there is flexibility regarding how parameter priors interact with each
 %This is especially important when the priors should regularize the model to avoid extreme predictions.
 %Additionally, fully generative model?
 
-Here, one initial model is the HB model by \cite{molina_small_2014} with its extensions in \cite{morelli_hierarchical_2021}, where the effect of different likelihoods for log-shift transformed income was explored.
+For example, in this paper, one initial model is the HB model by \cite{molina_small_2014} with its extensions in \cite{morelli_hierarchical_2021}, where the effect of different likelihoods for log-shift transformed income was explored.
 The $t$-distribution provides the best performance over many different scenarios.
 However, in \cite{morelli_hierarchical_2021} the shift parameter was found through a heuristic whereas
 the initial model in the present paper does full inference on the shift parameter from the start.
@@ -66,7 +66,7 @@ Instead, the fit of a bad model should fail fast, as computational issues usuall
 Such problems can already be clear with just two Markov chains and a drastically lower number of samples than what would be chosen for the final model.
 Even a check with an approximate method such as variational inference might be enough to notice problems with the model, while being drastically faster than MCMC.
 In this paper, variational algorithms were often used to do a first fit of the model.
-While iterating through the models only 2 Markov chains were used and, depending on fitting time, the number of iterations was reduced compared to the default 2000 iterations in \code{Stan}.
+While iterating through the models only 2 Markov chains were used and, depending on fitting time, the number of iterations was reduced compared to the default 2000 iterations in \code{Stan} \cite{stan_development_team_stan_2021}.
 
 
 \subsection{Step 3. Validate computation}
@@ -108,7 +108,7 @@ This can be seen as a safeguard against misspecification.
 Moreover, such checks might reveal which aspects of the data are not captured well by the model.
 Cross-validation is an alternative to posterior predictive checks and has the advantage that part of the data is left out of the fitting process.
 Thus, it is less optimistic than posterior predictive checks, which uses the data for both model fitting and evaluation.
-While refittig model multiple times to do cross-validation can be computationally expensive, there are efficients approximations such as PSIS-LOO \citep{vehtari_practical_2017}.
+While refittig a model multiple times to do cross-validation can be computationally expensive, there are efficients approximations such as PSIS-LOO \citep{vehtari_practical_2017}.
 To check how informative the data is with respect to a parameter, one can compare the standard deviation of prior and posterior parameters. A higher shrinkage in uncertainty indicates that the data is more informative.
 If the model is good enough it can be used in an applied setting.
 In the small area estimation context, this means generating predictions from the model and calculating poverty indicators.
@@ -124,7 +124,7 @@ Parameters controlling central quantities like a mean are less sensitive to weak
 In turn, scale parameters are less sensitive to weak priors than shape parameters, which control the tails of a distribution (e.g., the degrees of freedom in a $t$-distribution).
 When expanding the model with additional parameters (e.g., introducing random intercepts or random slopes), it should be considered whether the priors should be tightened to stabilize the estimates, as the amount of data has not changed.
 Nevertheless, the priors should not be tightened beyond a range compatible with prior information.
-Note that even is a model is trustworthy, it can still make sense to modify it, e.g., because it is an intermediate model that leads to a more complex model.
+Note that even if a model is trustworthy, it can still make sense to modify it, e.g., because it is an intermediate model that leads to a more complex model.
 
 \subsection{Step 7. Compare models}
 
@@ -132,7 +132,7 @@ Models are fitted many times, for multiple reasons.
 It might be easier to start with simple models, before getting to a more complex model. There are often bugs in the code and in the models.
 A model might be well-specified, but it could be improved by expanding it.
 The priors might be only placeholders, which will be replaced at a later stage.
-Moreover, multiple model might provide acceptable results.
+Moreover, multiple models might provide acceptable results.
 Here, model comparison plays an important role.
 
 Comparing different models is always tied to a certain degree of uncertainty.

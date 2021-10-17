@@ -25,7 +25,7 @@ Their preferred approach is to maximize the REML of the model under data-transfo
 For the method proposed in this section, it is only necessary to minimize skewness to better fit the symmetric likelihood chosen for the model in the transformed scale.
 
 There is a further question related to dependent variable skewness in the linear mixed model.
-\cite{rojas_perilla_data_2020} propose to a pooled skewness measure that weighs the skewness of the unit and area-level error according to their variances.
+\cite{rojas_perilla_data_2020} propose to a pooled skewness measure that weights the skewness of the unit and area-level error according to their variances.
 In principle, it is possible that skewness not only affects the unit-level error $\varepsilon_{di}$, but also the area-level error $u_{d}$.
 While right-skewness is a common pattern of income at the unit-level (a few individuals/households earn much more than the rest), the picture is less clear at the area-level, as the areas can be defined in very different ways.
 For example, if areas are defined as municipalities, there is a certain degree of arbitrariness to geographic boundaries:
@@ -57,7 +57,7 @@ Here, $\delta > 0$ is a small positive constant and $S$ is skewness defined as
     {\left[ \frac{1}{N - 1} \sum^{N}_{i = 0} (y_i^* - \bar y^* )^2 \right]^{3/2}},
 \end{equation*}
 where $y^* = \log(y + \lambda)$ is the transformed dependent variable. Thus, the prior on $S$ indirectly defines a prior on $\lambda$.
-While it is not necessary to formulate a prior directly $\lambda$, it still recommended to define the lower bound of $\lambda$ as $-\min(y)$ in the programming framework as a safety check, to avoid negative values inside the logarithm function.
+While it is not necessary to formulate a prior directly on $\lambda$, it still recommended to define the lower bound of $\lambda$ as $-\min(y)$ in the programming framework as a safety check, to avoid negative values inside the logarithm function.
 In practice, the Markov chain steers clear of regions too close to the minimum for $\lambda$ after warmup iterations.
 
 
@@ -84,7 +84,7 @@ A detailed justification for this interpretation can be found in appendix \ref{a
 Note that the use of the exponential distribution in the backtransformation together with the heavy-tailed Student's $t$-distribution can lead to very extreme prediction in the backtransformed scale.
 Empirically, the percentage of predictions that above the dependent variable maximum is between 0.03\% and 0.5\%.
 This proportion is very small and should not have a large impact on the poverty indicators, as they depend on the median, which is robust to outliers.
-Nevertheless, it can cause problems when examining the samples from the posterior predictive distribtuion.
+Nevertheless, it can cause problems when examining the samples from the posterior predictive distribution.
 Therefore, all sample that are above the data maximum are taken as missing and are imputed.
 The imputation procedure is explained in detail in appendix \ref{ch:imputation}.
 
@@ -127,7 +127,7 @@ The range of posterior values for $\lambda$ is very small in this specification,
 The middle density graph ($\delta = 0.01$) is a compromise between the two extreme scenarios.
 The posterior distribution for $S(y^*)$ is clearly centered around zero, but the posterior is not as tight as with $\delta = 0.001$.
 The standard deviation of the shift parameter $\lambda$ is around an order of magnitude larger than in the model with the tighter prior, which allows more possible models and prevents overfitting.
-Moreover, the elpd$_{\text{loo}}$ has the highest value with the prior $S(y^*) \sim \mathcal N(0, 0.01)$.
+Moreover, the elpd$_{\text{loo}}$ has the highest value with the prior $S(y^*) \sim \mathcal N(0, 0.01)$, which indicates that this is the most adequate specification for the skewness.
 
 
 
@@ -162,13 +162,13 @@ The other two columns show two pairs of descriptive statistics as scatterplots: 
 The scatterplots also display the respective descriptive statistic value for the dependent variable.
 In the log-scale and GB2 scenarios, the median of the simulations is in a similar range to the median of the dependent variable.
 In contrast, the predictions from the model have a median that is around 400 units lower than the dependent variable of the Pareto scenario.
-This would mean that the simulated poverty lines (ca. 60\% of 11.900) are systematically lower than the poverty line from the data (ca. 60\% of 12.300) – approximately by 3\%.
+This would mean that the simulated poverty lines (ca. 60\% of 11.900) are systematically lower than the poverty line from the data (ca. 60\% of 12.300) – approximately 3\%.
 Thus, certain poverty indicators are likely to be underestimated.
 On the other hand, all samples from the posterior predictive distribution in the three scenarios are in a plausible range compared to the IQR of the dependent variable.
 The mean and the standard deviation are presented as an additional check, but they are somewhat less trustworthy due to their lack of robustness.
-In the logscale scenario, both the mean and the standard deviation are captured well, whereas in the GB2 scenario the mean and standard deviation of the predictions is a little lower than the dependent variable.
+In the logscale scenario, both the mean and the standard deviation are captured well, whereas in the GB2 scenario the mean and standard deviation of the predictions are a little lower than the dependent variable.
 The standard deviation Pareto scenario is modelled well, but the mean of the dependent variable is higher than the predictions.
-A noteworthy pattern is that in all three scenarios there is a positive association between the mean an the standard deviation.
-Although the probability density for the backtransformation is not available in its analytical form, this is a clear indication that the mean of the implied distribution is coupled to the variance in the backtransformed scale – a pattern also found in distributions like the lognormal.
+A noteworthy pattern is that in all three scenarios there is a positive correlation between the mean an the standard deviation.
+Although the probability density for the backtransformation is not available in its analytical form, it is a clear indication that the mean of the implied distribution is coupled to the variance in the backtransformed scale – a pattern also found in distributions like the lognormal.
 The next section explores the performance of models with skewed likelihoods.
 

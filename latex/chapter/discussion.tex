@@ -7,6 +7,7 @@ Lastly, the simulation scenarios are evaluated with respect to their limitations
 
 
 \section{Critical evaluation of the Bayesian approach against the EBP}
+\label{ch:discussion}
 
 The aim of this paper was to develop a Bayesian model for poverty estimation iteratively.
 However, it is puzzling that the estimated indicators from the final HB model are lower than the EBP results.
@@ -62,7 +63,7 @@ Another difficult aspect of Bayesian workflow is prior choice, especially for gr
 While prior predictive checks are useful to determine the impact of prior choice, there might be too many possibilities to be considered.
 A current area of research is joint priors such as the R2D2 \citep{zhang_bayesian_2020} or even the regularized horseshoe \citep{piironen_sparsity_2017}, which affects multiple parameters simultaneously.
 Joint priors are simpler to parametrize and are therefore more user-friendly.
-They can also have advantages in avoiding overfitting, as are usually controlled by parameters such as $R^2$ or number of relevant parameters.
+They can also have advantages in avoiding overfitting, as they are usually controlled by parameters such as $R^2$ or number of relevant parameters.
 Lastly, as \cite{gelman_bayesian_2020} point out, iterative model fitting might cause problems with respect to inference validity.
 Again, this is an area of current research.
 
@@ -71,7 +72,7 @@ Again, this is an area of current research.
 
 The use of simulated data is a central part of Bayesian workflow according to \cite{gelman_bayesian_2020}.
 However, it is also a time-consuming step.
-In general, it is hard to create a scenario or multiple scenarios that capture the main features of the data, while at the same time not defining overly complicated scnearios or generating so many scenarios that it is a burden for the researcher to work with them.
+In general, it is hard to create a scenario or multiple scenarios that capture the main features of the data, while at the same time not defining overly complicated scenarios or generating so many scenarios that it is a burden for the researcher to work with them.
 
 The models used in this paper are an extension of the models in \cite{rojas_perilla_data_2020}, mainly through the addition of correlated covariates.
 Nevertheless, there are some critical aspects that can be reconsidered.
@@ -81,7 +82,7 @@ The result is a relatively symmetric distribution with a long right tail.
 To make both scenarios more realistic, the distributions of the regressors could be more varied, so as to avoid a strong symmetry before adding the error term.
 On the other hand, the log-scale scenario assumes normality in the logarithmic scale.
 While this is a good sanity check for the results, it is unlikely to reflect the difficulty of fitting real-world data.
-A simple modification to avoid this strong assumption, would be again to change the normal distribution of the regressors to a heavier tailed Student's $t$ with different the degrees of freedom for each covariate.
+A simple modification to avoid this strong assumption, would be again to change the normal distribution of the regressors to a heavier tailed Student's $t$ with different degrees of freedom for each covariate.
 Second, a majority of variables found in a survey or a census are categorical.
 Neither \cite{rojas_perilla_data_2020} nor the present paper include categorical variables in the simulations.
 Therefore, there are probably some blind spots in the analysis of this paper, regarding difficulties that might arise from the use of categorical covariates.
@@ -100,7 +101,7 @@ To simplify model analysis, it might be easier to limit the scenarios to one mul
 One last aspect to take into account is the sampling procedure used with the simulated data.
 In this paper, the survey data set was created by sampling from the simulated population with no out-of-sample domains.
 However, there are cases where many domains are out-of-sample.
-For example, in many states of the Mexican data set, there no observations for 50\%-70\% of domains in the survey.
+For example, in many states of the Mexican data set, there are no observations for 50\%-70\% of domains in the survey.
 This is an area of future research, especially when comparing the differences between EBP and an HB model with informative priors.
 
 

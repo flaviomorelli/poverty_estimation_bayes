@@ -1,10 +1,10 @@
 \subsection{Estimating poverty indicators with Bayesian models}
 \label{ch:indicators}
 
-The aim of this paper is to calculate poverty indicators based on income data.
-This section gives a formal definition of poverty indicators and describes how to estimate them from an HB model.
+As the aim of this paper is to calculate poverty indicators based on income data,
+this section gives a formal definition of poverty indicators and describes how to estimate them with an HB model.
 The two main indicators in this paper are the head count ratio (HCR) and poverty gap (PGAP), which
-are based on the Foster-Greer-Thorbecke indicators \citep{foster_class_1984}:
+are based on the Foster-Greer-Thorbecke (FGT) indicators \citep{foster_class_1984}:
 \begin{gather*}
     F_d(\alpha, t) = \displaystyle \frac 1 {N_d} \sum_{i=1}^{N_d}\left( \frac{t - y_{di}}{t} \right)^\alpha I (y_{di} \le t),
     \hspace{1cm}\alpha = 0, 1, 2,
@@ -17,7 +17,7 @@ $\alpha = 2$ defines poverty severity, which will not be considered in this pape
 Based on model \ref{eq:mod_hb}, it is possible to generate synthetic income data form the posterior predictive distribution.
 The poverty indicators are based on theses synthetic income simulations.
 This is procedure is similar to \cite{rojas_perilla_data_2020}, but in a Bayesian context.
-The HB estimator for the poverty indicator $F_d$ is given by the following algorithm, where $S$ denotes the total number of MCMC samples:
+The HB estimator for the poverty indicator $F_d$ is given by the following algorithm, where $S$ denotes the total number of MCMC samples\footnote{For details on MCMC, see appendix \ref{ch:computation}.}:
 
 \newpage
 

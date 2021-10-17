@@ -1,7 +1,7 @@
 \section{Simulation scenarios}
 \label{ch:simulations}
-Working with simulated is one key step of Bayesian workflow \citep{gelman_bayesian_2020}.
-Testing models against fake data allows the researcher to check and understand potential problems with the methods.
+Working with simulations is one key step of iterative model improvement in a Bayesian workflow \citep{gelman_bayesian_2020}.
+Testing models against synthetic data allows the researcher to check and understand potential problems with the methods.
 While a model that works well with simulated data is not guaranteed to work well with real-world data,
 a model that does not work with simulated data is certain to fail in a real application.
 This will become clearer in the next chapter on Bayesian workflow.
@@ -14,8 +14,8 @@ The first one – the \textit{log-scale} scenario – is defined so that the log
         u_d & \sim \mathcal N(0, 0.4), ~~ d = 1,...,D,\\
         \varepsilon_{di} & \sim \mathcal{N}(0, 0.3), i = 1,...,N,\\
         \mu_{dk} & \sim \mathcal{U}(2, 3), k = 1,...,K,\\
-        \Sigma_{mn} = &\begin{cases} 1, ~~ m = n \\ \rho,  ~~ \text{otherwise}  \end{cases},
-            m = 1,...,K, n = 1,...,K,\\
+        \Sigma_{mn} & = \begin{cases} 1, ~~ m = n,~~m = 1,...,K, n = 1,...,K, \\ \rho,  ~~ \text{otherwise},  \end{cases}
+            \\
         \boldsymbol x_{di}  &\sim \mathcal N (\boldsymbol \mu_{d}, \Sigma) ,
             ~~ \boldsymbol \mu_{d} = (\mu_{d1}, ..., \mu_{dK}),\\
         y_{di} & = \exp(5 + 0.1 \cdot \boldsymbol x_{di}  + u_d + \varepsilon_{di}),\\
@@ -60,8 +60,8 @@ This means roughly that no simulation should be above the tens of thousands.
 
 The three scenarios provide a variety of characteristics against which to test the models in the workflow.
 First, the log-scale scenario is multiplicative, while the GB2 and Pareto scenarios are additive.
-This is useful to check whether a model with a multiplicative likelihood also can approximate a model whose generating process is additive.
-Moreover, the logarithmic transform of $y_{di}$ should be roughly normal, while the GB2 and Pareto scenarios should display a higher excess kurtosis after a logarithmic transform, which is often observed in real-world income data.
+This is useful to check whether a model with a multiplicative likelihood also can approximate a model whose generating process is additive, and viceversa.
+Moreover, the logarithmic transformation of $y_{di}$ should be roughly normal, while the GB2 and Pareto scenarios should display a higher excess kurtosis after a logarithmic transform, which is often observed in real-world income data.
 
 Nevertheless, there are two main limitations with the simulation scenarios.
 First, the area-level intercepts $u_d$ are assumed to be independent, by defining the standard deviation as a constant.
@@ -72,6 +72,6 @@ For example, a higher level of education could have a much stronger effect on in
 In contrast, most jobs in a rural region are less likely to require high skills and therefore offer a lower pay.
 Here, income does not only depend on the quality of labor supply, but also on the job market demands in a gives area.
 For the present paper, these two limitations are acceptable.
-On the one hand, there are many ways of including spatial correlation in the simulation scenarios such as LKJ or SAR priors (see section \ref{ch:area_corr}) and it is not clear, whether a decision for one type of correlation might turn out to be unlike the spatial dependencis present in real-world data.
+On the one hand, there are many ways of including spatial correlation in the simulation scenarios (see section \ref{ch:area_corr}) and it is not clear, whether a decision for one type of correlation might turn out to be unlike the spatial dependencis present in real-world data.
 On the other hand, random slopes are not considered in the Bayesian workflow of the next chapter.
 Extensions to the simulation scenarios such as spatial correlation and random slopes might play an important role in developing a model for poverty estimation, but this question is left for further research.

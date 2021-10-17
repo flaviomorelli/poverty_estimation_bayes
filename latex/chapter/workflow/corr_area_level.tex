@@ -12,7 +12,7 @@ Thus, the domains are not defined as the municipalities, but as the strata prese
 There are multiple options to model correlation between areas.
 The simpler LKJ prior based on the work by \cite{lewandowski_generating_2009} places a restriction over permissible correlation matrices.
 Autoregressive approaches such as IAR, CAR and SAR \citep{chung_bayesian_2020} represent another way of capturing spatial correlation and takes into account how similar or close the different domains are.
-Moreover, other priors such as the random walk prior used used in \cite{gao_improving_2021} offers an alternative to modelling dependencies between areas.
+Moreover, other priors such as the random walk prior used in \cite{gao_improving_2021} offers an alternative to modelling dependencies between areas.
 
 The resulting model will be compared with model \ref{eq:log_scenario} that assumes independence between areas, but with the modified random effect.
 A comparison between all possible priors that capture area correlation is beyond the scope of this paper and left for future research.
@@ -64,17 +64,19 @@ The starting point is the $D\times D$ proximity matrix $W$, which contains infor
 If $w_d, d = 1, ..., D$ is defined as the sum of row $d$ of matrix $W$ – i.e., $w_d = \displaystyle \sum_{i = 1}^D w_{di}$ –, then the $D \times D$ matrix $L$ is defined as $L = \text{diag}\{w_d\}_{d=1}^D$.
 Thus, it is possible to calculate the row-normalized matrix $\widetilde W = L^{-1}W$, in which all rows sum to 1.
 The SAR prior in the context of model \ref{eq:trafo_coef_var} is then given by
-\begin{gather*}
-    \Pi(\rho) = (I_D - \rho \widetilde W)'(I_D - \rho \widetilde W), ~~ \rho \in (-1, 1),\\
-    u \sim \mathcal N(\boldsymbol{0}_D, \sigma_u^2 \Pi^{-1}),\\
-    \rho \sim \mathcal U(-1, 1),
-\end{gather*}
+\begin{equation*}
+    \begin{split}
+        \Pi(\rho) &= (I_D - \rho \widetilde W)'(I_D - \rho \widetilde W), ~~ \rho \in (-1, 1),\\
+        u &\sim \mathcal N(\boldsymbol{0}_D, \sigma_u^2 \Pi^{-1}),\\
+        \rho &\sim \mathcal U(-1, 1),
+    \end{split}
+\end{equation*}
 where $\boldsymbol{0}_D$ is a $D$-dimensional zero vector.
-Again, note that in this model $\Pi$ is \textit{precision} and not a \textit{correlation} matrix.
+Again, note that in this model $\Pi$ is \textit{precision} and not a correlation matrix.
 Because the single strata used as domains are coded as a 5-digit binary string (see Section \ref{ch:raneff}), the distance matrix $W$ is defined using the Hamming distance.
 In short, the Hamming distance takes two strings of the same length and counts how many digits are different, e.g., 00111 and 10100 have a Hamming distance of 3.
 This also ensures that the distance of each stratum from itself is 0.
-The maximum distance in this case is 5, because each stratum is code with five binary digits.
+The maximum distance in this case is 5, because each stratum is coded with five binary digits.
 Note that when $\rho = 0$ the precision matrix $\Pi$ is equal to the identity matrix, which means that there is no correlation between the domains.
 As $\rho$ deviates from 0, the effect of the spatial increases.
 The uniform prior is chosen for $\rho$, because it is not possible to know how strong the correlation values are before fitting the model to the data.
@@ -110,13 +112,13 @@ In contrast, the LKJ prior is only a prior on the admissible correlation matrice
 The difference becomes clear in Figure \ref{fig:corr_heatmap}, which shows four posterior samples of the correlation matrices from the models with the LKJ and SAR priors.
 The axes display the respective domains, whose notation as a 5-digit binary string (e.g., 01100) was explained in section \ref{ch:raneff}.
 The correlation matrices produced by the LKJ prior display a completely random pattern with respect to the correlations.
-On the othe side, with the SAR prior there is a clear structure in the correlation matrices stemming from the distance matrix $W$.
-Even though in Figure \ref{fig:heatmap_map} the correlation values vary from sample to sample, there is a very clear symmetric visible for each sample, which is related to the way Hamming distance used to define $W$.\footnote{Figure \ref{fig:corr_heatmap} depicts only four posterior samples from more than 1000 MCMC samples. The correlation pattern in the SAR prior is present in all samples, but the range of correlation values from just four posterior samples is not representative.}
+On the other side, with the SAR prior there is a clear structure in the correlation matrices stemming from the distance matrix $W$.
+Even though in Figure \ref{fig:heatmap_sar} the correlation values vary from sample to sample, a very clear symmetric structure is visible for each sample, which is related to the way the Hamming distance is used to define $W$\footnote{Figure \ref{fig:corr_heatmap} depicts only four posterior samples from more than 1000 MCMC samples. The correlation pattern in the SAR prior is present in all samples, but the range of correlation values from just four posterior samples is not representative.}.
 The nature of the pattern can be further understood in Figure \ref{fig:corr_density}, which shows the distributions of the correlation values for each one of the posterior samples in Figure \ref{fig:corr_heatmap}.
 The LKJ prior does not force any particular correlation pattern on the data, but it guarantees that the distribution of the correlation values is roughly equal for each sample.
 With an increasing $\eta$, the LKJ prior puts more weight on correlation matrices closer to the identity matrix, which leads to tighter distributions for the correlation values.
 On the other hand, there is a much clearer pattern in the densities of the SAR prior specifications.
-The spikes in the densities are cause by the Hamming distance, which in the present paper has takes only six values, from 0 to 5.
+The spikes in the densities are caused by the Hamming distance, which in the present paper takes only six values, from 0 to 5.
 With continuous distances, the densities would be much smoother.
 Moreover, the correlation values densities do not overlap as in the LKJ prior.
 
@@ -129,7 +131,7 @@ Moreover, the correlation values densities do not overlap as in the LKJ prior.
         \includegraphics[width=0.85\textwidth]{./graphics/rand_intercept/sar_dens_plot}
         \caption{SAR prior}
     \end{subfigure}
-    \caption[Correlation density for the LKJ and SAR priors]{Correlation density for the four posterior samples of the LKJ and SAR priors shown in Figure \ref{fig:corr_density}. Each sample are displayed in a different color.}
+    \caption[Correlation density for the LKJ and SAR priors]{Correlation density for the four posterior samples of the LKJ and SAR priors shown in Figure \ref{fig:corr_heatmap}. Each sample is displayed in a different color.}
     \label{fig:corr_density}
 \end{figure}
 
@@ -150,7 +152,7 @@ There are three possible explanations.
 First, as some of the areas are quite small, it is difficult to indentify correlations between areas.
 It is possible that with more data the correlation could become more visible.
 Second, the PSIS-LOO quantifies leave-one-out cross-validation.
-However, leaving out only one observation might not make a large difference for the correlations are at the area-level.
+However, leaving out only one observation might not make a large difference for the correlations at the area-level.
 PSIS-LOO might not be the right tool to quantify the difference and alternatives such as leave-one-group-out cross-validation could provide a clearer result.
 Third, the predictors might have a good predictive power so that area-level correlation does not have such a large impact.
 Finally, this result points to a blind spot in the simulation scenarios, because they do not take area-level correlation into account.
@@ -183,7 +185,7 @@ Nevertheless, the LKJ and SAR priors are not as useful when there are out-of-sam
 In such cases, an autoregressive or a random walk prior on $u_d$ such as in \cite{gao_improving_2021} can be more appropriate, as it does not depend strictly on the dimensions of the correlation matrix.
 In any case, it is implausible that the area-level effects are completely independent.
 Therefore, the SAR specification is chosen as the final model.
-Next section compares all models fitted until now using stacking weights.
+The next section compares all models fitted until now using stacking weights.
 
 
 

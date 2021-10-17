@@ -1,8 +1,8 @@
 \chapter{Appendix: Coefficient Interpretation after Log-Shift Transformation}
 \label{appendix:coeff}
 The transformation of the dependent variable complicates coefficient interpretation.
-In a prediction context, coefficients are of secondary importance, as the estimated values might be bias due to complex interactions between variables, e.g., omitted variable bias, post-treatment bias, collider bias.
-Models with biased coefficient can offer even better predictive performance than non-biased models \citep[Chapter 7]{mcelreath_statistical_2020}.
+In a prediction context, coefficients are of secondary importance, as the estimated values might be biased due to complex interactions between variables, e.g., omitted variable bias, post-treatment bias, collider bias.
+Models with biased coefficients can offer even better predictive performance than non-biased models \citep[Chapter 7]{mcelreath_statistical_2020}.
 However, in a Bayesian context it is still useful to understand how regressors affect the dependent variable to choose adequate priors.
 
 For simplicity, consider a regression with a transformed dependent variable and two independent variables:
@@ -37,5 +37,5 @@ For example, assume that $y \in (0, 100)$ and $\lambda = 1$.
 For values near the minimum of $y$, $\lambda$ has a very large influence: $\frac{y^{new} + 1 } {y^{old} + 1} = \frac{3 + 1}  {2 + 1} = 1.33$, while with no shift term $\lambda$ the ratio between $y^{new}$ and $y^{old}$ would be 1.5. With larger values of $y$ the difference between the ratios of shifted and non-shifted dependent variables is much smaller: $\frac{30 + 1}{20 + 1} = 1.48$, which is much closer to $\frac{30}{20} = 1.5$.
 
 In summary, the traditional coefficient interpretation as approximate percentage changes in a log-linear model can also be used with a log-shift transform.
-The interpretation has some caveats that assume that $\lambda$ is small compared to the range of $y$ and that the focus is not on extremes values of $y$.
+The interpretation has some caveats that assume that $\lambda$ is small compared to the range of $y$ and that the focus is not on extreme values of $y$.
 However, the interpretation when $\lambda = 0$ is itself an approximation and it is therefore possible to use it as a rule of thumb when $\lambda \ne 0$.

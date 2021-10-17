@@ -6,7 +6,7 @@ In practice, these extreme predictions represent only a small proportion (under 
 Still, to avoid problems with the posterior predictive checks a simple imputation procedure is implemented.
 The first step is to check which predictions are 10\% or more above the dependent variable $y$ maximum and to mark them as missing.
 Because the prediction has a very high value, the assumption is that it would still have a higher value otherwise, just not in such an extreme range.
-Therefore, those predictions are then drawn from $\mathcal U(q_{0.99}(y), \max(y))$, i.e. a uniform distribution between the 99\%-quantile of $y$ and its maximum.
+Therefore, those predictions are then drawn from $\mathcal U(q_{0.99}(y), \max(y))$, i.e., a uniform distribution between the 99\%-quantile of $y$ and its maximum.
 As an example, in the log-scale scenario the maximum of $y$ is around 30.000 while its 99\%-quantile is approximately 10.000.
 While a uniform distribution might seem a crude choice for the imputation, the probability mass above the 99\% quantile is almost zero and it should therefore be an adequate approximation.
 Nonetheless, it is certainly possible to use distributions that place less probability mass on higher values.

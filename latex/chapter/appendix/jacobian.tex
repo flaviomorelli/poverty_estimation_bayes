@@ -10,7 +10,7 @@ The density of the random variable $Y$ can then be defined as
     \mathbb{I}(y \in \varphi(I)), ~~ y \in \mathbb{R},
 \end{equation*}
 where $\mathbb{I}(\cdot)$ is the indicator function.
-Assuming that $y$ represents the dependent variable in the original scale, then $\varphi^{-1}(y) = \log(y + \lambda)$ and the Jacobian adjustment $\displaystyle \frac{d \varphi^{-1}(y)}{dy} = \frac{1}{y + \lambda}$, which is positive due to $y + \lambda > 0$. As the transformation parameter $\lambda$ is chosen to drastically reduce the skewness of $\log(y + \lambda)$, the density $f^X$ is chosen to be from a symmetric distribution – e.g., a Student's $t$-distribution. The likelihood of $y$ under the log-shift transformation is therefore
+Assuming that $y$ represents the dependent variable in the original scale, then $\varphi^{-1}(y) = \log(y + \lambda)$ and the Jacobian adjustment is $\displaystyle \frac{d \varphi^{-1}(y)}{dy} = \frac{1}{y + \lambda}$, which is positive due to $y + \lambda > 0$. As the transformation parameter $\lambda$ is chosen to drastically reduce the skewness of $\log(y + \lambda)$, the density $f^X$ is chosen to be from a symmetric distribution – e.g., a Student's $t$-distribution. The likelihood of $y$ under the log-shift transformation is therefore
 \begin{equation*}
     \displaystyle f^Y(y) = \text{Student}(\log(y + \lambda)| \mu , \sigma, \nu)
     \cdot \frac{1}{y + \lambda}

@@ -6,9 +6,9 @@ The ideal solution would be to estimate models with all possible variable combin
 However, this solution is not feasible computationally due to the very large number of possible models.
 Another common approach is to use shrinkage methods like the Lasso \citep{tibshirani_regression_1996} to determine which variables can be left out without significantly compromising the predictive power of the model.
 If a coefficient is shrunk to zero, it is a sign that the respective variable might be removed.
-In this section, the regularized horseshoe prior \citep{piironen_sparsity_2017}, which follows a similar shrinkage principle to the Lasso or the ridge, is presented and then used to select relevant variables.
+In this section, the regularized horseshoe prior \citep{piironen_sparsity_2017}, which follows a shrinkage principle similar to the Lasso or the ridge, is presented and then used to select relevant variables.
 This section shows how priors can be used inside a Bayesian workflow to do variable selection.
-The selection is done by comparing the elpd$_{\text{loo}}$ of models with different groups of less meaningful variables removed. An alternative to the horseshoe prior is to use projective prediction approach developed by \cite{piironen_projective_2020}.
+The selection is done by comparing the elpd$_{\text{loo}}$ of models with different groups of less meaningful variables removed. An alternative to the horseshoe prior is to use the projective prediction approach developed by \cite{piironen_projective_2020}.
 Unfortunately, this only works with distributions from the exponential family, which does not include the Student's $t$-distribution used in this paper.
 Therefore, the focus lies on the regularized horseshoe prior.
 
@@ -20,7 +20,7 @@ while at the same time including fat tails to allow some coefficients to deviate
 In its most extreme formulation, it corresponds to the spike-and-slab prior introduced originally by \cite{mitchell_bayesian_1988}.
 While this prior has a hight theoretical relevance, it can be computationally demanding for a large number of variables and is sensitive to specification details such as slab width.
 On the other hand, continuous shrinkage priors provide similar results while also being easier to compute \citep{piironen_sparsity_2017}.
-The horseshoe prior \citep{carvalho_horseshoe_2010} is a continuous shrinkage prior with a similar performance to the spike-and-slab prior and can be formulated as follows
+The horseshoe prior \citep{carvalho_horseshoe_2010} is a continuous shrinkage prior with a similar performance to the spike-and-slab prior and can be formulated as
 \begin{equation}
     \begin{split}
         \theta_j | \lambda_j, \tau & \sim \mathcal N (0, \tau^2\lambda^2_j), \\
@@ -59,7 +59,7 @@ Defining $p_0$ as the prior guess of the number of nonzero variables, the prior 
     \displaystyle \tau_0 = \frac{p_0}{J-p_0}\frac{\sigma}{\sqrt n},
     \label{eq_tau0}
 \end{equation}
-where $\sigma$ is the variance of the error term\footnote{In \cite{piironen_sparsity_2017}, the assumed linear model does not have a random intercept. Thus the randomness comes mostly from the unit-level error term $\varepsilon ~ \mathcal N (0, \sigma)$.}.
+where $\sigma$ is the variance of the error term\footnote{In \cite{piironen_sparsity_2017}, the assumed linear model does not have a random intercept. Thus the randomness comes mostly from the unit-level error term $\varepsilon \sim \mathcal N (0, \sigma)$.}.
 However, there is no best choice for the prior of $\tau$. The three main options are setting $\tau = \tau_0$, or assuming either $\tau \sim \mathcal C^+(0, \tau_0^2)$ or $\tau \sim \mathcal N^+(0, \tau_0^2)$, where $\mathcal{N^+}$ is the half-normal distribution.
 In practice, it is common to set the ratio of relevant and irrelevant parameters, – $p_0/(J - p_0)$ –, and use $\tau = \tau_0$.
 In this paper, a ratio of 0.2 is chosen, which assumes that for every 10 irrelevant regressors, there are 2 relevant variables.
@@ -97,7 +97,7 @@ Therefore, the shrinkage of the regularized horseshoe is not much different from
 In any case, this section showed that it is possible to select variables using the horseshoe prior and that its shrinkage properties are particularly useful in high-dimensional data sets.
 
 Finally, finding an adequate subset of variables is a field of active research in the context of Bayesian workflow.
-Projective predictive distribution provides a clear selection of variables that keeps the predictive power of the full model, but at the moment of writing only available for the exponential family \citep{piironen_sparsity_2017}.
+The projective predictive distribution approach provides a clear selection of variables that keeps the predictive power of the full model, but at the moment of writing only available for the exponential family \citep{piironen_sparsity_2017}.
 As the $t$-distribution is one of the likelihoods used in this paper, no projective predicitve methods are used in this paper.
 It is very likely that in the near future there will be new tools to do this step of the workflow, especially concerning the projective predictive method to distributions outside the exponential family.
 

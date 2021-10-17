@@ -3,7 +3,8 @@
 \label{ch:workflow}
 
 This chapter shows how to develop a Bayesian model iteratively to estimate poverty indicators.
-The main ideas of Bayesian workflow according to \cite{gelman_bayesian_2020} are summarized in the first section.
+The main ideas of Bayesian workflow according to \cite{gelman_bayesian_2020} are summarized in the first section. As the workflow is highly non-linear, the sections afterwards do not correspond exactly to single steps from the workflow.
+Instead, each section is a model improvement iteration, in which many (but not necessarily all) of the steps in the workflow are followed.
 The second section presents two plausible alternatives to model skewed, leptokurtic and unimodal variables such as income. GLM models with skewed likelihoods are compared with a data-driven approach similar to \cite{morelli_hierarchical_2021}.
 In the third section, the regularized horseshoe prior is explained, which is then used to select variables with adequate predictive power.
 The rest of the chapter focuses on the impact of priors on model perfomance.
@@ -19,4 +20,4 @@ Finally, the last section compares the models using stacking weights.
 \input{./chapter/workflow/horseshoe}
 \input{./chapter/workflow/raneff_specification}
 \input{./chapter/workflow/corr_area_level}
-\input{./chapter/results/model_stacking}
+\input{./chapter/workflow/model_stacking}

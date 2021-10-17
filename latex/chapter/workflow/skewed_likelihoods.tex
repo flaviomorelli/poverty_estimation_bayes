@@ -5,7 +5,7 @@ In line with the Bayesian workflow proposed by \cite{gelman_bayesian_2020}, this
 The following skewed likelihoods were taken into account: gamma with logarithmic link, gamma with
 softplus link, lognormal, skew-normal and exponentially modified Gaussian (exGaussian).
 This variety goes beyond the distribution shape, but it also affects the assumed relation between dependent variable and predictors.
-The gamma with a log link and lognormal distributions imply a multiplicative model, whereas the rest assume that the predictors have an additive impact on the dependent variable.
+The gamma with a log link and lognormal distributions implies a multiplicative model, whereas the rest assume that the predictors have an additive impact on the dependent variable.
 
 \begin{figure}[h]
     \centering
@@ -39,7 +39,7 @@ This is due to the limitations of the skew-normal distribution, as it has a maxi
 Moreover, in this scenario the model produces some negative predictions.
 Because this likelihood is unreliable for the log-scale scenario, the model with a skew-normal likelihood is not further developed.
 The exGaussian likelihood also produces negative predictions in some scenarios and it is not skewed enough for the log-scale scenario (Figure \ref{fig:logscale_exgaussian}).
-The graph shows that the chains do not mix well, with two different posterior predictive distribution as a result.
+The graph shows that the chains do not mix well, with two different posterior predictive distributions as a result.
 Neither placing a more restrictive prior on the coefficients nor decreasing the step size of the NUTS algortihm did alleviate the convergence problem.
 Nevertheless, even if the MCMC chains mix well, Figure \ref{fig:logscale_exgaussian} suggests that the exGaussian function is unlikely to be skewed enough to capture the dependent variable from the log-scale scenario.
 Therefore, this version of the likelihood is also discarded.
@@ -55,10 +55,10 @@ An additional check is provided by a lognormal likelihood (Figure \ref{fig:ppc_l
 It is not suprising that the posterior predictive checks for the lognormal likelihood and the gamma with a logarithmic link are almost identical, due to the similarity of their shapes.
 
 There are other skewed distributions, for which the mode is equal to the minimum.
-Some examples include the exponential, the Pareto the chi-squared and the half-normal distributions.
+Some examples include the exponential, the Pareto, the chi-squared and the half-normal distributions.
 Both the exponential and the chi-squared are special cases of the gamma distribution, which makes them less flexible as likelihood than using a plain gamma distribution.
-The half normal has very thin tails and a very low skewness that does not correspond with the long tails observed empirically in income data.
-Therefore, they are not taken into account as a likelihood
+The half normal has very thin tails and a very low skewness that does not correspond to the long tails observed empirically in income data.
+Therefore, they are not taken into account as a likelihood.
 
 In summary, based on the posterior predictive checks, only the lognormal likelihood and the gamma with log link worked well for all three scenarios. The next section briefly discusses the advantages and disadvantages of the two types of initial models considered: a model with a log-shift data-driven transformation and a model with a skewed likelihood.
 

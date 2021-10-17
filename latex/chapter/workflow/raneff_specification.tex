@@ -6,13 +6,13 @@ However, this approach poses two problems.
 First, the information contained in the survey design might be overlooked.
 There is no guarantee that the random effect is meaningful from the perspective of how the sample was constructed.
 Second, it might lead to very sparse areas with lots of out-of-sample areas.
-In this section, the traditional way of defining the random effect is compared to an approach that approximates the stratification in the survey design as an additional iteration of the model.
+In this section, the traditional way of defining the random effect is compared to an approach that approximates the stratification in the survey design as an additional iteration of the model\footnote{The alternative specification of the random effect in this section is included only as an improvement of the model in the Bayesian workflow context. However, there is nothing in the definition of the random effect itself exclusive to  the Bayesian paradigm. The same ideas could also be applied to the frequentist EBP with transformations \citep{rojas_perilla_data_2020}, as it also uses a Monte Carlo approach.}.
 
 Section \ref{ch:design} included a short introduction to the survey design of the data from the Mexican state of Guerrero.
 On closer inspection, municipalities play no role whatsoever in the sampling process of the households.
 Instead, the population is stratified by federal state, by geographic region (urban or rural) and also by socio-economic indicators taken from the previous census.
 Changing the definition of the random intercept does not have any adverse impact on the calculation of FGT indicators.
-As the data is a the unit-level and each observation has information on which municipality it belongs to, it is not necessary that the random effect coincides with the municipality.
+As the data is at the unit-level and each observation has information on which municipality it belongs to, it is not necessary that the random effect coincides with the municipality.
 Predictions for income at the unit-level can be generated from any model as discussed in section \ref{ch:indicators} and the FGT indicator can be calculated simply by using the municipality as a grouping variable.
 
 A major challenge is to find a structure that can be found both in the survey and the census.
@@ -23,10 +23,11 @@ In addition to the \code{rururb} variable that indicates whether the observation
 As all five variables are binary, there are $2^5 = 32$ possible combinations.
 Each one of these 32 combinations is now considered as a domain that is used to define the varying intercept in the model.\footnote{The strata domains are coded as a binary number with five digits. Each digit represents one variable in the following order: \code{rururb}, \code{ic\_rezedu}, \code{ic\_asalud}, \code{ic\_sbv}, \code{ic\_cv}. For the \code{rururb} variable 1 represents "rural" and 0 "urban". For all the other variables, 1 represents the presence of a disadvantage measured by each indicator as defined in Table \ref{tab:disadvantages}.}
 The variable \code{rururb} is no longer used as a regressor in this specification.
-This definition of the domain results in samples sizes between 2 and 368 with a median of 37.
+This definition of the domain results in sample sizes between 2 and 368 with a median of 37.
 No domains are out-of-sample.
 
-The results from PSIS-LOO using model \ref{eq:trafo_coef_var} show that the stratified specification is clearly better. The elpd$_{\text{loo}}$ for this specification is around 34.8 higher than the when municipalities as the domains. The standard error for the difference in elpd$_{\text{loo}}$ between both specifications is 12.8, which is around one third of the difference itself.
+The results from PSIS-LOO using model \ref{eq:trafo_coef_var} show that the stratified specification is clearly better. The elpd$_{\text{loo}}$ for this specification is around 34.8 higher than when using  municipalities as the domains.
+The standard error for the difference in elpd$_{\text{loo}}$ between both specifications is 12.8, which is around one third of the difference itself.
 Even if the models were not substantially different in predictive terms, there is one substantial advantage of using the alternative specification: there are no out-of-sample domains.
 This reduces drastically the uncertainty in the predictions for out-of-sample municipalities.
 Therefore, the stratified specification of the domain is used in the rest of this paper.
@@ -35,6 +36,6 @@ There are some limitations to this approach.
 First, the stratified structure is only an approximation.
 Second, there are still other dimensions that are not taken into account that might still be problematic, e.g., the clustering that stems from structuring the sample process with PSUs.
 Third, this is an example that is limited to the data from Mexico.
-Other statistical insitutes might provide more detailed variables for the strata or none at all and depending on the survey design the approach developed in this section might not even be applicable.
+Other statistical institutes might provide more detailed variables for the strata or none at all and depending on the survey design the approach developed in this section might not even be applicable.
 Nevertheless, the main insight from this section is that for unit-level data the random effect does not have to follow the level at which indicators are estimated and that this improvements can be evaluated in a Bayesian workflow.
-Looking for alternatives specifications for the random effect might lead to better predicitive power and to less out-of-sample domains.
+Looking for alternative specifications for the random effect might lead to better predicitive power and to less out-of-sample domains.

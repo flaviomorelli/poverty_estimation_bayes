@@ -1,8 +1,13 @@
 \section{Estimated poverty indicators with Bayesian model and EBP}
-In this section, the estimates from the HB model with the SAR prior are presented and compared with the Box-Cox EBP estimates.
-Figure \ref{fig:maps} shows the HCR and estimates for both the SAR HB model and the EBP.
+%In this section, the estimates from the HB model with the SAR prior are presented and compared with the Box-Cox EBP estimates.
+Figure \ref{fig:maps} shows the HCR and estimates for both the SAR HB model and the Box-Cox EBP.
 The EBP was estimated with the \code{emdi} package \citep{kreutzmann_r_2019} with the Wild bootstrap option.
-As \code{emdi} does not include the survey weights in the estimation process, neither the EBP nor the HB model use the weights when estimating the poverty indicators. %In the HB model, the weights are included in the estimation procedure.\footnote{The weights $w_{di}$ are considered in the poverty line $t^{(s)}$ by using the weighted median. Moreover, they are included when taking the weighted mean for a given a Monte Carlo sample – i.e., $F^{(s)}_d(\alpha, t^{(s)}) = ({\sum_{i=1}^{N_d} w_{di}})^{-1} \sum_{i=1}^{N_d} w_{di}\left( \frac{t^{(s)} - \tilde y_{di}}{t^{(s)}} \right)^\alpha I (\tilde y_{di} \le t^{(s)})$.}
+As \code{emdi} does not include the survey weights in the estimation process, neither the EBP nor the HB model use the weights when estimating the poverty indicators.
+%In the HB model, the weights are included in the estimation procedure.\footnote{The weights $w_{di}$ are considered in the poverty line $t^{(s)}$ by using the weighted median. Moreover, they are included when taking the weighted mean for a given a Monte Carlo sample – i.e., $F^{(s)}_d(\alpha, t^{(s)}) = ({\sum_{i=1}^{N_d} w_{di}})^{-1} \sum_{i=1}^{N_d} w_{di}\left( \frac{t^{(s)} - \tilde y_{di}}{t^{(s)}} \right)^\alpha I (\tilde y_{di} \le t^{(s)})$.}
+Unfortunately, at the time of writing \code{emdi} does not allow to redefine the random effect as in chapter \ref{ch:raneff}.
+Because extending or changing the \code{emdi} package is beyond the scope of this paper, the municipalities are used to define the random effect in the EBP.
+Despite this limitation, the comparison between the final Bayesian model and the EBP is still helpful to evaluate the differences between both methods.
+A more exact comparison is left for future research\footnote{\cite{morelli_hierarchical_2021} uses an HB model with the classical random effect to predict HCR and PGAP for the state of Guerrero. The model is not exactly the SAR HB model developed in this paper, but it can be used as an additional point of comparison without the stratified random effect.}.
 For the Bayesian model, the standard deviation as defined in section \ref{ch:indicators} is depicted.
 The RMSE is used for the EBP estimates.
 While the RMSE and the standard deviation are related, they are not directly comparable as the RMSE also measures bias.\footnote{$MSE(\hat \theta) = bias^2(\hat \theta) + V(\hat \theta).$}
@@ -57,14 +62,14 @@ While the RMSE and the standard deviation are related, they are not directly com
 \end{figure}
 
 The pattern in the estimates is consistent with the economic structure of the state.
-Municipalities with a strong touristic sector such as Acapulco and Zihuatanejo on the Pacific coast or Taxco de Alarcón in the north have the lowest values for both indicators.
+Municipalities with a strong touristic sector such as Acapulco and Zihuatanejo on the Pacific coast as well as Taxco de Alarcón in the north have the lowest values for both indicators.
 This is also true for the municipal seat region Chipalcingo de los Bravo.
 On the other hand, poverty indicators are higher in the rural southeastern municipalities near the neighboring state of Oaxaca.
 However, it is clear from the maps that the HB estimates are lower than the EBP for both the HCR and the PGAP.
 A more precise picture is given by Figure \ref{fig:diff}, which shows the difference between the EBP and the HB indicators for each municipality.
-The EBP indicators are all larger than the HB indicators, both for the HCR and the PGAP.
+The EBP indicators are all larger than the HB indicators, both for the HCR and the PGAP\footnote{The HB estimates are also lower than the EBP in \cite{morelli_hierarchical_2021}, which uses the classical BHF random effect specification. This will be further discussed in chapter \ref{ch:discussion}.}.
 Moreover, the pattern in the differences is similar for both indicators: if the difference is large for the HCR it is also large for the PGAP\footnote{This pattern does not change when taking the relative difference to account for the magnitude of the EBP indicator, i.e., ($\theta_d^{EBP} - \theta_d^{HB}) / \theta_d^{EBP}$.}.
-Additionally, the HB and EBP estimates were benchmarked agains the direct estimate as described by \cite{pfeffermann_new_2013}\footnote{If $w_d$ are weights given relative population size at the municipality level, then the benchmarked direct estimate $\sum_{d=1}^D w_d \hat \theta_d^{Dir} $ should be roughly equal to benchmarked estimate from an EBP or HB model $\sum_{d=1}^D w_d \hat \theta_d^{Model} $.
+Additionally, the HB and EBP estimates were benchmarked against the direct estimate as described by \cite{pfeffermann_new_2013}\footnote{If $w_d$ are weights given relative population size at the municipality level, then the benchmarked direct estimate $\sum_{d=1}^D w_d \hat \theta_d^{Dir} $ should be roughly equal to the benchmarked estimate from an EBP or HB model $\sum_{d=1}^D w_d \hat \theta_d^{Model} $.
 Note that by definiton $\sum_{d=1}^D w_d = 1$.}.
 The benchmarked estimate for the EBP (HCR: 0.248, PGAP: 0.112) were closer to the benchmarked direct estimate (HCR: 0.280, PGAP: 0.130) than the benchmarked HB estimates (HCR: 0.151, PGAP: 0.059).
 As the EBP estimates are higher than the HB estimates, this result is not surprising.
@@ -84,6 +89,6 @@ This is not the case for the HB model, as the stratified random effect specifica
 Moreover, in the HB model some municipalities have a standard deviation that is just one tenth of their corresponding standard deviation in \cite{morelli_hierarchical_2021}, which is a drastic reduction in uncertainty.
 Additional maps of the coefficients of variation can be found in appendix \ref{appendix:cv_maps}.
 
-Lastly, it is clear that the comparison of uncertainties is limited by the different specifications of the random effect in the HB and EBP models.
-Unfortunately, at the moment of writing it is not possible to define a random effect that differs from the area definition with the \code{emdi} package.
-Such a comparison can shed more light on the relation between frequentist and Bayesian models and is left for future research.
+%Lastly, it is clear that the comparison of uncertainties is limited by the different specifications of the random effect in the HB and EBP models.
+%Unfortunately, at the moment of writing it is not possible to define a random effect that differs from the area definition with the \code{emdi} package.
+%Such a comparison can shed more light on the relation between frequentist and Bayesian models and is left for future research.

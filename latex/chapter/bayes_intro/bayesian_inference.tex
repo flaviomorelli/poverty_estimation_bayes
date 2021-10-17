@@ -1,5 +1,6 @@
 \subsection{Bayesian inference and terminology}
 
+The concepts presented in this section are based on chapters 1 and 2 from \cite{gelman_bayesian_2014}.
 Inference is the process of analyzing population parameters based on samples from the population.
 Because the sample is an imperfect representation of the population, there is always uncertainty associated with parameter inference.
 In frequentist statistics, the common approach is to calculate point estimates of the true parameters from the data.
@@ -26,11 +27,11 @@ The term in the denominator $p(y)$ is the \textbf{marginal likelihood} which get
 The marginal likelihood is a normalizing constant that ensures that $p(\theta|y)$ is a proper distribution, i.e., integrates to 1.
 The integral is intractable even for very simple models and analytic solutions exist mostly for simple cases of conjugate priors.
 Therefore, it is necessary to use Monte Carlo methods or variational inference to estimate the posterior.
-The popularity of Bayesian methods has increased with the increased availabilty of computational power that makes such estimation methods more accessible (see appendix A).
+The popularity of Bayesian methods has increased with the availabilty of computational power that makes such estimation methods more accessible (see appendix A).
 Nevertheless, the marginal likelihood is more than a simple normalizing constant.
 By sampling from $p(y)$, the marginal likelihood can be used to generate data from the model, even before observing any data.
 Therefore, it is also called the \textbf{prior predictive distribution}.
 To generate new data  $\tilde y$ from the posterior model, replace the prior $p(\theta)$ with the posterior $p(\theta|y)$ in the definition of $p(y)$ and the result is $p(\tilde y|y) = \int p(y | \theta) p(\theta|y) d\theta$, where $p(\tilde y | y)$ is the \textbf{posterior predictive distribution}.
 Data generated from the prior predictive and posterior predictive distributions can be used to check model quality.
-A more detailed description of the concepts presented in this section can be found in chapters 1 and 2 of \cite{gelman_bayesian_2014}.
+
 
