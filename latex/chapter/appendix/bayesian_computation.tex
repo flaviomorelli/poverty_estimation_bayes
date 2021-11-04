@@ -22,21 +22,21 @@ Otherwise, $r$ is smaller than 1 and the proposal is accepted with probability $
 Under certain conditons, the Markov chain is guaranteed to converge to a stationary distribution as the number of steps goes to infinity \citep[Chapter 11]{gelman_bayesian_2014}.
 As any computation has only a finite number of steps in the real world, it is necessary to check whether the accepted proposals from the Markov chain are reliable.
 A common approach is to start multiple Markov chains (usually between two and four) with different initial values at random.
-After discarding the warmup iterations needed to get from the initial value to the stationary distribution, it is possible to check whether the chains have mixed well – i.e., converged to a similar distribution.
+After discarding the warm-up iterations needed to get from the initial value to the stationary distribution, it is possible to check whether the chains have mixed well – i.e., converged to a similar distribution.
 While it is sometimes possible to recognize mixing problems with the Markov chains traceplots, it is better to use a numeric diagnostic such as $\hat R$ \citep{vehtari_rank-normalization_2021}.
 An $\hat R$ higher than 1.01 indicates either that there is a trend in any given chain so that it cannot be stationary or that the chains have converged to different values.
 
-The Metropolis-Hastings algorithm (with its special case the Gibbs sampler) falls under the MCMC category and is characterized by exploring the parameter space through a random walk.
+The Metropolis-Hastings algorithm (with its special case, the Gibbs sampler) falls under the MCMC category and is characterized by exploring the parameter space through a random walk.
 However, there are two problems with this approach.
-First, the Markov chain can get stuck in certain regions of the parameter space while exploring posteriors where the parameters are highly correlated.
-Second, the sparsity induced in a parameter space with increasing dimensionality makes the random walk approach very inefficient.
-Hamiltonian Monte Carlo (HMC) is an MCMC algorithm, which can explore high dimensional spaces much more efficiently than the Metropolis-Hastings algorithm.
+Firstly, the Markov chain can get stuck in certain regions of the parameter space while exploring posteriors where the parameters are highly correlated.
+Secondly, the sparsity induced in a parameter space with increasing dimensionality makes the random walk approach very inefficient.
+Hamiltonian Monte Carlo (HMC) is an MCMC algorithm that can explore high dimensional spaces much more efficiently than the Metropolis-Hastings algorithm.
 The main idea behind HMC is to add a momentum parameter for each one of the model parameters and use Hamiltonian dynamics to explore the parameter space and find a proposal.
 HMC is a mix of random and deterministic elements.
 While the momentum parameters are sampled at random, the parameter space exploration which ultimately leads to a proposal is based entirely on a deterministic set of Hamiltonian differential equations.
 The use of differential equations is an unexpected advantage of HMC, because their discretization with symplectic integrater offers a diagnostic unique to HMC: \textit{divergences}.
 A divergence occurs when there is a region of high curvature in the parameter-momentum space, which pushes the symplectic integrator towards the edges of such a space.
-While the exact explanation is somewhat technical, a divergence indicates that there might be areas in the parameter space from, which the sampler cannot explore well enough.
+While the exact explanation is somewhat technical, a divergence indicates that there might be areas in the parameter space from which the sampler cannot explore well enough.
 This is a sign that the resulting Monte Carlo approximation is not reliable, because of model misspecification or because there is a better parametrization for the model \citep{betancourt_conceptual_2017, neal_mcmc_2011}.
 A more efficient version of the HMC algorithm is NUTS \citep{hoffman_no-u-turn_2014}, which has a more complex heuristic for the deterministic exploration.
 This is the most commonly used MCMC algorithm in Bayesian frameworks such as \code{Stan}.

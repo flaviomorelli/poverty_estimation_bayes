@@ -32,8 +32,8 @@ This follows a principle from \cite{gelman_bayesian_2020}: when working with pre
 \code{brms} already has a number of likelihoods implemented, and if modifications are needed, it is always possible to take the \code{Stan} code and modify it.
 But starting coding from scratch with \code{Stan} would take longer, especially because working with different likelihoods, requires different parametrizations.
 
-Some of this likelihoods proved to be very poor fits.
-The skew-normal likelihood captures well the main characteristics of the GB2 scenario.
+Some of these likelihoods proved to be very poor fits.
+The skew-normal likelihood captures the main characteristics of the GB2 scenario well.
 On the other hand, it is not adequate for the logscale scenario, which is characterized by a much higher skewness, as shown in Figure \ref{fig:logscale_skewnormal}.
 This is due to the limitations of the skew-normal distribution, as it has a maximum skewness of $\pm 1$.
 Moreover, in this scenario the model produces some negative predictions.

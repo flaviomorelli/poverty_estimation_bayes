@@ -1,7 +1,7 @@
 \subsection{Bayesian unit-level model for small area estimation}
 
 \textit{Small area estimation} is a field of survey statistics that deals with prediction in areas for which there is little or no information.
-The terms \textit{area} or \textit{domain}, – usually used as synonyms –, do not necessarily imply a geographic area.
+The terms \textit{area} or \textit{domain} – usually used as synonyms – do not necessarily imply a geographic area.
 More generally, it can denote any subgroup of a population arising from disaggregation – by gender, region, ethnicity, etc.
 A typical scenario for small area estimation arises in surveys, where the representative sample is small compared to the whole population.
 If indicators are needed at a finer disaggregated level (e.g., by municipality), the sample size in each area can become extremely small (under 20 observations) and there might be areas with no observations at all.
@@ -31,8 +31,8 @@ However, model \ref{eq:hb_rao} does not take full advantage of Bayesian modellin
 By taking the normal distribution as the likelihood, the model faces the same limitations of a frequentist linear regression and will not be able to deal with heavy-tailed data.\footnote{\cite{morelli_hierarchical_2021} dealt with heavy tails by using a Student's $t$-distribution as the likelihood.}
 Moreover, the prior distributions in \cite{molina_small_2014} are non-informative (flat), i.e., they are proportional to a constant and not a proper distribution.
 This poses two problems.
-First, a Bayesian model with flat priors is not a generative model in the sense that it is not possible to simulate new observations from the prior predictive distribution.
-Second, it does not take advantage of the extra control that priors provide over the model when modelling relation between parameters.
+Firstly, a Bayesian model with flat priors is not a generative model in the sense that it is not possible to simulate new observations from the prior predictive distribution.
+Secondly, it does not take advantage of the extra control that priors provide over the model when modelling relation between parameters.
 Therefore, \cite{morelli_hierarchical_2021} reformulates the model \ref{eq:hb_rao} as follows with a Student's $t$-likelihood:
 \begin{equation}
 	\begin{split}
@@ -55,7 +55,7 @@ The standard deviation of the likelihood is given by the relation $\sigma = \sig
 The gamma distribution is chosen for the scale parameters $\sigma_u$ and $\sigma_e$, as the standard deviation cannot be negative.
 The shape parameter is set to 2 in line with \cite{gelman_prior_2020}, which makes the distribution clearly skewed to the right.
 $a$ and $b$ are positive constants that define the rate parameters of the gamma distributions.
-This have to be chosen according to the scale of the dependent variable $y_{di}$ for each specific data set.
+These have to be chosen according to the scale of the dependent variable $y_{di}$ for each specific data set.
 $K$ is the number of coefficients in the regression, and $k = 1$ is the intercept.
 Thus, according to \ref{eq:mod_hb} the prior can in theory be set independently for each coefficient in $\boldsymbol \beta$.
 The exact prior parameters for the coefficients will be discussed in the next sections based on the variables from the data set.

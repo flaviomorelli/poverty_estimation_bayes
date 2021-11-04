@@ -11,7 +11,7 @@ are based on the Foster-Greer-Thorbecke (FGT) indicators \citep{foster_class_198
 \end{gather*}
 where $t$ is the poverty line (60\% of median income), $y_{di}$ is the income for the $i$-th household in area $d$ and $I(\cdot)$ is the indicator function.
 If $\alpha = 0$, then $F_d$ is the HCR – i.e., the proportion of households below the poverty line in area $d$.
-On the other hand, $F_d$ quantifies poverty intensity (PGAP) when $\alpha = 1$, i.e. it measures by how much poor people are below the poverty line on average.
+On the other hand, $F_d$ quantifies poverty intensity (PGAP) when $\alpha = 1$, i.e. it measures the amount by which poor people are below the poverty line on average.
 $\alpha = 2$ defines poverty severity, which will not be considered in this paper.
 
 Based on model \ref{eq:mod_hb}, it is possible to generate synthetic income data form the posterior predictive distribution.
@@ -54,15 +54,15 @@ The HB estimator for the poverty indicator $F_d$ is given by the following algor
 \end{algorithm}
 
 
-For clarity, the simulated income $\tilde y_d^{(s)}|y$ from the posterior predictive distributions is displayed at the area-level to avoid an additional loop at the unit-level.
+For clarity, the simulated income $\tilde y_d^{(s)}|y$ from the posterior predictive distributions is displayed at the area level to avoid an additional loop at the unit level.
 Strictly speaking, $\tilde y_d|y^{(s)} = (\tilde y_{d1}^{(s)}, ..., \tilde y_{dN_d}^{(s)})'$ is a vector of size $N_d$, where each component is sampled independently from the corresponding Student's $t$-distribution.
-Moreover, the poverty line $t^{(s)}$ is based on $\tilde y^{(s)} = (y^{(s)}_1|y, ..., y^{(s)}_d|y)$ – the generated income for $all$ areas –, not just for the income of area $d$ given by $\tilde y_d^{(s)}$. Therefore, there is only one poverty line for each MCMC sample $s$.
+Moreover, the poverty line $t^{(s)}$ is based on $\tilde y^{(s)} = (y^{(s)}_1|y, ..., y^{(s)}_d|y)$ – the generated income for $all$ areas – not just for the income of area $d$ given by $\tilde y_d^{(s)}$. Therefore, there is only one poverty line for each MCMC sample $s$.
 
 There are two limitations to the algorithm presented in this section.
-First, it is valid only for model \ref{eq:mod_hb}.
+Firstly, it is valid only for model \ref{eq:mod_hb}.
 Choosing another likelihood or priors is likely to change the number and meaning of parameters included in $\theta$.
 Nevertheless, the algorithm provides a blueprint that can be adapted to the corresponding model.
-Second, it does not take into consideration whether the dependent variable is transformed.
+Secondly, it does not take into consideration whether the dependent variable is transformed.
 The assumption is that $\tilde y^{(s)}$ is already in the desired scale.
 In such cases, it is straightforward to add an additional step that applies the backtransformation to the simulations before calculating the FGT-indicators.
 For brevity, this is not included in the algorithm.

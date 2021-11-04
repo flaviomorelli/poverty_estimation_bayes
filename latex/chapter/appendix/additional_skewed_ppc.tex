@@ -4,7 +4,7 @@
 This appendix contains the posterior predictive checks for two models: one with a gamma likelihood and a logarithmic link, and another one with a logscale distribution.
 The results for the gamma likelihood are shown in Figure \ref{fig:ppc_gamma_log}.
 The density plots in the first column show that the model can approximate the dependent variable well.
-Only in the GB2 scenario there is some divergence around the mode.
+There is some divergence around the mode in the GB2 scenario only.
 In the middle column, the median from the predictions is in a range close to the dependent variable.
 However, the IQR is too high for the predictions in the GB2 scenario and somewhat high in the Pareto scenario compared to the data.
 It is not surprising to see in the third column that the model captures the mean and standard deviation better than the log-shift model \ref{eq:trafo_hb}, as the mean in the original scale is used directly to parametrize the likelihood.
@@ -15,7 +15,7 @@ These results suggest that both likelihoods work in a very similar way.
 On the one hand, both likelihoods imply a multiplicative model through the use of the log link.
 On the other hand, this might be related to the fact that both distributions have two parameters and also that they both have clear theoretical restrictions: the logarithm of a lognormal distribution must be normal and the ratio between variance and expected value is equal to the shape parameter in the gamma distribution.
 Although both distributions provide good results, these theoretical restrictions are problematic, because they place strong assumptions on the dependent variable.
-It is up to the researcher to decide, whether these assumptions are acceptable.
+It is up to the researcher to decide whether these assumptions are acceptable.
 
 
 \begin{figure}

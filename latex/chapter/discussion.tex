@@ -15,7 +15,7 @@ There are a number of possible reasons for the discrepancy:
 \begin{itemize}
     \item \textit{Regularization}: prior distributions have a regularizing effect on the model, while the EBP does not contain any form of shrinkage.
     \item \textit{Random effect specification}: the stratified random effect specification from section \ref{ch:raneff} might lead to systematically lower estimates than the traditional BHF specification.
-    \item \textit{Survey weights}: by not taking into account the survey weights,– through which one observation can count as multiple observations –, a Bayesian model can have trouble capturing the true distributional characteristics of the data.
+    \item \textit{Survey weights}: by not taking into account the survey weights – through which one observation can count as multiple observations – a Bayesian model can have trouble capturing the true distributional characteristics of the data.
 \end{itemize}
 It is noteworthy that the EBP and HB estimates are almost identical, when using the survey weights with the HB model in the calculation of FGT indicators (not shown).
 \textit{Area-level correlation} was excluded as a cause for the discrepancy between the two models, as the estimated indicators from the base model without spatial correlation and from the SAR model are almost identical.
@@ -48,7 +48,7 @@ Moreover, the \code{Stan} code was optimized for speed by taking full advantage 
 
 This section discusses the benefits and disadvantages of Bayesian workflow.
 A key advantage of using a Bayesian workflow is that any model changes can be presented and analyzed in a transparent way.
-There is a variety of tools that can be used to check model assumptions (prior predictive checks), model fit (posterior predictive checks), or predictive power (PSIS-LOO and stacking).
+There are a variety of tools that can be used to check model assumptions (prior predictive checks), model fit (posterior predictive checks), or predictive power (PSIS-LOO and stacking).
 Moreover, as the model parameters are distributions and not point estimates it is always possible to look at each parameter distribution independently to check if the values are realistic and also to better understand how the model works.
 This can be done both for unidimensional parameters such as standard deviation and multidimensional parameters such as correlation matrices (e.g., Figure \ref{fig:corr_heatmap}).
 In summary, there are tools to understand how the model works and the iterative development of the model allows for new insights into the problem at hand and makes the uncertainty in model choice visible.
@@ -76,17 +76,17 @@ In general, it is hard to create a scenario or multiple scenarios that capture t
 
 The models used in this paper are an extension of the models in \cite{rojas_perilla_data_2020}, mainly through the addition of correlated covariates.
 Nevertheless, there are some critical aspects that can be reconsidered.
-First, there might be room for improving the assumed distributions in the scenarios.
+Firstly, there might be room for improving the assumed distributions in the scenarios.
 On the one hand, the GB2 and Pareto scenarios add a skewed error term to covariates and random effects that are normal.
 The result is a relatively symmetric distribution with a long right tail.
 To make both scenarios more realistic, the distributions of the regressors could be more varied, so as to avoid a strong symmetry before adding the error term.
 On the other hand, the log-scale scenario assumes normality in the logarithmic scale.
 While this is a good sanity check for the results, it is unlikely to reflect the difficulty of fitting real-world data.
 A simple modification to avoid this strong assumption, would be again to change the normal distribution of the regressors to a heavier tailed Student's $t$ with different degrees of freedom for each covariate.
-Second, a majority of variables found in a survey or a census are categorical.
+Secondly, a majority of variables found in a survey or a census are categorical.
 Neither \cite{rojas_perilla_data_2020} nor the present paper include categorical variables in the simulations.
 Therefore, there are probably some blind spots in the analysis of this paper, regarding difficulties that might arise from the use of categorical covariates.
-Third, the area-level effects are assumed to be independent – an unrealistic assumption.
+Thirdly, the area-level effects are assumed to be independent – an unrealistic assumption.
 Many different ways of including correlation were already mentioned in section \ref{ch:area_corr}: an LKJ prior, an SAR prior or using a random walk between areas.
 While choosing any one of those procedures can place a strong assumption on the simulations, it should at least help the researcher to show whether the model can capture correlations at the area level even with small areas.
 Finally, this paper ignored the issue of problematic regressors.

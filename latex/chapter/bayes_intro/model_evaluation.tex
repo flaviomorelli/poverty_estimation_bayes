@@ -6,13 +6,13 @@ There are numerous ways to evaluate Bayesian models.
 Moreover, Bayesian inference provides two additional checking tools: prior and posterior predictive checks.
 The main idea is to generate numerous samples either from the prior predictive or posterior predictive distributions described in the previous section.
 Thus, it is possible to check how the model behaves before and after fitting the data and whether the generated samples are in a plausible range compared to the dependent variable.
-This section focuses on Pareto smoothed importance sampling leave-one-out cross-validation (PSIS-LOO) as a measure of predictive power and includes a brief discussion of prior and posterior predictive checks \citep{vehtari_practical_2017}.
+This section focuses on Pareto Smoothed Importance Sampling Leave-One-Out Cross-Validation (PSIS-LOO) as a measure of predictive power and includes a brief discussion of prior and posterior predictive checks \citep{vehtari_practical_2017}.
 
 Given some data $y$ and future observations $\tilde y_i, i = 1, ..., N$, where $N$ is the original sample size, the quality of the predictive distribution can be defined in terms of a utility function as a logarithmic score \citep{piironen_comparison_2017}
 \begin{gather*}
     u(\tilde y_i) = \displaystyle \sum_{i = 1}^N\log p(\tilde y_i|y).
 \end{gather*}
-However, as $\tilde y$ is unobserved, it is necessary to marginalize it out of the exptression, thus getting the expected utility
+However, as $\tilde y$ is unobserved, it is necessary to marginalize it out of the expression, thus getting the expected utility
 \begin{gather*}
     \text{elpd} =
     \displaystyle \sum_{i = 1}^N E[\log p(\tilde y_i| y)] =
@@ -35,7 +35,7 @@ Problems with very high $k$ values can be alleviated with the moment match metho
 Note that a utility function that quantifies predictive power takes into account the distributional characteristics of the model.
 In contrast, loss function approaches such as the root mean squared error (RMSE) or the mean absolute error (MAE) measure the distance between the predicted values and the true values, but are not directly related to the distribution.
 
-Beyond PSIS-LOO, prior and posterior predictive checks are useful to asses model quality.
+Beyond PSIS-LOO, prior and posterior predictive checks are useful to assess model quality.
 The main idea is to generate multiple samples from the prior predictive distribution $\int  p(y|\theta)p(\theta)d\theta$ or from the posterior predictive distribution $\int p(y | \theta) p(\theta|y) d\theta$.
 With these samples, it is possible to check how similar the simulated distribution is to the original distribution and also whether the simulations are within a reasonable range.
 This similarity check can be done for example with histograms, KDE plots or scatter plots when using the full distribution.
@@ -52,7 +52,7 @@ Cross-validation can be used to compare the performance of multiple models, but 
 Choosing only one model discards the information contained in all other models.
 Stacking makes it possible to combine inferences from different models using weights that minimize the cross-validation error.
 In a nutshell, if there are two models and the first one outperforms the second one 70\% of the time, then the weights should be roughly 0.7 and 0.3.
-Moreover, stacking is robust to multiple similar models.
+Moreover, stacking is robust to the presence of multiple similar models.
 If there is a group of three nearly identical models, the weights of two models will be almost zero while the third one gets a weight that represents the whole group of models.
 In this sense, stacking is also a measure of model heterogeneity.
 Further details can be found in \cite{yao_using_2018}.

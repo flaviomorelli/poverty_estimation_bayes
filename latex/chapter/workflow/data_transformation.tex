@@ -7,7 +7,7 @@ This section starts with a general discussion of the log-shift transform and the
 
 \subsubsection{Log-shift transformation and skewness}
 A common transformation for income in economic applications is the natural logarithm. However, there might still be some skewness left, which is exacerbated by very low incomes.
-If there are a lot of units with incomes between zero, there will likely be a long tail to the in the left side of the transformed distribution.
+If there are a lot of units with incomes between zero and one, there will likely be a long tail to the left side of the transformed distribution.
 As \cite{rojas_perilla_data_2020} point out, it is possible to add a fixed term $s$ inside the logarithm so that $y+s \ge 1$ to avoid problems when $0 \le y \le 1$,
 but the transformed variable might still be highly skewed.
 Moreover, log-income is usually heavy-tailed.
@@ -79,13 +79,13 @@ Because of the transformation, the Jacobian of the likelihood is adjusted by the
 where $\ d = 1, ..., D,\ i = 1, ..., N_d$. The transformation $\log(y_{di} + \lambda)$ is left explicitly in the model to remind the reader that the prior on skewness directly affects lambda.
 The prior parameterization of $\beta_k, \sigma_u$ and $\sigma_e$ are taken from \cite{morelli_hierarchical_2021}.
 
-After a log-shift transformation the regression coefficients can be interpreted as an approximate percentage change in the original scale.
+After a log-shift transformation, the regression coefficients can be interpreted as an approximate percentage change in the original scale.
 A detailed justification for this interpretation can be found in appendix \ref{appendix:coeff}.
 Note that the use of the exponential distribution in the backtransformation together with the heavy-tailed Student's $t$-distribution can lead to very extreme prediction in the backtransformed scale.
-Empirically, the percentage of predictions that above the dependent variable maximum is between 0.03\% and 0.5\%.
+Empirically, the percentage of predictions above the dependent variable maximum is between 0.03\% and 0.5\%.
 This proportion is very small and should not have a large impact on the poverty indicators, as they depend on the median, which is robust to outliers.
 Nevertheless, it can cause problems when examining the samples from the posterior predictive distribution.
-Therefore, all sample that are above the data maximum are taken as missing and are imputed.
+Therefore, all samples that are above the data maximum are taken as missing and are imputed.
 The imputation procedure is explained in detail in appendix \ref{ch:imputation}.
 
 
@@ -134,7 +134,7 @@ Moreover, the elpd$_{\text{loo}}$ has the highest value with the prior $S(y^*) \
 \subsubsection{Posterior predictive checks with simulated data}
 The results from fitting the modified model \ref{eq:trafo_hb} with the log-shift transformation are presented in Figure \ref{fig:ppc_logshift}.
 In the first column, the density of the dependent variable is overlaid with the densities from 100 samples from the posterior predictive distribution.
-From this vfrst visual check, it is clear that the model is able to fit the log-scale and GB2 scenarios reasonably well.
+From this first visual check, it is clear that the model is able to fit the log-scale and GB2 scenarios reasonably well.
 The Pareto scenario is still quite close, but the predictions from the model are slightly lower than the dependent variable.
 This is an indication that the Pareto scenario contains elements that are particularly challenging to capture.
 
@@ -168,7 +168,7 @@ On the other hand, all samples from the posterior predictive distribution in the
 The mean and the standard deviation are presented as an additional check, but they are somewhat less trustworthy due to their lack of robustness.
 In the logscale scenario, both the mean and the standard deviation are captured well, whereas in the GB2 scenario the mean and standard deviation of the predictions are a little lower than the dependent variable.
 The standard deviation Pareto scenario is modelled well, but the mean of the dependent variable is higher than the predictions.
-A noteworthy pattern is that in all three scenarios there is a positive correlation between the mean an the standard deviation.
+A noteworthy pattern is that in all three scenarios there is a positive correlation between the mean and the standard deviation.
 Although the probability density for the backtransformation is not available in its analytical form, it is a clear indication that the mean of the implied distribution is coupled to the variance in the backtransformed scale – a pattern also found in distributions like the lognormal.
 The next section explores the performance of models with skewed likelihoods.
 

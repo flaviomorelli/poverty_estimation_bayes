@@ -20,15 +20,15 @@ The Student's $t$-distribution is not only parametrized in terms of mean and sca
 Besides, the log-shift distribution adds another parameter $\lambda$ to the likelihood through the transformed dependent variable.
 This flexibility does not come at a high cost of interpretability that characterizes more complex distributions.
 While the less than ideal performance in the Pareto scenario is problematic, there are two factors which should be considered.
-First, although the prior parametrization was taken mostly from \cite{morelli_hierarchical_2021},
+Firstly, although the prior parametrization was taken mostly from \cite{morelli_hierarchical_2021},
 this can be improved through the use of prior predictive checks (see chapter \ref{ch:coef_var_spec}).
-Second, in this scenario the degrees of freedom were below two, which is not ideal, due to the fact that the Student's $t$-distribution has an infinite variance for $\nu \le 2$ and an undefined variance for $\nu \le 1$.
+Secondly, in this scenario the degrees of freedom were below two, which is not ideal, due to the fact that the Student's $t$-distribution has an infinite variance for $\nu \le 2$ and an undefined variance for $\nu \le 1$.
 This extreme behavior might cause problems in the Pareto scenario.
 There are two simple solutions to this problem.
 Either $\nu$ is set to a constant (e.g., a value between 2 and 3) when the posterior of $\nu$ is clearly below 2, or the model is reparametrized so that $\nu$ does not take values below zero.
 
 
-In light of this discussion, the log-shift model \ref{eq:trafo_hb} is chosen for the rest of the present paper, as it provides a good balance between interpretability, ease of parametrization and flexibility.
+In light of this discussion, the log-shift model \ref{eq:trafo_hb} has been chosen for the rest of this paper, as it provides a good balance between interpretability, ease of parametrization and flexibility.
 Additionally, it extends the literature on data-driven transformation in the line of \cite{rojas_perilla_data_2020} to the Bayesian paradigm.
 This does not mean that the use of skewed likelihoods is an inferior approach, only that its use with income data is left for future research.
 A feature of the gamma likelihood that can be useful is that its mean can be parametrized in the original scale even when using a log link as done in the \code{brms} package.

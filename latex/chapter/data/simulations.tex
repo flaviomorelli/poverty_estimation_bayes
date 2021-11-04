@@ -1,13 +1,13 @@
 \section{Simulation scenarios}
 \label{ch:simulations}
 Working with simulations is one key step of iterative model improvement in a Bayesian workflow \citep{gelman_bayesian_2020}.
-Testing models against synthetic data allows the researcher to check and understand potential problems with the methods.
+Testing models against synthetic data lets the researcher check and understand potential problems with the methods.
 While a model that works well with simulated data is not guaranteed to work well with real-world data,
 a model that does not work with simulated data is certain to fail in a real application.
 This will become clearer in the next chapter on Bayesian workflow.
 
 As described in section \ref{ch:difficulties}, income data is characterized by a unimodal, right-skewed and leptokurtic distribution.
-To mimic this characteristics, three simulation scenarios based on \cite{rojas_perilla_data_2020} are proposed.
+To mimic these characteristics, three simulation scenarios based on \cite{rojas_perilla_data_2020} are proposed.
 The first one – the \textit{log-scale} scenario – is defined so that the logarithm of simulated income is roughly normal:
 \begin{equation}
     \begin{split}
@@ -60,18 +60,18 @@ This means roughly that no simulation should be above the tens of thousands.
 
 The three scenarios provide a variety of characteristics against which to test the models in the workflow.
 First, the log-scale scenario is multiplicative, while the GB2 and Pareto scenarios are additive.
-This is useful to check whether a model with a multiplicative likelihood also can approximate a model whose generating process is additive, and viceversa.
+This is useful to check whether a model with a multiplicative likelihood also can approximate a model whose generating process is additive, and vice versa.
 Moreover, the logarithmic transformation of $y_{di}$ should be roughly normal, while the GB2 and Pareto scenarios should display a higher excess kurtosis after a logarithmic transform, which is often observed in real-world income data.
 
 Nevertheless, there are two main limitations with the simulation scenarios.
-First, the area-level intercepts $u_d$ are assumed to be independent, by defining the standard deviation as a constant.
+Firstly, the area-level intercepts $u_d$ are assumed to be independent, by defining the standard deviation as a constant.
 This is unrealistic, as there are similarities and differences between areas that are likely to manifest themselves as correlations.
 A clear example would be two neighboring geographic areas with highly intertwined economies.
-Second, some covariates might have different effect sizes depending on the area.
+Secondly, some covariates might have different effect sizes depending on the area.
 For example, a higher level of education could have a much stronger effect on income in an urban region, where there is a higher demand for specialized, well-paying jobs.
-In contrast, most jobs in a rural region are less likely to require high skills and therefore offer a lower pay.
-Here, income does not only depend on the quality of labor supply, but also on the job market demands in a gives area.
+In contrast, most jobs in a rural region are less likely to require high skills and therefore offer lower pay.
+Here, income not only depends on the quality of labor supply, but also on the job market demands in a given area.
 For the present paper, these two limitations are acceptable.
-On the one hand, there are many ways of including spatial correlation in the simulation scenarios (see section \ref{ch:area_corr}) and it is not clear, whether a decision for one type of correlation might turn out to be unlike the spatial dependencis present in real-world data.
+On the one hand, there are many ways of including spatial correlation in the simulation scenarios (see section \ref{ch:area_corr}) and it is not clear whether a decision for one type of correlation might turn out to be unlike the spatial dependencies present in real-world data.
 On the other hand, random slopes are not considered in the Bayesian workflow of the next chapter.
 Extensions to the simulation scenarios such as spatial correlation and random slopes might play an important role in developing a model for poverty estimation, but this question is left for further research.

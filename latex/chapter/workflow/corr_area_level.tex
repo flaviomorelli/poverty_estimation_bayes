@@ -2,8 +2,8 @@
 \label{ch:area_corr}
 
 Until now, the assumption has been that all random effects at the area-level are independent from each other, i.e., $u_d|\sigma_u \sim \mathcal N (0, \sigma_u)$.
-However, this assumption seems unplausible.
-For example, if the areas are defined as municipalities, it is likely that neighbouring regions have similar characteristics and are therefore correlated.
+However, this assumption seems inplausible.
+For example, if the areas are defined as municipalities, it is likely that neighboring regions have similar characteristics and are therefore correlated.
 If on the other hand the areas are the strata considered in the previous section, the 16 strata that correspond to a rural area have more in common with each other than with urban strata.
 In this section, a new prior that captures correlations at the area level is introduced to the model.
 The result is then compared to the model that was defined in the previous section.
@@ -118,7 +118,7 @@ The nature of the pattern can be further understood in Figure \ref{fig:corr_dens
 The LKJ prior does not force any particular correlation pattern on the data, but it guarantees that the distribution of the correlation values is roughly equal for each sample.
 With an increasing $\eta$, the LKJ prior puts more weight on correlation matrices closer to the identity matrix, which leads to tighter distributions for the correlation values.
 On the other hand, there is a much clearer pattern in the densities of the SAR prior specifications.
-The spikes in the densities are caused by the Hamming distance, which in the present paper takes only six values, from 0 to 5.
+The spikes in the densities are caused by the Hamming distance, which in this paper takes only six values, from 0 to 5.
 With continuous distances, the densities would be much smoother.
 Moreover, the correlation values densities do not overlap as in the LKJ prior.
 
@@ -149,16 +149,16 @@ Therefore, when looking at the larger picture, the differences between models se
 
 The main question at this point is why there is no clearer difference between these three specifications.
 There are three possible explanations.
-First, as some of the areas are quite small, it is difficult to indentify correlations between areas.
+Firstly, as some of the areas are quite small, it is difficult to indentify correlations between areas.
 It is possible that with more data the correlation could become more visible.
-Second, the PSIS-LOO quantifies leave-one-out cross-validation.
+Secondly, the PSIS-LOO quantifies leave-one-out cross-validation.
 However, leaving out only one observation might not make a large difference for the correlations at the area-level.
 PSIS-LOO might not be the right tool to quantify the difference and alternatives such as leave-one-group-out cross-validation could provide a clearer result.
-Third, the predictors might have a good predictive power so that area-level correlation does not have such a large impact.
+Thirdly, the predictors might have a good predictive power, meaning that area-level correlation does not have such a large impact.
 Finally, this result points to a blind spot in the simulation scenarios, because they do not take area-level correlation into account.
-Therefore, it is not possible to know for certain, whether the similar results for all three models in Table \ref{tab:lkj_sar_base} is due to lack of data, to the limitations of PSIS-LOO or simply because the area-level correlation is very small.
+Therefore, it is not possible to know for certain whether the similar results for all three models in Table \ref{tab:lkj_sar_base} is due to lack of data, to the limitations of PSIS-LOO or simply because the area-level correlation is very small.
 Simulated data could have been used to check whether the diagnostic tools can capture a difference in predictive power due to area-level correlations.
-Unfortunately, due to this limitations of the simulation scenarios from section \ref{ch:simulations} it is not possible to know the exact reason for the similarity between the three model specifications.
+Unfortunately, due to this limitation of the simulation scenarios from section \ref{ch:simulations} it is not possible to know the exact reason for the similarity between the three model specifications.
 A critical discussion of the simulations scenarios can be found in section \ref{ch:adequacy_simulations}.
 
 % latex table generated in R 4.0.5 by xtable 1.8-4 package
@@ -180,7 +180,7 @@ A critical discussion of the simulations scenarios can be found in section \ref{
 \end{table}
 
 
-In the current model specification, the random intercept was redifined so that there are no out-of-sample areas.
+In the current model specification, the random intercept was redefined so that there are no out-of-sample areas.
 Nevertheless, the LKJ and SAR priors are not as useful when there are out-of-sample regions, as the correlation matrix is assumed to have as many dimensions as in the training set.
 In such cases, an autoregressive or a random walk prior on $u_d$ such as in \cite{gao_improving_2021} can be more appropriate, as it does not depend strictly on the dimensions of the correlation matrix.
 In any case, it is implausible that the area-level effects are completely independent.

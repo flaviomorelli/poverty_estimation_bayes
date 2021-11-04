@@ -1,14 +1,14 @@
 \section{An introduction to Bayesian workflow}
 
-The idea of statistical workflow is not new.
+The idea of a statistical workflow is not new.
 One early example of a statistical workflow can be found in \cite{box_science_1976}.
 In the Bayesian context, \cite{gabry_visualization_2019} and \cite{betancourt_towards_2020} have referred to the idea of a Bayesian workflow.
 This section summarizes the ideas behind Bayesian workflow as presented by \cite{gelman_bayesian_2020}.
 
 While Bayesian \textit{inference} deals with the formulation and computation of (conditional) probability densities, Bayesian \textit{workflow} consists of three steps: model building, inference and model checking/improvement.
-In Bayesian workflow, it is inevitable to fit a series of models iteratively.
+In Bayesian workflow, it is inevitable that a series of models are fit iteratively.
 Flawed models are a necessary step towards improving the model and finding models that are useful in practice.
-At the same time, model improvement is not limited to finding the best model, but it also allows to better understand the models used; specifically, why they fail or lead to different results under certain conditions.
+At the same time, model improvement is not limited to finding the best model, but it also lets us better understand the models used; specifically, why they fail or lead to different results under certain conditions.
 There are several reasons for considering a workflow and not just plain inference.
 Bayesian computation is challenging and it is often necessary to iterate through simpler and alternative models, sometimes using faster but less precise approximation algorithms.
 Moreover, it might not be clear ahead of time which model is adequate and how it can be modified or extended.
@@ -30,7 +30,7 @@ Other steps such as data collection are not taken into account.
 \end{figure}
 
 
-An exhaustive discussion of the whole workflow is beyond the scope of the present paper.
+An exhaustive discussion of the whole workflow is beyond the scope of this paper.
 Instead, the focus is on how the ideas in \cite{gelman_bayesian_2020} can be applied to the estimation of poverty indicators in the small area estimation context.
 Due to the non-linear nature of the workflow, the sections and subsections in the current chapter are not strictly named after single steps of the workflow.
 On the contrary, each section in this chapter reflect specific aspects of a model that are investigated separately.
@@ -66,17 +66,17 @@ Instead, the fit of a bad model should fail fast, as computational issues usuall
 Such problems can already be clear with just two Markov chains and a drastically lower number of samples than what would be chosen for the final model.
 Even a check with an approximate method such as variational inference might be enough to notice problems with the model, while being drastically faster than MCMC.
 In this paper, variational algorithms were often used to do a first fit of the model.
-While iterating through the models only 2 Markov chains were used and, depending on fitting time, the number of iterations was reduced compared to the default 2000 iterations in \code{Stan} \cite{stan_development_team_stan_2021}.
+While iterating through the models only two Markov chains were used and, depending on fitting time, the number of iterations was reduced compared to the default 2000 iterations in \code{Stan} \cite{stan_development_team_stan_2021}.
 
 
-\subsection{Step 3. Validate computation}
+\subsection{Step 3: Validate computation}
 
 After fitting the model it is crucial to check whether the computation results are reliable.
 Diagnostics for Bayesian computation methods are discussed in detail in appendix \ref{ch:computation}.
 When using an MCMC algorithm such as NUTS, the two main aims are to have no divergences and to have an $\hat R$ lower than 1.01.
 All the models presented in this paper fulfill at least these two conditions, unless otherwise specified.
 However, adequate diagnostic values are a necessary but not sufficient condition for a reliable model.
-To assess model quality, it has to be fitted to some data set.
+To assess model quality, the model has to be fitted to some data set.
 The use of real data can be challenging, as there is no way to distinguish modeling issues from computational issues.
 This problem can be avoided by using simulated data, ideally from multiple realistic scenarios.
 Section \ref{ch:simulations}, already presented three scenarios used in this paper.
@@ -89,7 +89,7 @@ There will be less emphasis on correctly recovering other model parameters from 
 %Then the model is fitted to data and the posterior is compared to the simulated parameters from the priors that were used to generate the data.
 %By repeating this procedure, it is possible to check the inference algorithms – the prior should be recovered when performing inference on data sets drawn from the prior.)
 
-\subsection{Step 4. Address computational issues}
+\subsection{Step 4: Address computational issues}
 
 A model that leads to computational problems often has some underlying modelling issues.
 Usually, it is best to start with a simple model and make it more complex one step at a time, making it easier to determine what part of the model is causing problems.
@@ -100,7 +100,7 @@ Tightening moderately informative priors can help by pushing the sampler towards
 However, the priors should be adjusted in line with available knowledge and not only to solve fitting problems.
 One such example is discussed in section \ref{ch:log_shift}.
 
-\subsection{Step 5. Evaluate and use the model}
+\subsection{Step 5: Evaluate and use the model}
 
 After ensuring that the computation results are reliable, it is necessary to evaluate the quality of the estimated model.
 Posterior predictive checks are a useful tool when diagnosing fitting problems to the data.
@@ -113,7 +113,7 @@ To check how informative the data is with respect to a parameter, one can compar
 If the model is good enough it can be used in an applied setting.
 In the small area estimation context, this means generating predictions from the model and calculating poverty indicators.
 
-\subsection{Step 6. Modify the model}
+\subsection{Step 6: Modify the model}
 
 Bayesian statistics provides a modular approach in which models can be expanded or reduced in response to new data or failures to fit the model to the data.
 This is usually done by changing certain aspects of the prior distribution.
@@ -126,12 +126,12 @@ When expanding the model with additional parameters (e.g., introducing random in
 Nevertheless, the priors should not be tightened beyond a range compatible with prior information.
 Note that even if a model is trustworthy, it can still make sense to modify it, e.g., because it is an intermediate model that leads to a more complex model.
 
-\subsection{Step 7. Compare models}
+\subsection{Step 7: Compare models}
 
 Models are fitted many times, for multiple reasons.
 It might be easier to start with simple models, before getting to a more complex model. There are often bugs in the code and in the models.
-A model might be well-specified, but it could be improved by expanding it.
-The priors might be only placeholders, which will be replaced at a later stage.
+A model might be well-specified, but it could be improved by being expanded.
+The priors might only be placeholders, which will be replaced at a later stage.
 Moreover, multiple models might provide acceptable results.
 Here, model comparison plays an important role.
 

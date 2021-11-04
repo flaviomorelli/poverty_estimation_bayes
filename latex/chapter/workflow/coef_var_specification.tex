@@ -3,7 +3,7 @@
 
 After choosing the Student's $t$-likelihood with a log-shift transformation, the next step reevaluates the plausibility of the priors introduced in model \ref{eq:trafo_hb} – the extension from the model in \cite{morelli_hierarchical_2021}.
 This section presents the first iterative improvement of the model.
-For this modification of the model (step 6 in the workflow), prior predictive checks are done with the simulation scenarios to avoid using the data multiple times.
+For this modification of the model (step 6 in the workflow), prior predictive checks are made with the simulation scenarios to avoid using the data multiple times.
 
 Appendix \ref{appendix:coeff} shows that even with a shift term in the logarithmic transformation, the coefficients can be interpreted as the approximate percentage change of the dependent variable in the original scale.
 This approximation holds mostly for coefficients between -0.3 and 0.3.
@@ -64,7 +64,7 @@ The aim is to determine which value of the rate parameter is best for both scale
 Figure \ref{fig:ppc_start} shows the scatterplots for a rate parameter value equal to 0.75, while Figure \ref{fig:ppc_tight} displays the results for a tighter rate value of 7.
 Note the different scaling of the x-axes.
 For a rate parameter of 0.75, there are samples that are extremely high, above 50 in the logarithmic scale.
-On the other hand, a rate parameter of 7, which implies a much tighter prior is much more realistic – especially, because only very few samples are much higher than 10 and even samples with higher values are not as high as in the first specification.
+On the other hand, a rate parameter of 7, which implies a much tighter prior is much more realistic – especially because only very few samples are much higher than 10 and even samples with higher values are not as high as in the first specification.
 Prior predictive checks with a very wide scale prior can be found in appendix \ref{appendix:wide_prior}.
 
 After the prior predictive check, it is possible to conclude that the tighter scale prior provides the most realistic results, while still allowing for a few higher than expected but not extreme predictions.

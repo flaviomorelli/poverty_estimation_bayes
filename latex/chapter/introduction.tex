@@ -3,23 +3,23 @@
 In recent years, there has been an increased interest in the distinction between \textit{inference} and \textit{workflow} in Bayesian statistics \citep{gelman_bayesian_2020}.
 \textit{Inference} describes the process by which models are fitted using data, with an emphasis on the correct quantification of estimate uncertainty.
 With the increased accessibility of Bayesian statistics, the focus has shifted away from developing one single model or method to taking an iterative approach – also called \textit{workflow} \citep{gelman_bayesian_2020}.
-Doing inference on a single model is not enough, because uncertainty does not only impact estimated parameters, but also model choice.
+Doing inference on a single model is not enough, because uncertainty not only impacts estimated parameters, but also model choice.
 It is not uncommon to find multiple models that are compatible with the problem at hand.
-Moreover, the Bayesian paradigm allows to change certain aspects of the model in a modular way.
+Moreover, the Bayesian paradigm lets certain aspects of the model be changed in a modular way.
 This modularity is an advantage, as it allows a higher degree of flexibility when developing a model and also provides the tools to develop a series of models iteratively.
 
 This paper aims to develop a hierarchical Bayesian model \citep{molina_small_2014}   iteratively to estimate poverty indicators \citep{foster_class_1984} based on the workflow presented by \cite{gelman_bayesian_2020} in a \textit{small area estimation} \citep{rao_small_2015} context.
 Poverty is chosen as a use case for a wide variety of reasons.
-First, ending poverty is one of the Sustainable Development Goals (SDG) of the United Nations \citep{united_nations_transforming_2015}.
+Firstly, ending poverty is one of the Sustainable Development Goals (SDG) of the United Nations \citep{united_nations_transforming_2015}.
 Providing reliable estimates is a necessary condition to track progress on this particular goal.
-Second, income data (the basis for poverty indicators) presents particular challenges due to its unimodel, leptokurtic and skewed nature, which can be approached from different perspectives in the context of a Bayesian workflow.
-Third, due to privacy reasons, questions on income are usually not part of the census.
+Secondly, income data (the basis for poverty indicators) presents particular challenges due to its unimodel, leptokurtic and skewed nature, which can be approached from different perspectives in the context of a Bayesian workflow.
+Thirdly, due to privacy reasons, questions on income are usually not part of the census.
 Often, income data is collected in surveys, which have a sample size several orders of magnitude lower than the census population.
 When disaggregating the data according to categories such as municipalities, gender and ethnicity, the resulting subgroups can be sparse.
 In such cases, small area estimation (SAE) methods are necessary to provide reliable estimators.
 This paper compares the results of the Bayesian model developed in the workflow with the frequentist SAE approach (EBP with data-driven transformations) of \cite{rojas_perilla_data_2020}.
 
-The structure of the present paper deviates from the statistical literature, which usually first presents a method that is then applied to real data and compared to existing benchmarks.
+The structure of this paper deviates from the statistical literature, which usually first presents a method that is then applied to real data and compared to existing benchmarks.
 This deviation stems from the specific characteristics of the workflow developed by \cite{gelman_bayesian_2020}:
 the focus on iterative model development requires a structure that first introduces the general theoretical ideas and the problem to be captured by the model and then builds up the model in a modular way.
 Chapter 2 provides the theoretical background on Bayesian statistics and SAE used in the rest of the paper.
@@ -27,7 +27,7 @@ The data from the Mexican state of Guerrero is introduced in chapter 3 together 
 In chapter 4, the Bayesian workflow is presented as defined by \cite{gelman_bayesian_2020}.
 Starting with different approaches to modelling income, the model is improved iteratively by considering different priors on regression coefficients and variance, selecting variables with the highest predictive power, redefining the specification of the random effect and modelling correlations at the area level.
 A comparison between the Box-Cox EBP \citep{rojas_perilla_data_2020} and the model developed with the Bayesian workflow is included in chapter 5, both in terms of estimates and uncertainty quantification.
-Chapter 6 discusses the advantages and disadvantages of a Bayesian workflow for poverty estimation in the SAE context critically.
+Chapter 6 critically discusses the advantages and disadvantages of a Bayesian workflow for poverty estimation in the SAE context.
 The paper finishes with concluding remarks.
 
 

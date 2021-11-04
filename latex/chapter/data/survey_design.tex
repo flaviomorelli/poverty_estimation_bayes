@@ -18,14 +18,14 @@ This fact will play a key role in chapter \ref{ch:raneff}.
 
 Two-stage sampling indicates that inside each stratum multiple PSUs are sampled and then, in a second stage, a fixed number of households inside each selected PSU is sampled.
 This sampling strategy implies that the households are clustered depending on the PSU they are sampled from.
-There might be deviations from the sampling scheme presented in order to guarantee that certain global properties of the whole sample still hold – e.g., a balanced ratio between the number of women and men –, or that there is enough differentiation in a given area.
+There might be deviations from the sampling scheme presented in order to guarantee that certain global properties of the whole sample still hold – e.g., a balanced ratio between the number of women and men – or that there is enough differentiation in a given area.
 The effect of nonresponse is taken into account in the survey weights.
 However, in this paper the weights are not taken into account when calculating the final poverty indicators.
 \footnote{The reason for this is that common frequentist SAE packages in \code{R}, which will be used to compare the EBP to the Bayesian model, do not allow for the inclusion of survey weights in the estimation procedure.}
 
 While the clustered structure arising from two-stage sampling can be accounted for when building the model, this paper focuses instead on how to integrate the stratification into the model.
 Thus, the adequate consideration of the clustered structure in the model is left to future research.
-In the last section of this chapter, simulation scenarios that capture the main features of income data are introduced.
+The last section of this chapter introduces simulation scenarios that capture the main features of income data.
 
 
 
