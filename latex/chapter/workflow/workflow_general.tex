@@ -69,7 +69,7 @@ In this paper, variational algorithms were often used to do a first fit of the m
 While iterating through the models only two Markov chains were used and, depending on fitting time, the number of iterations was reduced compared to the default 2000 iterations in \code{Stan} \cite{stan_development_team_stan_2021}.
 
 
-\subsection{Step 3: Validate computation}
+\subsection{Step 3: validate computation}
 
 After fitting the model it is crucial to check whether the computation results are reliable.
 Diagnostics for Bayesian computation methods are discussed in detail in appendix \ref{ch:computation}.
@@ -89,7 +89,7 @@ There will be less emphasis on correctly recovering other model parameters from 
 %Then the model is fitted to data and the posterior is compared to the simulated parameters from the priors that were used to generate the data.
 %By repeating this procedure, it is possible to check the inference algorithms – the prior should be recovered when performing inference on data sets drawn from the prior.)
 
-\subsection{Step 4: Address computational issues}
+\subsection{Step 4: address computational issues}
 
 A model that leads to computational problems often has some underlying modelling issues.
 Usually, it is best to start with a simple model and make it more complex one step at a time, making it easier to determine what part of the model is causing problems.
@@ -100,7 +100,7 @@ Tightening moderately informative priors can help by pushing the sampler towards
 However, the priors should be adjusted in line with available knowledge and not only to solve fitting problems.
 One such example is discussed in section \ref{ch:log_shift}.
 
-\subsection{Step 5: Evaluate and use the model}
+\subsection{Step 5: evaluate and use the model}
 
 After ensuring that the computation results are reliable, it is necessary to evaluate the quality of the estimated model.
 Posterior predictive checks are a useful tool when diagnosing fitting problems to the data.
@@ -113,7 +113,7 @@ To check how informative the data is with respect to a parameter, one can compar
 If the model is good enough it can be used in an applied setting.
 In the small area estimation context, this means generating predictions from the model and calculating poverty indicators.
 
-\subsection{Step 6: Modify the model}
+\subsection{Step 6: modify the model}
 
 Bayesian statistics provides a modular approach in which models can be expanded or reduced in response to new data or failures to fit the model to the data.
 This is usually done by changing certain aspects of the prior distribution.
@@ -126,7 +126,7 @@ When expanding the model with additional parameters (e.g., introducing random in
 Nevertheless, the priors should not be tightened beyond a range compatible with prior information.
 Note that even if a model is trustworthy, it can still make sense to modify it, e.g., because it is an intermediate model that leads to a more complex model.
 
-\subsection{Step 7: Compare models}
+\subsection{Step 7: compare models}
 
 Models are fitted many times, for multiple reasons.
 It might be easier to start with simple models, before getting to a more complex model. There are often bugs in the code and in the models.

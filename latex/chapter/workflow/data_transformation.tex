@@ -63,7 +63,6 @@ In practice, the Markov chain steers clear of regions too close to the minimum f
 
 
 Because of the transformation, the Jacobian of the likelihood is adjusted by the multiplicative factor $(y_{di} + \lambda)^{-1}$, derived in appendix \ref{appendix:jacobian}. Together with the prior on skewness, this leads to a reformulation of model \ref{eq:mod_hb} as follows:
-
 \begin{equation}
     \begin{split}
         p(\log(y_{di} + \lambda) |\boldsymbol \beta, u_d, \sigma_e, \nu)   =        \text{Student}&(\log(y_{di} + \lambda)| \boldsymbol{x'}_{di} \boldsymbol \beta + u_d,\ \sigma_e\ , \nu)\cdot (y_{di} + \lambda)^{-1}, \\
@@ -72,12 +71,12 @@ Because of the transformation, the Jacobian of the likelihood is adjusted by the
         \sigma_u & \sim Ga(2, 0.75), \\
         \sigma_e & \sim Ga(2, 0.75), \\
         \nu & \sim Ga(2, 0.1), \\
-        S(\log(y_{di} + \lambda)) & \sim \mathcal N(0, \delta), ~ \delta > 0\\
+        S(\log(y + \lambda)) & \sim \mathcal N(0, \delta), ~ \delta > 0\\
     \end{split}
     \label{eq:trafo_hb}
 \end{equation}
 where $\ d = 1, ..., D,\ i = 1, ..., N_d$. The transformation $\log(y_{di} + \lambda)$ is left explicitly in the model to remind the reader that the prior on skewness directly affects lambda.
-The prior parameterization of $\beta_k, \sigma_u$ and $\sigma_e$ are taken from \cite{morelli_hierarchical_2021}.
+The prior parameterization of $\beta_k, \sigma_u$ and $\sigma_e$ are taken from \cite{morelli_hierarchical_2021}. The lack of index for $y$ inside of $S$ reflects that the skewness function $S(\cdot)$ takes into account all the observations of the target variable – independent of the area.
 
 After a log-shift transformation, the regression coefficients can be interpreted as an approximate percentage change in the original scale.
 A detailed justification for this interpretation can be found in appendix \ref{appendix:coeff}.
